@@ -6,7 +6,8 @@ import { LS } from '../../js/core/storage.js';
 import { say, SPK, sayBtn, nvBtn } from '../../js/core/speech.js';
 import { prHTML, sentRow, table } from '../../js/core/render.js';
 import { runQuiz } from '../../js/core/quiz.js';
-import { W, ATTR_EX, PURP_EX } from './words.js';
+import { initialOf, chipsHTML, initialsHTML, catOptions } from '../../js/core/filters.js';
+import { W, VCATS, ACATS, ATTR_EX, PURP_EX } from './words.js';
 
 let custom = LS.get('custom', []);
 const allWords = () => W.concat(custom);
@@ -18,7 +19,14 @@ const tn = (w, k) => k === 'fut' && w.t === 'a' ? '未來式（推測）' : k ==
 const NOPURP = ['알다', '모르다', '살다', '좋아하다', '싫어하다', '일어나다'];
 const fcell = f => `<button type="button" class="fm" data-say="${esc(f)}"><span class="hg" lang="ko">${esc(f)}</span>${prHTML(f)}</button>`;
 const lessonOpts = `<option value="all">全部課別</option>` + LESSONS.map(l => `<option value="${l}">${l === '1A' ? '1A 全冊' : l}</option>`).join('');
-const typeMatch = (w, t) => t === 'all' || w.t === t || (t === 'v' && w.t === 'e');
+// 主題分類：動詞與形容詞各自一組；自訂單字若沒有分類，歸在「自訂」
+const CAT_GROUPS = [{ label: '動詞', items: Object.entries(VCATS) }, { label: '形容詞', items: Object.entries(ACATS) }];
+const catOf = w => w.c && (VCATS[w.c] || ACATS[w.c]) ? w.c : 'custom';
+const catName = w => VCATS[w.c] || ACATS[w.c] || '自訂';
+const groupsWithAll = () => [{ label: '', items: [['all', '全部']] }, ...CAT_GROUPS, { label: '', items: allWords().some(w => catOf(w) === 'custom') ? [['custom', '自訂（未分類）']] : [] }];
+// 閃卡與測驗的範圍選單
+const selOptions = `<option value="all">全部單字</option><option value="type:v">全部動詞</option><option value="type:a">全部形容詞</option>` + catOptions(CAT_GROUPS);
+const selMatch = (w, v) => v === 'all' || (v === 'type:v' && w.t !== 'a') || (v === 'type:a' && w.t === 'a') || catOf(w) === v;
 
 function explain(w) {
   const stem = w.k.slice(0, -1), last = [...stem].pop(), d = dec(last), f = forms(w), out = [];
@@ -47,13 +55,14 @@ function detailHTML(w) {
 // ---------- 變化表 ----------
 function tablePage(el) {
   el.innerHTML = `
-  <p class="intro" style="margin-bottom:14px">依世宗韓國語 1A 與 1B 第1課〈무슨 음식을 좋아해요?〉、第2課〈도서관에 책을 빌리러 가요〉的主題整理。標「補充」的是常用但不一定出現在你課本裡的字。點原型可展開變化說明與例句，點任何變化形可以聽發音。和課本單字表比對後，缺少的字可在表格下方自行加入。</p>
+  <p class="intro" style="margin-bottom:14px">依主題分類整理世宗韓國語 1A 與 1B 第1～2課常見的動詞和形容詞。標「補充」的是常用但不一定出現在你課本裡的字。點原型可展開變化說明與例句，點任何變化形可以聽發音；缺少的字可在表格下方自行加入。</p>
+  <div class="catbar" id="v-cats"></div>
   <div class="filters">
-    <select id="f-type" aria-label="詞類"><option value="all">全部詞類</option><option value="v">動詞（含 있다／없다）</option><option value="a">形容詞</option></select>
     <select id="f-lesson" aria-label="課別">${lessonOpts}</select>
-    <input type="text" id="f-q" placeholder="搜尋韓文或中文" aria-label="搜尋">
+    <input type="text" id="f-q" placeholder="搜尋韓文或中文（搜尋全部分類）" aria-label="搜尋">
     <span class="count" id="vt-count"></span>
   </div>
+  <div class="inits" id="v-inits" role="group" aria-label="依字首篩選"></div>
   <div class="tblwrap"><table class="vtable">
     <thead><tr><th>原型<small>기본형</small></th><th>中文</th><th>現在式<small>-아요/어요</small></th><th>過去式<small>-았어요/었어요</small></th><th>未來式<small>-(으)ㄹ 거예요</small></th><th>冠形詞形<small>動 -는 ／ 形 -(으)ㄴ</small></th></tr></thead>
     <tbody id="vt-body"></tbody>
@@ -63,24 +72,34 @@ function tablePage(el) {
     <form id="add-form" autocomplete="off">
       <label for="nw-k">原型<input type="text" id="nw-k" placeholder="例：타다" size="8"></label>
       <label for="nw-zh">中文<input type="text" id="nw-zh" placeholder="例：搭乘" size="8"></label>
-      <label for="nw-t">詞類<select id="nw-t"><option value="v">動詞</option><option value="a">形容詞</option></select></label>
+      <label for="nw-c">分類<select id="nw-c">${catOptions(CAT_GROUPS)}</select></label>
       <label for="nw-irr">不規則<select id="nw-irr"><option value="">規則（含 ㄹ、ㅡ、하다）</option><option value="ㅂ">ㅂ 不規則</option><option value="ㄷ">ㄷ 不規則</option><option value="르">르 不規則</option></select></label>
       <button type="submit" class="btn">加入</button>
     </form>
     <p id="nw-msg" class="muted" aria-live="polite">輸入原型後會先顯示自動變化的結果。新增的字只存在這個瀏覽器。</p>
   </div>`;
   const body = $('#vt-body', el), msg = $('#nw-msg', el);
+  const st = { cat: LS.get('vcat', CAT_GROUPS[0].items[0][0]), ini: '' };
   function renderTable() {
-    const t = $('#f-type', el).value, l = $('#f-lesson', el).value, q = $('#f-q', el).value.trim();
-    const list = allWords().filter(w => typeMatch(w, t) && (l === 'all' || w.l === l) && (!q || w.k.includes(q) || w.zh.includes(q)));
-    $('#vt-count', el).textContent = `共 ${list.length} 個`;
+    const l = $('#f-lesson', el).value, q = $('#f-q', el).value.trim();
+    const base = allWords().filter(w => (l === 'all' || w.l === l) && (!q || w.k.includes(q) || w.zh.includes(q)));
+    const cat = q ? 'all' : st.cat;
+    const counts = { all: base.length };
+    base.forEach(w => { counts[catOf(w)] = (counts[catOf(w)] || 0) + 1; });
+    const inCat = base.filter(w => cat === 'all' || catOf(w) === cat);
+    const list = inCat.filter(w => !st.ini || initialOf(w.k) === st.ini);
+    $('#v-cats', el).innerHTML = chipsHTML(groupsWithAll(), cat, counts);
+    $('#v-inits', el).innerHTML = initialsHTML(new Set(inCat.map(w => initialOf(w.k))), st.ini);
+    $('#vt-count', el).textContent = `顯示 ${list.length} 個`;
     body.innerHTML = list.length ? list.map(w => {
       const f = forms(w);
-      return `<tr class="vr"><td><button type="button" class="tog" data-tog="${esc(w.k)}" aria-expanded="false"><span class="hg" lang="ko">${esc(w.k)}</span><span class="chev"></span></button><span class="meta">${TYPE[w.t]}・${w.l}${w.irr ? `・${w.irr} 不規則` : ''}</span>${nvBtn(w.k)}</td><td data-label="中文">${esc(w.zh)}</td>${K.map(k => `<td data-label="${tn(w, k)}">${fcell(f[k])}</td>`).join('')}</tr><tr class="detail" data-d="${esc(w.k)}" hidden><td colspan="6"></td></tr>`;
+      return `<tr class="vr"><td><button type="button" class="tog" data-tog="${esc(w.k)}" aria-expanded="false"><span class="hg" lang="ko">${esc(w.k)}</span><span class="chev"></span></button><span class="meta">${catName(w)}・${w.l}${w.irr ? `・${w.irr} 不規則` : ''}</span>${nvBtn(w.k)}</td><td data-label="中文">${esc(w.zh)}</td>${K.map(k => `<td data-label="${tn(w, k)}">${fcell(f[k])}</td>`).join('')}</tr><tr class="detail" data-d="${esc(w.k)}" hidden><td colspan="6"></td></tr>`;
     }).join('') : '<tr><td colspan="6" class="muted" style="padding:20px">沒有符合條件的單字。</td></tr>';
   }
-  ['#f-type', '#f-lesson'].forEach(s => $(s, el).onchange = renderTable);
-  $('#f-q', el).oninput = renderTable;
+  $('#v-cats', el).onclick = e => { const b = e.target.closest('[data-cat]'); if (!b) return; st.cat = b.dataset.cat; st.ini = ''; LS.set('vcat', st.cat); $('#f-q', el).value = ''; renderTable(); };
+  $('#v-inits', el).onclick = e => { const b = e.target.closest('[data-ini]'); if (!b) return; st.ini = st.ini === b.dataset.ini ? '' : b.dataset.ini; renderTable(); };
+  $('#f-lesson', el).onchange = renderTable;
+  $('#f-q', el).oninput = () => { st.ini = ''; renderTable(); };
   body.addEventListener('click', e => {
     const t = e.target.closest('[data-tog]');
     if (t) {
@@ -92,26 +111,27 @@ function tablePage(el) {
     const d = e.target.closest('[data-del]');
     if (d) { custom = custom.filter(w => w.k !== d.dataset.del); LS.set('custom', custom); renderTable(); msg.textContent = `已刪除「${d.dataset.del}」。`; }
   });
+  const typeOfCat = c => ACATS[c] ? 'a' : 'v';
   const preview = () => {
     const k = $('#nw-k', el).value.trim();
     if (!/^[가-힣]{2,}$/.test(k) || !k.endsWith('다')) { msg.textContent = '輸入原型後會先顯示自動變化的結果。新增的字只存在這個瀏覽器。'; return; }
-    try { const f = forms({ k, t: $('#nw-t', el).value, irr: $('#nw-irr', el).value }); msg.innerHTML = `預覽：<span lang="ko">${[f.pres, f.past, f.fut, f.attr].map(esc).join('　')}</span>`; } catch (e) { }
+    try { const f = forms({ k, t: typeOfCat($('#nw-c', el).value), irr: $('#nw-irr', el).value }); msg.innerHTML = `預覽：<span lang="ko">${[f.pres, f.past, f.fut, f.attr].map(esc).join('　')}</span>`; } catch (e) { }
   };
-  ['#nw-k', '#nw-t', '#nw-irr'].forEach(s => $(s, el).addEventListener('input', preview));
+  ['#nw-k', '#nw-c', '#nw-irr'].forEach(s => $(s, el).addEventListener('input', preview));
   $('#add-form', el).onsubmit = e => {
     e.preventDefault();
-    const k = $('#nw-k', el).value.trim(), zh = $('#nw-zh', el).value.trim(), t = $('#nw-t', el).value, irr = $('#nw-irr', el).value;
+    const k = $('#nw-k', el).value.trim(), zh = $('#nw-zh', el).value.trim(), c = $('#nw-c', el).value, irr = $('#nw-irr', el).value;
     if (!/^[가-힣]{2,}$/.test(k) || !k.endsWith('다')) { msg.textContent = '請輸入韓文原型，結尾要是「다」，例如 타다。'; return; }
     if (allWords().some(w => w.k === k)) { msg.textContent = `「${k}」已經在表裡了。`; return; }
     const pre = dec([...k.slice(0, -1)].pop());
     if (irr === '르' && !k.endsWith('르다')) { msg.textContent = '르 不規則的字要以「르다」結尾，例如 모르다。'; return; }
     if (irr === 'ㅂ' && pre.T !== 'ㅂ') { msg.textContent = 'ㅂ 不規則的字，다 前面一字要有 ㅂ 收音，例如 춥다。'; return; }
     if (irr === 'ㄷ' && pre.T !== 'ㄷ') { msg.textContent = 'ㄷ 不規則的字，다 前面一字要有 ㄷ 收音，例如 듣다。'; return; }
-    const w = { k, zh: zh || '（未填）', t, irr, l: '自訂', ex: [], custom: true };
+    const w = { k, c, zh: zh || '（未填）', t: typeOfCat(c), irr, l: '自訂', ex: [], custom: true };
     custom.push(w); LS.set('custom', custom);
-    msg.textContent = `已加入「${k}」，現在式是 ${forms(w).pres}。`;
+    msg.textContent = `已加入「${k}」到「${catName(w)}」，現在式是 ${forms(w).pres}。`;
     $('#nw-k', el).value = ''; $('#nw-zh', el).value = '';
-    $('#f-lesson', el).value = 'all'; $('#f-q', el).value = ''; renderTable();
+    st.cat = c; st.ini = ''; $('#f-lesson', el).value = 'all'; $('#f-q', el).value = ''; renderTable();
   };
   renderTable();
 }
@@ -133,15 +153,16 @@ function rulesPage(el) {
 
 // ---------- 閃卡 ----------
 function cardsPage(el) {
-  el.innerHTML = `<div class="qwrap"><p class="intro">看原型和時態，先自己說出變化形和發音，再翻開確認。</p><div class="qcard vfc"></div></div>`;
-  const box = $('.vfc', el);
+  el.innerHTML = `<div class="qwrap"><p class="intro">看原型和時態，先自己說出變化形和發音，再翻開確認。</p><div class="qctl"><select class="qf vfc-cat" aria-label="範圍">${selOptions}</select></div><div class="qcard vfc"></div></div>`;
+  const box = $('.vfc', el), sel = $('.vfc-cat', el);
   let st = { w: null, k: null, rev: false };
   const draw = () => {
-    if (!st.w) st = { w: pick(allWords()), k: pick(K), rev: false };
+    if (!st.w) { const pool = allWords().filter(w => selMatch(w, sel.value)); st = { w: pick(pool.length ? pool : allWords()), k: pick(K), rev: false }; }
     const { w, k, rev } = st, f = forms(w)[k];
-    box.innerHTML = `<div class="fc-card"><p class="fc-q">${TYPE[w.t]}・${esc(w.zh)}</p><div class="fc-w hg" lang="ko">${esc(w.k)}</div><p>請說出 <b>${tn(w, k)}</b></p>${rev ? `<div class="fc-a"><span class="hg" lang="ko">${esc(f)}</span>${prHTML(f)}${sayBtn(f)}</div><p class="note">原型真人發音 ${nvBtn(w.k)}</p>` : '<div class="fc-a muted">想好了再翻開</div>'}</div><div class="fc-btns"><button type="button" class="btn" data-v="rev">${rev ? '再聽一次' : '翻開答案'}</button><button type="button" class="btn ghost" data-v="next">下一張</button></div>`;
+    box.innerHTML = `<div class="fc-card"><p class="fc-q">${catName(w)}・${esc(w.zh)}</p><div class="fc-w hg" lang="ko">${esc(w.k)}</div><p>請說出 <b>${tn(w, k)}</b></p>${rev ? `<div class="fc-a"><span class="hg" lang="ko">${esc(f)}</span>${prHTML(f)}${sayBtn(f)}</div><p class="note">原型真人發音 ${nvBtn(w.k)}</p>` : '<div class="fc-a muted">想好了再翻開</div>'}</div><div class="fc-btns"><button type="button" class="btn" data-v="rev">${rev ? '再聽一次' : '翻開答案'}</button><button type="button" class="btn ghost" data-v="next">下一張</button></div>`;
   };
   box.onclick = e => { const b = e.target.closest('[data-v]'); if (!b) return; if (b.dataset.v === 'rev') { st.rev = true; draw(); say(forms(st.w)[st.k]); } else { st.w = null; draw(); } };
+  sel.onchange = () => { st.w = null; draw(); };
   draw();
 }
 
@@ -190,10 +211,10 @@ export function buildQuiz(pool = allWords()) {
   return shuffle(plan.map((fn, i) => fn(sp[i % sp.length])));
 }
 function quizPage(el) {
-  el.innerHTML = `<div class="qwrap"><p class="intro">每回 10 題：選出正確變化、句子填空、聽音判斷時態、選出正確發音、中韓配對。</p><div class="qctl"><select class="vq-type" aria-label="詞類"><option value="all">全部詞類</option><option value="v">動詞</option><option value="a">形容詞</option></select><select class="vq-lesson" aria-label="課別">${lessonOpts}</select><button type="button" class="btn qs-start">開始新的一回</button></div><div class="qcard qbox"></div></div>`;
+  el.innerHTML = `<div class="qwrap"><p class="intro">每回 10 題：選出正確變化、句子填空、聽音判斷時態、選出正確發音、中韓配對。可以只練某一個主題。</p><div class="qctl"><select class="vq-type qf" aria-label="範圍">${selOptions}</select><select class="vq-lesson" aria-label="課別">${lessonOpts}</select><button type="button" class="btn qs-start">開始新的一回</button></div><div class="qcard qbox"></div></div>`;
   const ty = $('.vq-type', el), ls = $('.vq-lesson', el), box = $('.qbox', el);
   const start = () => {
-    const pool = allWords().filter(w => typeMatch(w, ty.value) && (ls.value === 'all' || w.l === ls.value));
+    const pool = allWords().filter(w => selMatch(w, ty.value) && (ls.value === 'all' || w.l === ls.value));
     if (!pool.length) { box.innerHTML = '<p class="muted">這個範圍沒有單字，請換一個詞類或課別。</p>'; return; }
     runQuiz(box, buildQuiz(pool), 'best_vq_' + ty.value + ls.value, start);
   };
