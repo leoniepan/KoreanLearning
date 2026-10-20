@@ -10,7 +10,7 @@ const routes = new Map();
 modules.forEach(m => m.pages.forEach(p => routes.set(`${m.id}-${p.id}`, { m, p })));
 const first = routes.keys().next().value;
 // 舊版網址相容
-const LEGACY = { pron: 'pron-learn', pquiz: 'pron-quiz', verbs: 'verbs-table', vquiz: 'verbs-quiz' };
+const LEGACY = { pron: 'pron-learn', pquiz: 'pron-quiz', verbs: 'verbs-table', vquiz: 'verbs-quiz', 'questions-learn': 'grammar-1a', 'questions-quiz': 'grammar-quiz' };
 
 const nav = $('#mods'), sub = $('#pages'), view = $('#view');
 const side = $('#side'), scrim = $('#scrim'), menuBtn = $('#menu-btn');

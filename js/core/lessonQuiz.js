@@ -26,14 +26,17 @@ export function itemToQ(it, lesson) {
   };
 }
 
-export function lessonQuizPage({ lessons, key, count = 10, intro }) {
+// scopes：額外的範圍選項，例如 [{id:'1A', label:'1A 全冊', match: l => l.book === '1A'}]
+export function lessonQuizPage({ lessons, key, count = 10, intro, scopes = [], defaultScope = 'all' }) {
   const withQuiz = lessons.filter(l => l.quiz && l.quiz.length);
   return function render(el, ctx) {
-    el.innerHTML = `<div class="qwrap">${intro ? `<p class="intro">${intro}</p>` : ''}<div class="qctl"><select class="qf" aria-label="範圍"><option value="all">全部課程（綜合）</option>${withQuiz.map(l => `<option value="${l.id}">${esc(l.name)}</option>`).join('')}</select><button type="button" class="btn qs-start">開始新的一回</button></div><div class="qcard qbox"></div></div>`;
+    el.innerHTML = `<div class="qwrap">${intro ? `<p class="intro">${intro}</p>` : ''}<div class="qctl"><select class="qf" aria-label="範圍"><option value="all">全部課程（綜合）</option>${scopes.map(x => `<option value="${x.id}">${esc(x.label)}</option>`).join('')}<optgroup label="單一課程">${withQuiz.map(l => `<option value="${l.id}">${esc((l.book ? l.book + ' ' : '') + l.name)}</option>`).join('')}</optgroup></select><button type="button" class="btn qs-start">開始新的一回</button></div><div class="qcard qbox"></div></div>`;
     const sel = $('.qf', el), box = $('.qbox', el);
+    sel.value = defaultScope;
     if (ctx.params.filter && withQuiz.some(l => l.id === ctx.params.filter)) sel.value = ctx.params.filter;
     const start = () => {
-      const ls = sel.value === 'all' ? withQuiz : withQuiz.filter(l => l.id === sel.value);
+      const sc = scopes.find(x => x.id === sel.value);
+      const ls = sel.value === 'all' ? withQuiz : sc ? withQuiz.filter(sc.match) : withQuiz.filter(l => l.id === sel.value);
       const pool = shuffle(ls.flatMap(l => l.quiz.map(it => [it, l])));
       const qs = pool.slice(0, count).map(([it, l]) => itemToQ(it, l));
       runQuiz(box, qs, key + '_' + sel.value, start);
