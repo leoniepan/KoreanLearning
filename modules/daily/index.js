@@ -1,5 +1,5 @@
 // 單元：今日測驗
-// 每天依日期固定出一組 10 題：先放當天的「每日新題」（bank.js），其餘從發音、動詞、問句與過去的新題中挑選。
+// 每天依日期固定出一組 10 題：先放當天的「每日新題」（bank.js），其餘從發音、動詞、名詞、問句與過去的新題中挑選。
 // 同一天不論打開幾次、在哪台裝置，題目都相同；隔天自動換一組。
 import { $, esc, shuffle } from '../../js/core/dom.js';
 import { LS } from '../../js/core/storage.js';
@@ -7,6 +7,7 @@ import { runQuiz } from '../../js/core/quiz.js';
 import { itemToQ } from '../../js/core/lessonQuiz.js';
 import { buildQuiz as pronQuiz } from '../pronunciation/index.js';
 import { buildQuiz as verbQuiz } from '../verbs/index.js';
+import { buildQuiz as nounQuiz } from '../nouns/index.js';
 import { LESSONS as QUESTION_LESSONS } from '../questions/lessons.js';
 import { BANK } from './bank.js';
 
@@ -30,11 +31,11 @@ function buildDaily(date) {
     const entry = BANK.find(b => b.date === date);
     const fresh = (entry ? entry.items : []).slice(0, COUNT).map(it => itemToQ(it, { name: '今日新題・' + entry.topic }));
     const rest = COUNT - fresh.length;
-    const p = Math.round(rest * 0.3), v = Math.round(rest * 0.4), r = Math.max(0, rest - p - v);
+    const p = Math.round(rest * 0.25), v = Math.round(rest * 0.3), n = Math.round(rest * 0.2), r = Math.max(0, rest - p - v - n);
     const older = BANK.filter(b => b.date < date).flatMap(b => b.items.map(it => [it, '複習・' + b.topic]));
     const lessonItems = QUESTION_LESSONS.flatMap(l => (l.quiz || []).map(it => [it, '問句・' + l.name]));
     const review = shuffle(older.concat(lessonItems)).slice(0, r).map(([it, name]) => itemToQ(it, { name }));
-    const others = shuffle([...pronQuiz('all').slice(0, p), ...verbQuiz().slice(0, v), ...review]);
+    const others = shuffle([...pronQuiz('all').slice(0, p), ...verbQuiz().slice(0, v), ...nounQuiz().slice(0, n), ...review]);
     return fresh.concat(others).slice(0, COUNT);
   });
 }
