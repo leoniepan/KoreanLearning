@@ -154,7 +154,7 @@ function wrongForms(w, k) {
   if (k === 'attr') c.push(stem + '는', stem + '은', reg.attr);
   return uniq(c.filter(x => x !== f[k] && /^[가-힣 ]+$/.test(x)));
 }
-function buildQuiz(pool) {
+export function buildQuiz(pool = allWords()) {
   const formQ = w => {
     const k = pick(K), f = forms(w), r = f[k];
     let d = shuffle(wrongForms(w, k)).slice(0, 3);
