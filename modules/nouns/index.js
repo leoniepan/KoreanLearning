@@ -5,6 +5,7 @@ import { LS } from '../../js/core/storage.js';
 import { say, SPK, sayBtn, nvBtn } from '../../js/core/speech.js';
 import { prHTML, sentRow, table } from '../../js/core/render.js';
 import { runQuiz } from '../../js/core/quiz.js';
+import { initialOf, chipsHTML, initialsHTML } from '../../js/core/filters.js';
 import { CATS, N } from './nouns.js';
 
 let custom = LS.get('custom_nouns', []);
@@ -45,13 +46,14 @@ function detailHTML(n) {
 // ---------- 名詞表 ----------
 function tablePage(el) {
   el.innerHTML = `
-  <p class="intro" style="margin-bottom:14px">依世宗韓國語 1A～1B 第2課常見主題整理，標「補充」的是常用但不一定出現在課本裡的字。每個名詞都列出接上助詞後的形態和發音，點原型可展開說明與例句，點任何形態可以聽發音。</p>
+  <p class="intro" style="margin-bottom:14px">依主題分類整理世宗韓國語 1A～1B 第2課常見的名詞，標「補充」的是常用但不一定出現在課本裡的字。每個名詞都列出接上助詞後的形態和發音，點原型可展開說明與例句，點任何形態可以聽發音。</p>
+  <div class="catbar" id="n-cats"></div>
   <div class="filters">
-    <select id="n-cat" aria-label="分類">${catOpts}</select>
     <select id="n-lesson" aria-label="課別">${lessonOpts}</select>
-    <input type="text" id="n-q" placeholder="搜尋韓文或中文" aria-label="搜尋">
+    <input type="text" id="n-q" placeholder="搜尋韓文或中文（搜尋全部分類）" aria-label="搜尋">
     <span class="count" id="n-count"></span>
   </div>
+  <div class="inits" id="n-inits" role="group" aria-label="依字首篩選"></div>
   <div class="tblwrap"><table class="vtable">
     <thead><tr><th>名詞<small>명사</small></th><th>中文</th>${P.map(p => `<th>${p.name.split(' ')[0]}<small>${p.name.split(' ')[1]}</small></th>`).join('')}</tr></thead>
     <tbody id="n-body"></tbody>
@@ -67,17 +69,27 @@ function tablePage(el) {
     <p id="nn-msg" class="muted" aria-live="polite">新增的名詞只存在這個瀏覽器。</p>
   </div>`;
   const body = $('#n-body', el), msg = $('#nn-msg', el);
+  const st = { cat: LS.get('ncat', Object.keys(CATS)[0]), ini: '' };
   function render() {
-    const c = $('#n-cat', el).value, l = $('#n-lesson', el).value, q = $('#n-q', el).value.trim();
-    const list = allNouns().filter(n => (c === 'all' || n.c === c) && (l === 'all' || n.l === l) && (!q || n.k.includes(q) || n.zh.includes(q)));
-    $('#n-count', el).textContent = `共 ${list.length} 個`;
+    const l = $('#n-lesson', el).value, q = $('#n-q', el).value.trim();
+    const base = allNouns().filter(n => (l === 'all' || n.l === l) && (!q || n.k.includes(q) || n.zh.includes(q)));
+    const cat = q ? 'all' : st.cat;
+    const counts = { all: base.length };
+    base.forEach(n => { counts[n.c] = (counts[n.c] || 0) + 1; });
+    const inCat = base.filter(n => cat === 'all' || n.c === cat);
+    const list = inCat.filter(n => !st.ini || initialOf(n.k) === st.ini);
+    $('#n-cats', el).innerHTML = chipsHTML([{ label: '', items: [['all', '全部'], ...Object.entries(CATS)] }], cat, counts);
+    $('#n-inits', el).innerHTML = initialsHTML(new Set(inCat.map(n => initialOf(n.k))), st.ini);
+    $('#n-count', el).textContent = `顯示 ${list.length} 個`;
     body.innerHTML = list.length ? list.map(n => {
       const f = nforms(n.k);
       return `<tr class="vr"><td><button type="button" class="tog" data-tog="${esc(n.k)}" aria-expanded="false"><span class="hg" lang="ko">${esc(n.k)}</span><span class="chev"></span></button><span class="meta">${CATS[n.c]}・${n.l}・${hasB(n.k) ? '有收音' : '無收音'}</span>${nvBtn(n.k)}</td><td data-label="中文">${esc(n.zh)}</td>${P.map(p => `<td data-label="${p.name}">${fcell(f[p.id])}</td>`).join('')}</tr><tr class="detail" data-d="${esc(n.k)}" hidden><td colspan="6"></td></tr>`;
     }).join('') : '<tr><td colspan="6" class="muted" style="padding:20px">沒有符合條件的名詞。</td></tr>';
   }
-  ['#n-cat', '#n-lesson'].forEach(s => $(s, el).onchange = render);
-  $('#n-q', el).oninput = render;
+  $('#n-cats', el).onclick = e => { const b = e.target.closest('[data-cat]'); if (!b) return; st.cat = b.dataset.cat; st.ini = ''; LS.set('ncat', st.cat); $('#n-q', el).value = ''; render(); };
+  $('#n-inits', el).onclick = e => { const b = e.target.closest('[data-ini]'); if (!b) return; st.ini = st.ini === b.dataset.ini ? '' : b.dataset.ini; render(); };
+  $('#n-lesson', el).onchange = render;
+  $('#n-q', el).oninput = () => { st.ini = ''; render(); };
   body.addEventListener('click', e => {
     const t = e.target.closest('[data-tog]');
     if (t) {
@@ -98,7 +110,7 @@ function tablePage(el) {
     const f = nforms(k);
     msg.textContent = `已加入「${k}」：${f.top}、${f.sub}、${f.obj}、${f.cop}`;
     $('#nn-k', el).value = ''; $('#nn-zh', el).value = '';
-    $('#n-lesson', el).value = 'all'; $('#n-cat', el).value = 'all'; $('#n-q', el).value = ''; render();
+    st.cat = c; st.ini = ''; $('#n-lesson', el).value = 'all'; $('#n-q', el).value = ''; render();
   };
   render();
 }
@@ -119,11 +131,11 @@ function rulesPage(el) {
 
 // ---------- 閃卡 ----------
 function cardsPage(el) {
-  el.innerHTML = `<div class="qwrap"><p class="intro">看韓文說出中文，或看中文說出韓文和發音，再翻開確認。</p><div class="qctl"><select class="qf nfc-mode" aria-label="方向"><option value="kz">韓文 → 中文</option><option value="zk">中文 → 韓文</option></select></div><div class="qcard nfc"></div></div>`;
-  const box = $('.nfc', el), mode = $('.nfc-mode', el);
+  el.innerHTML = `<div class="qwrap"><p class="intro">看韓文說出中文，或看中文說出韓文和發音，再翻開確認。</p><div class="qctl"><select class="nfc-mode" aria-label="方向"><option value="kz">韓文 → 中文</option><option value="zk">中文 → 韓文</option></select><select class="nfc-cat" aria-label="分類">${catOpts}</select></div><div class="qcard nfc"></div></div>`;
+  const box = $('.nfc', el), mode = $('.nfc-mode', el), csel = $('.nfc-cat', el);
   let st = { n: null, rev: false };
   const draw = () => {
-    if (!st.n) st = { n: pick(allNouns()), rev: false };
+    if (!st.n) { const pool = allNouns().filter(n => csel.value === 'all' || n.c === csel.value); st = { n: pick(pool.length ? pool : allNouns()), rev: false }; }
     const { n, rev } = st, kz = mode.value === 'kz';
     const front = kz ? `<div class="fc-w hg" lang="ko">${esc(n.k)}</div><p>中文是？</p>` : `<div class="fc-w">${esc(n.zh)}</div><p>韓文怎麼說？</p>`;
     const back = kz ? `<div class="fc-a">${esc(n.zh)}${sayBtn(n.k)}${nvBtn(n.k)}</div>` : `<div class="fc-a"><span class="hg" lang="ko">${esc(n.k)}</span>${prHTML(n.k)}${sayBtn(n.k)}${nvBtn(n.k)}</div>`;
@@ -131,7 +143,7 @@ function cardsPage(el) {
     if (kz && !rev) say(n.k);
   };
   box.onclick = e => { const b = e.target.closest('[data-v]'); if (!b) return; if (b.dataset.v === 'rev') { st.rev = true; draw(); say(st.n.k); } else { st.n = null; draw(); } };
-  mode.onchange = () => { st.n = null; draw(); };
+  mode.onchange = csel.onchange = () => { st.n = null; draw(); };
   draw();
 }
 
