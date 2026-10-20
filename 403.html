@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>尚未開通 · 발음·동사 연습장</title>
+<style>
+:root{--bg:#eef2f0;--surface:#fbfcfb;--ink:#17232a;--muted:#566a6c;--line:#d3ddd9;--accent:#1d6b58;--accent-ink:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1719;--surface:#162123;--ink:#e3ece9;--muted:#9db0ad;--line:#26383a;--accent:#5fc3a6;--accent-ink:#0b1513;color-scheme:dark}}
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.7;padding:24px}
+.card{max-width:440px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:28px 24px;display:flex;flex-direction:column;gap:12px}
+h1{font-size:22px;margin:0}
+p{margin:0;color:var(--muted)}
+a.btn{align-self:flex-start;background:var(--accent);color:var(--accent-ink);text-decoration:none;border-radius:8px;padding:8px 16px;font-weight:500}
+</style>
+</head>
+<body>
+<main class="card">
+  <h1>這個帳號還沒有使用權限</h1>
+  <p>你已經用 Microsoft 帳號登入，但這個帳號還沒有被邀請使用這個網站。</p>
+  <p>請把你登入用的 email 告訴網站管理者，收到邀請連結後點開並登入即可使用。</p>
+  <p>如果登入錯帳號，請先登出再用正確的帳號登入。</p>
+  <a class="btn" href="/.auth/logout?post_logout_redirect_uri=/">登出，換一個帳號</a>
+</main>
+</body>
+</html>

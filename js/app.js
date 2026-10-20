@@ -4,6 +4,7 @@ import modules from '../modules/registry.js';
 import { $, esc } from './core/dom.js';
 import { LS } from './core/storage.js';
 import { initSpeech } from './core/speech.js';
+import { initAccount } from './core/account.js';
 
 const routes = new Map();
 modules.forEach(m => m.pages.forEach(p => routes.set(`${m.id}-${p.id}`, { m, p })));
@@ -54,4 +55,5 @@ sub.onclick = e => { const b = e.target.closest('[data-page]'); if (b) go(b.data
 window.addEventListener('hashchange', () => show(location.hash.slice(1)));
 
 initSpeech();
+initAccount();
 show(location.hash.slice(1));
