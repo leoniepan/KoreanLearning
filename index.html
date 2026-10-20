@@ -1,0 +1,864 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>발음·동사 연습장</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* Layout: manuscript-paper (원고지) masthead, sticky tab bar, lesson rail + content; Hangul always set in grid cells */
+:root{
+  --bg:#eef2f0;--surface:#fbfcfb;--ink:#17232a;--muted:#566a6c;--line:#d3ddd9;--grid:#9fc0b4;
+  --accent:#1d6b58;--accent-ink:#ffffff;--chip:#e1ebe7;
+  --mark:#b42d22;--markbg:#fbe3df;--ok:#2c7a3a;--okbg:#e2f1e3;--bad:#b42d22;--badbg:#fbe3df;
+  --f-hg:"Gowun Batang","Noto Serif KR","Apple SD Gothic Neo",serif;
+  --f-body:"Noto Sans TC","Noto Sans KR","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1719;--surface:#162123;--ink:#e3ece9;--muted:#9db0ad;--line:#26383a;--grid:#3d6359;
+  --accent:#5fc3a6;--accent-ink:#0b1513;--chip:#1e2d2f;
+  --mark:#ff8a7a;--markbg:#3b1d1a;--ok:#7fd08a;--okbg:#173020;--bad:#ff8a7a;--badbg:#3b1d1a;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1719;--surface:#162123;--ink:#e3ece9;--muted:#9db0ad;--line:#26383a;--grid:#3d6359;
+  --accent:#5fc3a6;--accent-ink:#0b1513;--chip:#1e2d2f;
+  --mark:#ff8a7a;--markbg:#3b1d1a;--ok:#7fd08a;--okbg:#173020;--bad:#ff8a7a;--badbg:#3b1d1a;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.65}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.hg{font-family:var(--f-hg);font-weight:700}
+h1,h2,h3,h4{text-wrap:balance;margin:0}
+p{margin:0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.muted{color:var(--muted)}
+
+/* masthead */
+.mast{position:relative;padding-block:28px 22px;overflow:hidden}
+.mast::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:30px 30px;opacity:.28;mask-image:linear-gradient(180deg,#000 30%,transparent)}
+.mast .wrap{position:relative;display:flex;flex-wrap:wrap;gap:16px 28px;align-items:flex-end;justify-content:space-between}
+.mast h1{font-family:var(--f-hg);font-size:clamp(30px,6vw,46px);line-height:1.1;letter-spacing:-.01em}
+.mast h1 span{color:var(--accent)}
+.mast .sub{color:var(--muted);margin-top:6px}
+.tools{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;background:var(--surface);padding:3px}
+.seg button{border:0;background:transparent;padding:4px 12px;border-radius:999px;cursor:pointer;font-size:13px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.vs{font-size:12px;color:var(--muted)}
+.vs.warn{color:var(--mark)}
+
+/* tabs */
+.tabbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.tab{border:0;background:none;padding:12px 14px 10px;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap;font-weight:500}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab small{display:block;font-size:11px;font-family:var(--f-hg);font-weight:400}
+main{padding-block:24px 64px}
+
+/* buttons */
+.btn{border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);border-radius:8px;padding:8px 16px;cursor:pointer;font-weight:500}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.small{padding:4px 10px;font-size:13px}
+.btn.big{padding:12px 22px;font-size:17px;display:inline-flex;gap:8px;align-items:center}
+.btn.big svg{width:22px;height:22px}
+.btn:disabled{opacity:.4;cursor:default}
+.say{flex:none;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--surface);display:inline-grid;place-items:center;cursor:pointer;color:var(--accent)}
+.say:hover{border-color:var(--accent)}
+.say svg{width:17px;height:17px}
+
+/* pron lessons */
+.pgrid{display:grid;grid-template-columns:270px minmax(0,1fr);gap:28px;align-items:start}
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 64px)}
+.prog{font-size:13px;color:var(--muted);margin-bottom:10px}
+.prog .bar{height:5px;background:var(--chip);border-radius:3px;margin-top:6px;overflow:hidden}
+.prog .bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.step{width:100%;display:grid;grid-template-columns:28px 1fr 18px;gap:10px;align-items:center;text-align:left;border:1px solid transparent;background:none;border-radius:8px;padding:8px 10px;cursor:pointer}
+.step:hover{background:var(--chip)}
+.step.on{background:var(--surface);border-color:var(--line)}
+.step .n{width:28px;height:28px;border:1px solid var(--grid);display:grid;place-items:center;font-size:13px;font-variant-numeric:tabular-nums}
+.step.done .n{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.step .t b{display:block;font-weight:500;font-size:14px}
+.step .t small{color:var(--muted);font-family:var(--f-hg);font-size:12px}
+.step .ck{color:var(--accent);font-weight:700}
+.lesson{display:flex;flex-direction:column;gap:22px;min-width:0}
+.eyebrow{font-size:12px;letter-spacing:.08em;color:var(--accent);font-weight:500}
+.lh h2{font-size:28px;margin:4px 0 8px}
+.lead{max-width:62ch}
+.block{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;display:flex;flex-direction:column;gap:14px}
+.block h3{font-size:16px}
+.block h3 small{font-weight:400;color:var(--muted);font-size:13px;margin-left:6px}
+.rules{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px}
+.tip{font-size:14px;color:var(--muted);border-left:3px solid var(--grid);padding-left:10px}
+.reptable{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.rep{border:1px solid var(--line);border-radius:8px;padding:8px 10px;display:flex;gap:10px;align-items:center}
+.rep .big{font-family:var(--f-hg);font-size:26px;font-weight:700;color:var(--accent);width:30px;text-align:center}
+.rep .src{font-family:var(--f-hg);font-size:16px;line-height:1.5;color:var(--muted);word-spacing:3px}
+.wcs{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.wc{display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:8px}
+.wc .say{grid-row:1/3;grid-column:2}
+.wc-row{display:flex;gap:8px;align-items:center;min-width:0}
+.lab{font-size:11px;color:var(--muted);width:2.4em;flex:none}
+.gw{display:inline-flex;flex-wrap:wrap}
+.gw span{width:1.75em;height:1.75em;display:grid;place-items:center;border:1px solid var(--grid);margin-left:-1px;margin-top:-1px;font-family:var(--f-hg);font-weight:700;font-size:18px;background:var(--surface)}
+.gw span:first-child{margin-left:0}
+.gw span.cg{background:var(--markbg);color:var(--mark)}
+.gw .sp{width:.6em}
+.sents{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:2px}
+.sent{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-top:1px dashed var(--line)}
+.sent:first-child{border-top:0}
+.sent-b{min-width:0}
+.sent .ko{font-family:var(--f-hg);font-weight:700;font-size:18px}
+.pr{color:var(--muted);font-size:14px;font-family:var(--f-body)}
+.pr .chg{color:var(--mark);font-weight:700}
+.zh{font-size:14px}
+.tag{display:inline-block;font-family:var(--f-body);font-weight:500;font-size:11px;background:var(--chip);color:var(--accent);border-radius:4px;padding:1px 6px;margin-right:6px;vertical-align:3px}
+.note{font-size:13px;color:var(--muted)}
+.lnav{display:flex;flex-wrap:wrap;gap:10px}
+.fc-card{border:1px solid var(--grid);border-radius:8px;padding:18px;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center;background-image:linear-gradient(var(--chip) 1px,transparent 1px);background-size:100% 32px}
+.fc-q{font-size:13px;color:var(--muted)}
+.fc-w{font-size:34px;line-height:1.2}
+.fc-a{display:flex;gap:10px;align-items:center;min-height:34px;font-size:18px}
+.fc-a .pr{font-size:20px}
+.fc-btns{display:flex;gap:10px;justify-content:center;margin-top:10px}
+
+/* quiz */
+.qwrap{max-width:720px;display:flex;flex-direction:column;gap:18px}
+.qctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+select,input[type=text]{font:inherit;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:7px 10px;min-width:0}
+.qcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:14px}
+.qhead{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.qbar{height:4px;background:var(--chip);border-radius:2px;overflow:hidden}
+.qbar i{display:block;height:100%;background:var(--accent)}
+.qtype{font-size:12px;color:var(--accent);letter-spacing:.06em;font-weight:500}
+.qprompt{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.qw{font-size:30px;line-height:1.3}
+.qs{font-family:var(--f-hg);font-weight:700;font-size:21px}
+.blank{display:inline-block;min-width:4em;border-bottom:2px solid var(--accent);color:var(--accent)}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.opt{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:12px;cursor:pointer;font-size:17px;text-align:center;min-width:0;overflow-wrap:anywhere}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.right{background:var(--okbg);border-color:var(--ok);color:var(--ok)}
+.opt.wrong{background:var(--badbg);border-color:var(--bad);color:var(--bad)}
+.opt:disabled{cursor:default}
+.fb{display:flex;flex-direction:column;gap:8px}
+.fb:empty{display:none}
+.fb .okm{color:var(--ok);font-weight:700}
+.fb .badm{color:var(--bad);font-weight:700}
+.fb .exp{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.result{display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.score{font-size:20px}.score b{font-family:var(--f-hg);font-size:52px;color:var(--accent);font-variant-numeric:tabular-nums}
+.review{padding-left:1.2em;display:flex;flex-direction:column;gap:12px;margin:0}
+.review .ans{color:var(--ok);font-weight:500}
+.review .exp{font-size:14px;color:var(--muted)}
+.review .qw{font-size:20px}
+.intro{max-width:66ch;color:var(--muted)}
+
+/* verbs */
+.subtabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.subtab{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 16px;cursor:pointer}
+.subtab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+.filters .count{color:var(--muted);font-size:13px;margin-left:auto}
+.tblwrap{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:860px}
+th{font-size:12px;font-weight:500;color:var(--muted);text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+th small{display:block;font-family:var(--f-hg);font-size:12px}
+td{padding:8px 12px;border-top:1px solid var(--line);vertical-align:top}
+tr.vr:first-child td{border-top:0}
+.tog{border:0;background:none;cursor:pointer;display:inline-flex;gap:6px;align-items:center;padding:2px 0;font-size:18px}
+.chev{width:8px;height:8px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(-45deg);transition:transform .2s}
+.tog[aria-expanded="true"] .chev{transform:rotate(45deg)}
+.meta{display:block;font-size:11px;color:var(--muted)}
+.fm{border:1px solid transparent;background:none;border-radius:6px;padding:3px 6px;margin:-3px -6px;cursor:pointer;text-align:left;display:flex;flex-direction:column}
+.fm:hover{border-color:var(--grid);background:var(--bg)}
+.fm .hg{font-size:16px;white-space:nowrap}
+.fm .pr{font-size:12px;white-space:nowrap}
+.fm.inline{display:inline-flex;margin:0;vertical-align:middle;border-color:var(--line)}
+tr.detail td{background:var(--bg)}
+.dt{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:20px;padding:6px 0}
+.dt h4{font-size:13px;color:var(--muted);font-weight:500;margin-bottom:6px}
+.dt ul{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:4px;font-size:14px}
+.dt .purp{margin-top:12px;font-size:14px}
+.dt .btn{justify-self:start}
+.addbox{margin-top:18px;background:var(--surface);border:1px dashed var(--grid);border-radius:var(--r);padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.addbox form{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.addbox label{display:flex;flex-direction:column;font-size:12px;color:var(--muted);gap:3px}
+#nw-msg{font-size:14px}
+.rcards{display:flex;flex-direction:column;gap:16px;max-width:860px}
+.rcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;display:grid;grid-template-columns:40px minmax(0,1fr);gap:4px 16px}
+.rcard .num{grid-row:1/4;width:40px;height:40px;border:1px solid var(--grid);display:grid;place-items:center;font-family:var(--f-hg);font-size:20px;font-weight:700;color:var(--accent)}
+.rcard h3{font-size:18px}
+.rcard .body{display:flex;flex-direction:column;gap:10px;min-width:0}
+.ctab{border-collapse:collapse;min-width:0;width:auto}
+.ctab td,.ctab th{border:1px solid var(--line);padding:5px 10px;font-size:14px}
+.ctab td.hg{font-size:16px}
+.ctab-wrap{overflow-x:auto}
+
+@media (max-width:860px){
+  .pgrid{grid-template-columns:minmax(0,1fr)}
+  .rail{position:static}
+  .steps{flex-direction:row;overflow-x:auto;padding-bottom:4px}
+  .steps li{flex:none}
+  .step{grid-template-columns:28px auto;width:auto}
+  .step .ck{display:none}
+  .dt{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:720px){
+  table{min-width:0}
+  thead{display:none}
+  table,tbody,tr,td{display:block;width:100%}
+  tr.vr{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);padding:10px 12px;gap:8px 12px}
+  tr.vr:first-child{border-top:0}
+  tr.vr td{border:0;padding:0}
+  tr.vr td:nth-child(1),tr.vr td:nth-child(2){grid-column:span 1}
+  tr.vr td[data-label]::before{content:attr(data-label);display:block;font-size:11px;color:var(--muted)}
+  tr.vr td:first-child::before{display:none}
+  .opts{grid-template-columns:minmax(0,1fr)}
+  .fm .hg,.fm .pr{white-space:normal}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <div>
+      <h1>발음 <span>·</span> 동사 연습장</h1>
+      <p class="sub">韓文發音規則與動詞練習帳　世宗韓國語 1A～1B 第2課</p>
+    </div>
+    <div class="tools">
+      <div class="seg" role="group" aria-label="朗讀速度">
+        <button type="button" id="rate-n" aria-pressed="true">正常語速</button>
+        <button type="button" id="rate-s" aria-pressed="false">慢速</button>
+      </div>
+      <span class="vs" id="voice">檢查語音中…</span>
+    </div>
+  </div>
+</header>
+
+<div class="tabbar"><div class="wrap"><nav class="tabs" role="tablist">
+  <button type="button" class="tab" role="tab" data-tab="pron">發音規則<small>발음 규칙</small></button>
+  <button type="button" class="tab" role="tab" data-tab="pquiz">發音測驗<small>발음 시험</small></button>
+  <button type="button" class="tab" role="tab" data-tab="verbs">動詞・形容詞<small>동사 · 형용사</small></button>
+  <button type="button" class="tab" role="tab" data-tab="vquiz">變化測驗<small>활용 시험</small></button>
+</nav></div></div>
+
+<main class="wrap">
+  <section id="pron">
+    <div class="pgrid">
+      <aside class="rail">
+        <div class="prog"><span id="pgtxt"></span><div class="bar"><i id="pgbar"></i></div></div>
+        <ol class="steps" id="steps"></ol>
+      </aside>
+      <div class="lesson" id="lesson"></div>
+    </div>
+  </section>
+
+  <section id="pquiz" hidden>
+    <div class="qwrap">
+      <p class="intro">每回 10 題：選出正確發音、判斷用到哪條規則、聽音選字。答完會列出錯題和說明。</p>
+      <div class="qctl">
+        <label for="pq-f" class="muted">範圍</label>
+        <select id="pq-f"></select>
+        <button type="button" class="btn" id="pq-start">開始新的一回</button>
+      </div>
+      <div class="qcard" id="pq-box"></div>
+    </div>
+  </section>
+
+  <section id="verbs" hidden>
+    <div class="subtabs" role="tablist">
+      <button type="button" class="subtab" data-sub="v-table" aria-selected="true">變化表</button>
+      <button type="button" class="subtab" data-sub="v-rules" aria-selected="false">變化規則（一步步）</button>
+      <button type="button" class="subtab" data-sub="v-cards" aria-selected="false">閃卡練習</button>
+    </div>
+
+    <div id="v-table">
+      <p class="intro" style="margin-bottom:14px">依世宗韓國語 1A 與 1B 第1課〈무슨 음식을 좋아해요?〉、第2課〈도서관에 책을 빌리러 가요〉的主題整理。標「補充」的是常用但不一定出現在你課本裡的字。點原型可展開變化說明與例句，點任何變化形可以聽發音。和課本單字表比對後，缺少的字可在表格下方自行加入。</p>
+      <div class="filters">
+        <select id="f-type" aria-label="詞類"><option value="all">全部詞類</option><option value="v">動詞（含 있다／없다）</option><option value="a">形容詞</option></select>
+        <select id="f-lesson" aria-label="課別"></select>
+        <input type="text" id="f-q" placeholder="搜尋韓文或中文" aria-label="搜尋">
+        <span class="count" id="vt-count"></span>
+      </div>
+      <div class="tblwrap"><table>
+        <thead><tr><th>原型<small>기본형</small></th><th>中文</th><th>現在式<small>-아요/어요</small></th><th>過去式<small>-았어요/었어요</small></th><th>未來式<small>-(으)ㄹ 거예요</small></th><th>冠形詞形<small>動 -는 ／ 形 -(으)ㄴ</small></th></tr></thead>
+        <tbody id="vt-body"></tbody>
+      </table></div>
+      <div class="addbox">
+        <h3 style="font-size:15px">新增課本裡的單字</h3>
+        <form id="add-form" autocomplete="off">
+          <label for="nw-k">原型<input type="text" id="nw-k" placeholder="例：타다" size="8"></label>
+          <label for="nw-zh">中文<input type="text" id="nw-zh" placeholder="例：搭乘" size="8"></label>
+          <label for="nw-t">詞類<select id="nw-t"><option value="v">動詞</option><option value="a">形容詞</option></select></label>
+          <label for="nw-irr">不規則<select id="nw-irr"><option value="">規則（含 ㄹ、ㅡ、하다）</option><option value="ㅂ">ㅂ 不規則</option><option value="ㄷ">ㄷ 不規則</option><option value="르">르 不規則</option></select></label>
+          <button type="submit" class="btn">加入</button>
+        </form>
+        <p id="nw-msg" class="muted" aria-live="polite">輸入原型後會先顯示自動變化的結果。新增的字只存在這個瀏覽器。</p>
+      </div>
+    </div>
+
+    <div id="v-rules" hidden><div class="rcards" id="rcards"></div></div>
+
+    <div id="v-cards" hidden>
+      <div class="qwrap">
+        <p class="intro">看原型和時態，先自己說出變化形和發音，再翻開確認。</p>
+        <div class="qcard" id="vfc"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="vquiz" hidden>
+    <div class="qwrap">
+      <p class="intro">每回 10 題：選出正確變化、句子填空、聽音判斷時態、選出正確發音、中韓配對。</p>
+      <div class="qctl">
+        <select id="vq-type" aria-label="詞類"><option value="all">全部詞類</option><option value="v">動詞</option><option value="a">形容詞</option></select>
+        <select id="vq-lesson" aria-label="課別"></select>
+        <button type="button" class="btn" id="vq-start">開始新的一回</button>
+      </div>
+      <div class="qcard" id="vq-box"></div>
+    </div>
+  </section>
+</main>
+<script>
+// ===== Hangul helpers =====
+const LJ='ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ'.split('');
+const VJ='ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ'.split('');
+const TJ=['','ㄱ','ㄲ','ㄳ','ㄴ','ㄵ','ㄶ','ㄷ','ㄹ','ㄺ','ㄻ','ㄼ','ㄽ','ㄾ','ㄿ','ㅀ','ㅁ','ㅂ','ㅄ','ㅅ','ㅆ','ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+function dec(c){if(!c)return null;const n=c.charCodeAt(0)-0xAC00;if(n<0||n>11171)return null;return{L:LJ[Math.floor(n/588)],V:VJ[Math.floor((n%588)/28)],T:TJ[n%28]};}
+function com(o){return String.fromCharCode(0xAC00+(LJ.indexOf(o.L)*21+VJ.indexOf(o.V))*28+TJ.indexOf(o.T));}
+
+// ===== Pronunciation engine (word level) =====
+const REP={'':'','ㄱ':'ㄱ','ㄲ':'ㄱ','ㅋ':'ㄱ','ㄳ':'ㄱ','ㄺ':'ㄱ','ㄴ':'ㄴ','ㄵ':'ㄴ','ㄶ':'ㄴ','ㄷ':'ㄷ','ㅅ':'ㄷ','ㅆ':'ㄷ','ㅈ':'ㄷ','ㅊ':'ㄷ','ㅌ':'ㄷ','ㅎ':'ㄷ','ㄹ':'ㄹ','ㄼ':'ㄹ','ㄽ':'ㄹ','ㄾ':'ㄹ','ㅀ':'ㄹ','ㅁ':'ㅁ','ㄻ':'ㅁ','ㅂ':'ㅂ','ㅍ':'ㅂ','ㅄ':'ㅂ','ㄿ':'ㅂ','ㅇ':'ㅇ'};
+const SPLIT={'ㄳ':['ㄱ','ㅆ'],'ㄵ':['ㄴ','ㅈ'],'ㄺ':['ㄹ','ㄱ'],'ㄻ':['ㄹ','ㅁ'],'ㄼ':['ㄹ','ㅂ'],'ㄽ':['ㄹ','ㅆ'],'ㄾ':['ㄹ','ㅌ'],'ㄿ':['ㄹ','ㅍ'],'ㅄ':['ㅂ','ㅆ']};
+const TENSE={'ㄱ':'ㄲ','ㄷ':'ㄸ','ㅂ':'ㅃ','ㅅ':'ㅆ','ㅈ':'ㅉ'};
+const UNTENSE={'ㄲ':'ㄱ','ㄸ':'ㄷ','ㅃ':'ㅂ','ㅆ':'ㅅ','ㅉ':'ㅈ'};
+const NASAL={'ㄱ':'ㅇ','ㄷ':'ㄴ','ㅂ':'ㅁ'};
+const ASP={'ㄱ':'ㅋ','ㄷ':'ㅌ','ㅈ':'ㅊ'};
+const HASP={'ㄱ':['','ㅋ'],'ㄲ':['','ㅋ'],'ㅋ':['','ㅋ'],'ㄷ':['','ㅌ'],'ㅅ':['','ㅌ'],'ㅆ':['','ㅌ'],'ㅈ':['','ㅊ'],'ㅊ':['','ㅊ'],'ㅌ':['','ㅌ'],'ㅂ':['','ㅍ'],'ㅍ':['','ㅍ'],'ㄺ':['ㄹ','ㅋ'],'ㄵ':['ㄴ','ㅊ'],'ㄼ':['ㄹ','ㅍ']};
+
+function pair(a,b){
+  const T=a.T; if(!T) return;
+  if(b.L==='ㅇ'){
+    if(T==='ㅇ') return;
+    if(T==='ㅎ'){a.T='';return;}
+    if(T==='ㄶ'){a.T='';b.L='ㄴ';return;}
+    if(T==='ㅀ'){a.T='';b.L='ㄹ';return;}
+    if(SPLIT[T]){a.T=SPLIT[T][0];b.L=SPLIT[T][1];return;}
+    if((T==='ㄷ'||T==='ㅌ')&&b.V==='ㅣ'){a.T='';b.L=(T==='ㄷ'?'ㅈ':'ㅊ');return;}
+    a.T='';b.L=T;return;
+  }
+  if(T==='ㅎ'||T==='ㄶ'||T==='ㅀ'){
+    const rem={'ㅎ':'','ㄶ':'ㄴ','ㅀ':'ㄹ'}[T];
+    if(ASP[b.L]){b.L=ASP[b.L];a.T=rem;return;}
+    if(b.L==='ㅅ'){b.L='ㅆ';a.T=rem;return;}
+    if(b.L==='ㄴ'){if(T==='ㅀ'){a.T='ㄹ';b.L='ㄹ';}else a.T='ㄴ';return;}
+    a.T=rem||'ㄷ';return;
+  }
+  if(b.L==='ㅎ'&&HASP[T]){a.T=HASP[T][0];b.L=HASP[T][1];return;}
+  let rep=REP[T];
+  if(T==='ㄺ'&&b.L==='ㄱ') rep='ㄹ';
+  const trig=['ㄱ','ㄷ','ㅂ'].includes(rep)||T==='ㄵ'||T==='ㄻ'||(T==='ㄺ'&&b.L==='ㄱ');
+  if(TENSE[b.L]&&trig) b.L=TENSE[b.L];
+  if(NASAL[rep]&&(b.L==='ㄴ'||b.L==='ㅁ')) rep=NASAL[rep];
+  if(b.L==='ㄹ'){
+    if(rep==='ㄱ'||rep==='ㅂ'){b.L='ㄴ';rep=NASAL[rep];}
+    else if(rep==='ㅁ'||rep==='ㅇ'){b.L='ㄴ';}
+    else if(rep==='ㄴ'){rep='ㄹ';}
+  }
+  if(rep==='ㄹ'&&b.L==='ㄴ') b.L='ㄹ';
+  a.T=rep;
+}
+function pronWord(w){
+  w=w.replace(/^맛없/,'맏없');
+  const ch=[...w]; const s=ch.map(dec);
+  for(let i=0;i<s.length-1;i++){ if(s[i]&&s[i+1]) pair(s[i],s[i+1]); }
+  for(let i=0;i<s.length;i++){ if(s[i]&&(i===s.length-1||!s[i+1])) s[i].T=REP[s[i].T]; }
+  return ch.map((c,i)=>s[i]?com(s[i]):c).join('');
+}
+function pronSentence(str){
+  const parts=str.split(/(\s+)/); const out=[]; let prev=null;
+  for(const p of parts){
+    if(p===''||/^\s+$/.test(p)){out.push(p);continue;}
+    let w=pronWord(p);
+    if(prev&&/[가-힣]$/.test(prev)&&/^(거|게|것|수|걸)/.test(p)){
+      const lc=dec(prev.slice(-1));
+      if(lc&&lc.T==='ㄹ'){const d=dec(w[0]);d.L=TENSE[d.L]||d.L;w=com(d)+w.slice(1);}
+    }
+    prev=p; out.push(w);
+  }
+  return out.join('');
+}
+// pronunciation with tense consonants undone (used as a quiz distractor)
+function detense(orig,pron){
+  const o=[...orig],p=[...pron]; if(o.length!==p.length) return pron;
+  return p.map((c,i)=>{const d=dec(c),e=dec(o[i]); if(d&&e&&UNTENSE[d.L]&&!UNTENSE[e.L]){d.L=UNTENSE[d.L];return com(d);} return c;}).join('');
+}
+
+// ===== Conjugation engine =====
+const BRIGHT=['ㅏ','ㅗ','ㅑ'];
+function aeo(stem,irr){
+  const a=[...stem]; const n=a.length; const last=a[n-1]; const d=dec(last);
+  if(last==='하') return a.slice(0,-1).join('')+'해';
+  if(irr==='ㅂ'){d.T='';a[n-1]=com(d);return a.join('')+'워';}
+  if(irr==='르'){const p=dec(a[n-2]);p.T='ㄹ';a[n-2]=com(p);a[n-1]=BRIGHT.includes(p.V)?'라':'러';return a.join('');}
+  if(irr==='ㄷ'){d.T='ㄹ';a[n-1]=com(d);}
+  if(d.T) return a.join('')+(BRIGHT.includes(d.V)?'아':'어');
+  const m={'ㅗ':'ㅘ','ㅜ':'ㅝ','ㅣ':'ㅕ','ㅚ':'ㅙ'};
+  if(m[d.V]){d.V=m[d.V];a[n-1]=com(d);return a.join('');}
+  if(d.V==='ㅡ'){const br=n>1&&BRIGHT.includes(dec(a[n-2]).V);d.V=br?'ㅏ':'ㅓ';a[n-1]=com(d);return a.join('');}
+  if(d.V==='ㅟ'||d.V==='ㅢ') return a.join('')+'어';
+  return a.join('');
+}
+function addT(s,t){const a=[...s];const d=dec(a[a.length-1]);d.T=t;a[a.length-1]=com(d);return a.join('');}
+function futF(stem,irr){
+  const d=dec([...stem].pop());
+  if(irr==='ㅂ') return addT(stem,'')+'울 거예요';
+  if(irr==='ㄷ') return addT(stem,'ㄹ')+'을 거예요';
+  if(d.T==='ㄹ') return stem+' 거예요';
+  if(d.T) return stem+'을 거예요';
+  return addT(stem,'ㄹ')+' 거예요';
+}
+function attrF(stem,t,irr){
+  const d=dec([...stem].pop());
+  if(t!=='a'||/(있|없)$/.test(stem)){ if(d.T==='ㄹ') return addT(stem,'')+'는'; return stem+'는'; }
+  if(irr==='ㅂ') return addT(stem,'')+'운';
+  if(d.T==='ㄹ') return addT(stem,'ㄴ');
+  if(d.T) return stem+'은';
+  return addT(stem,'ㄴ');
+}
+function purpF(stem,irr){
+  const d=dec([...stem].pop());
+  if(irr==='ㄷ') return addT(stem,'ㄹ')+'으러 가요';
+  if(irr==='ㅂ') return addT(stem,'')+'우러 가요';
+  if(!d.T||d.T==='ㄹ') return stem+'러 가요';
+  return stem+'으러 가요';
+}
+function forms(w){
+  const stem=w.k.slice(0,-1); const x=aeo(stem,w.irr);
+  const f={pres:x+'요',past:addT(x,'ㅆ')+'어요',fut:futF(stem,w.irr),attr:attrF(stem,w.t,w.irr)};
+  if(w.t==='v') f.purp=purpF(stem,w.irr);
+  return f;
+}
+
+// ===== Pronunciation lessons =====
+const RULES={batchim:'收音代表音',link:'連音',h:'ㅎ 脫落／激音化',tense:'硬音化',nasal:'鼻音化',liquid:'流音化',palatal:'口蓋音化'};
+const PL=[
+ {id:'batchim',ko:'받침 대표음',name:'收音的七個代表音',
+  sum:'收音（받침）的寫法很多，但實際只發七個音：ㄱ、ㄴ、ㄷ、ㄹ、ㅁ、ㅂ、ㅇ。單字結尾，或後面接子音時，收音要換成它的代表音。',
+  table:[['ㄱ','ㄱ ㄲ ㅋ ㄳ ㄺ'],['ㄴ','ㄴ ㄵ ㄶ'],['ㄷ','ㄷ ㅅ ㅆ ㅈ ㅊ ㅌ ㅎ'],['ㄹ','ㄹ ㄼ ㄽ ㄾ ㅀ'],['ㅁ','ㅁ ㄻ'],['ㅂ','ㅂ ㅍ ㅄ ㄿ'],['ㅇ','ㅇ']],
+  tip:'後面如果接的是 ㅇ 開頭的字，收音不換代表音，而是整個移到下一字（下一課：連音）。',
+  words:['부엌','밖','꽃','옷','낮','앞','밭','있다','없다'],
+  sents:[['저는 옷도 사고 책도 샀어요.','我買了衣服也買了書。'],['앞에 꽃집이 있어요.','前面有一家花店。'],['부엌도 깨끗해요.','廚房也很乾淨。'],['주말에는 낮잠을 자요.','週末我會睡午覺。'],['숲속을 천천히 걸어요.','在樹林裡慢慢走。'],['이 꽃은 정말 예뻐요.','這朵花真漂亮。']]},
+ {id:'link',ko:'연음',name:'連音',
+  sum:'收音後面接 ㅇ 開頭的字（也就是母音開頭）時，收音會移到下一個字當作初聲來念。ㅇ 收音不移動。',
+  rules:['收音 + ㅇ → 收音移過去：책을 → [채글]','ㄲ、ㅆ 整個移過去：있어요 → [이써요]','雙收音：左邊留下，右邊移過去：읽어요 → [일거요]、앉아요 → [안자요]','ㅄ 的 ㅅ 移過去時念硬音：없어요 → [업써요]'],
+  words:['한국어','음악','책을','옷이','읽어요','앉아요','있어요','없어요','밖에'],
+  sents:[['저는 한국어를 공부해요.','我在學韓文。'],['매일 음악을 들어요.','我每天聽音樂。'],['지하철에서 책을 읽어요.','在地鐵上看書。'],['동생이 의자에 앉아요.','弟弟坐在椅子上。'],['집에 우산이 없어요.','家裡沒有雨傘。'],['밖에 눈이 와요.','外面在下雪。']]},
+ {id:'h',ko:'ㅎ 탈락 · 격음화',name:'ㅎ 脫落與激音化',
+  sum:'ㅎ 是最「多變」的子音。收音 ㅎ 碰到母音會消失；ㅎ 和 ㄱ、ㄷ、ㅂ、ㅈ 碰在一起，會合成送氣音。',
+  rules:['收音 ㅎ（ㄶ、ㅀ）+ 母音 → ㅎ 不發音：좋아요 → [조아요]、많이 → [마니]','ㅎ + ㄱ/ㄷ/ㅈ → ㅋ/ㅌ/ㅊ：좋다 → [조타]','ㄱ/ㄷ(ㅅ)/ㅂ/ㅈ + ㅎ → ㅋ/ㅌ/ㅍ/ㅊ：입학 → [이팍]、축하 → [추카]','ㅎ + ㅅ → ㅆ；ㅎ + ㄴ → ㄴㄴ：좋네요 → [존네요]'],
+  words:['좋아요','많이','싫어요','좋다','많고','입학','축하해요','백화점','따뜻해요','좋네요'],
+  sents:[['오늘 날씨가 좋아요.','今天天氣很好。'],['교실에 사람이 많아요.','教室裡人很多。'],['생일 축하해요!','生日快樂！'],['백화점에서 옷을 샀어요.','我在百貨公司買了衣服。'],['오늘은 날씨가 따뜻해요.','今天天氣很暖和。'],['저는 매운 음식이 싫어요.','我不喜歡辣的食物。']]},
+ {id:'tense',ko:'경음화',name:'硬音化',
+  sum:'收音念成 ㄱ、ㄷ、ㅂ 時，後面的 ㄱ、ㄷ、ㅂ、ㅅ、ㅈ 會變成硬音 ㄲ、ㄸ、ㅃ、ㅆ、ㅉ。動詞語幹 + 다 也常這樣：먹다 → [먹따]。',
+  rules:['ㄱ 類收音 + ㄱㄷㅂㅅㅈ → 硬音：학교 → [학꾜]、식당 → [식땅]','ㄷ 類收音（ㅅㅆㅈㅊㅌ）+ 子音 → 硬音：옷도 → [옫또]','ㅂ 類收音 + 子音 → 硬音：잡지 → [잡찌]','未來式 -(으)ㄹ 거예요 的 거 念 [꺼]：갈 거예요 → [갈 꺼예요]'],
+  words:['학교','식당','숙제','책상','잡지','먹다','듣고','옷도','갈 거예요'],
+  sents:[['학교 식당에서 점심을 먹어요.','在學校餐廳吃午餐。'],['숙제를 다 했어요.','作業都寫完了。'],['책상 위에 잡지가 있어요.','書桌上有雜誌。'],['내일 도서관에 갈 거예요.','明天要去圖書館。'],['친구하고 맥주를 마셔요.','和朋友喝啤酒。'],['음악을 듣고 자요.','聽著音樂睡覺。']]},
+ {id:'nasal',ko:'비음화',name:'鼻音化',
+  sum:'收音 ㄱ、ㄷ、ㅂ（以及會變成它們的收音）碰到 ㄴ、ㅁ 時，會變成同位置的鼻音：ㄱ→ㅇ、ㄷ→ㄴ、ㅂ→ㅁ。-ㅂ니다／-습니다 就是最常見的例子。',
+  rules:['ㄱ + ㄴ/ㅁ → ㅇ：먹는 → [멍는]、한국말 → [한궁말]','ㄷ(ㅅㅆㅈㅊㅌ) + ㄴ/ㅁ → ㄴ：있는 → [인는]','ㅂ + ㄴ/ㅁ → ㅁ：감사합니다 → [감사함니다]','ㅁ、ㅇ + ㄹ → ㄹ 變 ㄴ：종로 → [종노]'],
+  words:['감사합니다','입니다','먹는','한국말','있는','작년','십만','국물','종로'],
+  sents:[['감사합니다.','謝謝。'],['저는 학생입니다.','我是學生。'],['한국말을 잘해요?','你韓語說得好嗎？'],['작년에 한국에 왔어요.','我去年來到韓國。'],['지금 밥을 먹는 중이에요.','我現在正在吃飯。'],['국물이 정말 맛있어요.','湯真好喝。']]},
+ {id:'liquid',ko:'유음화',name:'流音化',
+  sum:'ㄴ 和 ㄹ 碰在一起時（不管誰在前），ㄴ 會變成 ㄹ，念成 [ㄹㄹ]。舌頭不用換位置，念起來更順。',
+  rules:['ㄴ + ㄹ → ㄹㄹ：연락 → [열락]、신라 → [실라]','ㄹ + ㄴ → ㄹㄹ：설날 → [설랄]、칼날 → [칼랄]'],
+  words:['신라','연락','설날','편리','한라산','난로','칼날'],
+  sents:[['설날에 가족을 만나요.','過年時和家人見面。'],['친구에게 연락해요.','我聯絡朋友。'],['지하철이 편리해요.','地鐵很方便。'],['한라산에 가고 싶어요.','我想去漢拏山。'],['신라 이야기를 읽었어요.','我讀了新羅的故事。'],['난로가 따뜻해요.','暖爐很暖。']]},
+ {id:'palatal',ko:'구개음화',name:'口蓋音化',
+  sum:'收音 ㄷ、ㅌ 後面接「이」時，不念 [디]、[티]，而是念 [지]、[치]。',
+  rules:['ㄷ + 이 → 지：굳이 → [구지]、해돋이 → [해도지]','ㅌ + 이 → 치：같이 → [가치]、밭이 → [바치]'],
+  words:['같이','굳이','해돋이','맏이','밭이','붙이다'],
+  sents:[['친구하고 같이 가요.','和朋友一起去。'],['새해에 해돋이를 봤어요.','新年時看了日出。'],['저는 집에서 맏이예요.','我在家裡是老大。'],['밭이 아주 넓어요.','田地非常寬。'],['벽에 사진을 붙이세요.','請把照片貼在牆上。'],['굳이 안 가도 돼요.','不一定要去。']]},
+ {id:'mix',ko:'종합 연습',name:'綜合練習',
+  sum:'實際說話時，一個句子裡常同時出現好幾條規則。先找出每個字用到哪條規則，再完整念一次。',
+  rules:['맛있는 → [마신는]：連音 + 鼻音化','먹었어요 → [머거써요]：連音兩次','학교 앞에서 → [학꾜 아페서]：硬音化 + 連音','작년 설날 → [장년 설랄]：鼻音化 + 流音化'],
+  words:['맛있는','먹었어요','같이','백화점에','식당에','좋네요'],
+  sents:[['맛있는 음식을 많이 먹었어요.','吃了很多好吃的東西。'],['학교 앞에서 같이 사진을 찍었어요.','在學校前面一起拍了照。'],['작년 설날에 백화점에 갔어요.','去年過年去了百貨公司。'],['내일 친구하고 식당에 갈 거예요.','明天要和朋友去餐廳。'],['정말 좋네요!','真的很好耶！'],['한국말 발음이 어려워요.','韓語發音很難。']]}
+];
+
+// ===== Pronunciation quiz pool =====
+const PQ=[
+ ['한국어','link',['한국어','항구거','한구커']],['음악','link',['음막','으마','음앆']],['읽어요','link',['이거요','익어요','잉거요']],
+ ['있어요','link',['이서요','읻어요','인서요']],['없어요','link',['어서요','엄써요','업서요']],['앉아요','link',['아나요','안아요','앋자요']],
+ ['좋아요','h',['조하요','조타요','졷아요']],['많이','h',['만히','만치','마히']],['축하해요','h',['축카해요','추가해요','숙하해요']],
+ ['백화점','h',['백카점','배가점','백하점']],['입학','h',['입악','이박','임학']],['싫어요','h',['실허요','실어요','시허요']],
+ ['학교','tense',['하교','항교','학고']],['숙제','tense',['수제','숭제','숙세']],['식당','tense',['시당','싱당','식탕']],['잡지','tense',['자지','잠지','잡치']],
+ ['감사합니다','nasal',['감사합니다','감사하니다','감사핟니다']],['먹는','nasal',['머근','먼는','먹는']],['한국말','nasal',['한구말','한국말','한국발']],['작년','nasal',['자견','잔년','작년']],['국물','nasal',['구물','국물','궁뭉']],
+ ['연락','liquid',['연낙','연락','열낙']],['설날','liquid',['설날','선날','서랄']],['편리','liquid',['편니','편리','펀리']],['신라','liquid',['신나','심라','신라']],
+ ['같이','palatal',['가티','같이','가지']],['해돋이','palatal',['해도디','해돋이','해도치']],['굳이','palatal',['구디','굳이','구치']],
+ ['꽃','batchim',['꼿','꼬','꼭']],['부엌','batchim',['부엌','부어','부엉']],['옷도','batchim',['오또','옷도','옫도']],['앞','batchim',['아','압프','앞']]
+].map(([w,r,wr])=>({w,r,wr}));
+
+// ===== Verbs & adjectives =====
+// t: v=動詞 a=形容詞 e=存在詞 ; irr: ''|ㅂ|ㄷ|르 ; l: lesson tag
+const W=[
+ {k:'가다',zh:'去',t:'v',irr:'',l:'1A',ex:[['학교에 가요.','我去學校。'],['어제 시장에 갔어요.','昨天去了市場。'],['내일 도서관에 갈 거예요.','明天要去圖書館。']]},
+ {k:'오다',zh:'來',t:'v',irr:'',l:'1A',ex:[['친구가 우리 집에 와요.','朋友來我家。'],['동생이 한국에 왔어요.','弟弟來韓國了。'],['주말에 부모님이 올 거예요.','週末爸媽會來。']]},
+ {k:'먹다',zh:'吃',t:'v',irr:'',l:'1A',ex:[['아침에 빵을 먹어요.','早上吃麵包。'],['점심에 불고기를 먹었어요.','中午吃了烤肉。'],['저녁에 라면을 먹을 거예요.','晚上要吃泡麵。']]},
+ {k:'마시다',zh:'喝',t:'v',irr:'',l:'1A',ex:[['아침마다 커피를 마셔요.','每天早上喝咖啡。'],['어제 우유를 마셨어요.','昨天喝了牛奶。'],['카페에서 녹차를 마실 거예요.','要在咖啡廳喝綠茶。']]},
+ {k:'보다',zh:'看',t:'v',irr:'',l:'1A',ex:[['집에서 텔레비전을 봐요.','在家看電視。'],['친구하고 영화를 봤어요.','和朋友看了電影。'],['주말에 드라마를 볼 거예요.','週末要看連續劇。']]},
+ {k:'읽다',zh:'讀、看(書)',t:'v',irr:'',l:'1A',ex:[['지하철에서 책을 읽어요.','在地鐵上看書。'],['어제 신문을 읽었어요.','昨天看了報紙。'],['오늘 밤에 소설을 읽을 거예요.','今晚要看小說。']]},
+ {k:'공부하다',zh:'讀書、學習',t:'v',irr:'',l:'1A',ex:[['도서관에서 공부해요.','在圖書館讀書。'],['어제 세 시간 공부했어요.','昨天讀了三個小時。'],['내일도 한국어를 공부할 거예요.','明天也要學韓文。']]},
+ {k:'일하다',zh:'工作',t:'v',irr:'',l:'1A',ex:[['언니는 은행에서 일해요.','姊姊在銀行工作。'],['지난주 토요일에도 일했어요.','上週六也工作了。'],['다음 달에 서울에서 일할 거예요.','下個月要在首爾工作。']]},
+ {k:'만나다',zh:'見面',t:'v',irr:'',l:'1A',ex:[['카페에서 친구를 만나요.','在咖啡廳和朋友見面。'],['어제 선생님을 만났어요.','昨天見了老師。'],['오후에 언니를 만날 거예요.','下午要和姊姊見面。']]},
+ {k:'자다',zh:'睡覺',t:'v',irr:'',l:'1A',ex:[['보통 열한 시에 자요.','通常十一點睡。'],['어제는 일찍 잤어요.','昨天很早就睡了。'],['오늘은 열 시에 잘 거예요.','今天要十點睡。']]},
+ {k:'일어나다',zh:'起床',t:'v',irr:'',l:'1A',ex:[['아침 일곱 시에 일어나요.','早上七點起床。'],['오늘은 늦게 일어났어요.','今天很晚才起床。'],['내일은 여섯 시에 일어날 거예요.','明天要六點起床。']]},
+ {k:'운동하다',zh:'運動',t:'v',irr:'',l:'1A',ex:[['공원에서 운동해요.','在公園運動。'],['어제 친구하고 운동했어요.','昨天和朋友運動了。'],['저녁에 운동할 거예요.','晚上要運動。']]},
+ {k:'쉬다',zh:'休息',t:'v',irr:'',l:'1A',ex:[['주말에는 집에서 쉬어요.','週末在家休息。'],['어제 푹 쉬었어요.','昨天好好休息了。'],['방학에 집에서 쉴 거예요.','放假要在家休息。']]},
+ {k:'듣다',zh:'聽',t:'v',irr:'ㄷ',l:'1A',ex:[['매일 한국 노래를 들어요.','每天聽韓文歌。'],['어제 라디오를 들었어요.','昨天聽了廣播。'],['내일 한국어 수업을 들을 거예요.','明天要上韓文課。']]},
+ {k:'사다',zh:'買',t:'v',irr:'',l:'1A',ex:[['시장에서 과일을 사요.','在市場買水果。'],['백화점에서 가방을 샀어요.','在百貨公司買了包包。'],['친구 생일 선물을 살 거예요.','要買朋友的生日禮物。']]},
+ {k:'배우다',zh:'學',t:'v',irr:'',l:'1A',ex:[['세종학당에서 한국어를 배워요.','在世宗學堂學韓文。'],['작년에 수영을 배웠어요.','去年學了游泳。'],['다음 달에 요리를 배울 거예요.','下個月要學做菜。']]},
+ {k:'가르치다',zh:'教',t:'v',irr:'',l:'1A',ex:[['선생님이 한국어를 가르쳐요.','老師教韓文。'],['동생에게 영어를 가르쳤어요.','教了弟弟英文。'],['내년에 중국어를 가르칠 거예요.','明年要教中文。']]},
+ {k:'쓰다',zh:'寫；使用',t:'v',irr:'',l:'1A',ex:[['매일 일기를 써요.','每天寫日記。'],['친구에게 편지를 썼어요.','寫了信給朋友。'],['오늘 이메일을 쓸 거예요.','今天要寫電子郵件。']]},
+ {k:'하다',zh:'做',t:'v',irr:'',l:'1A',ex:[['저녁에 숙제를 해요.','晚上寫作業。'],['주말에 청소를 했어요.','週末打掃了。'],['이번 주말에 뭐 할 거예요?','這週末要做什麼？']]},
+ {k:'전화하다',zh:'打電話',t:'v',irr:'',l:'1A',ex:[['매일 엄마에게 전화해요.','每天打電話給媽媽。'],['어제 친구에게 전화했어요.','昨天打了電話給朋友。'],['이따가 다시 전화할 거예요.','待會會再打電話。']]},
+ {k:'요리하다',zh:'做菜',t:'v',irr:'',l:'1A',ex:[['아빠가 부엌에서 요리해요.','爸爸在廚房做菜。'],['어제 제가 요리했어요.','昨天是我做的菜。'],['오늘 저녁에 같이 요리할 거예요.','今天晚上要一起做菜。']]},
+ {k:'청소하다',zh:'打掃',t:'v',irr:'',l:'1A',ex:[['토요일마다 방을 청소해요.','每週六打掃房間。'],['아침에 교실을 청소했어요.','早上打掃了教室。'],['내일 집을 청소할 거예요.','明天要打掃家裡。']]},
+ {k:'산책하다',zh:'散步',t:'v',irr:'',l:'1A',ex:[['저녁에 공원에서 산책해요.','晚上在公園散步。'],['어제 강아지하고 산책했어요.','昨天和小狗散步了。'],['주말에 한강에서 산책할 거예요.','週末要在漢江散步。']]},
+ {k:'이야기하다',zh:'聊天、說話',t:'v',irr:'',l:'1A',ex:[['친구하고 이야기해요.','和朋友聊天。'],['어제 선생님하고 이야기했어요.','昨天和老師談過了。'],['내일 엄마하고 이야기할 거예요.','明天要和媽媽談談。']]},
+ {k:'살다',zh:'住、生活',t:'v',irr:'',l:'1A',ex:[['저는 타이난에 살아요.','我住在台南。'],['작년에는 서울에 살았어요.','去年住在首爾。'],['내년에 부산에 살 거예요.','明年要住在釜山。']]},
+ {k:'놀다',zh:'玩',t:'v',irr:'',l:'1A',ex:[['주말에 친구하고 놀아요.','週末和朋友玩。'],['어제 공원에서 놀았어요.','昨天在公園玩了。'],['방학에 바다에서 놀 거예요.','放假要去海邊玩。']]},
+ {k:'앉다',zh:'坐',t:'v',irr:'',l:'1A',ex:[['여기에 앉아요.','坐這裡吧。'],['아이가 의자에 앉았어요.','孩子坐在椅子上了。'],['저는 창문 옆에 앉을 거예요.','我要坐在窗邊。']]},
+ {k:'기다리다',zh:'等',t:'v',irr:'',l:'1A',ex:[['정류장에서 버스를 기다려요.','在站牌等公車。'],['한 시간 동안 친구를 기다렸어요.','等了朋友一個小時。'],['여기에서 기다릴 거예요.','我會在這裡等。']]},
+ {k:'찍다',zh:'拍(照)',t:'v',irr:'',l:'1A',ex:[['공원에서 사진을 찍어요.','在公園拍照。'],['친구하고 사진을 찍었어요.','和朋友拍了照。'],['내일 가족사진을 찍을 거예요.','明天要拍全家福。']]},
+ {k:'씻다',zh:'洗',t:'v',irr:'',l:'1A',ex:[['밥 먹기 전에 손을 씻어요.','吃飯前洗手。'],['아침에 얼굴을 씻었어요.','早上洗了臉。'],['먼저 과일을 씻을 거예요.','我先洗水果。']]},
+ {k:'다니다',zh:'(固定)上學／上班',t:'v',irr:'',l:'1A',ex:[['저는 회사에 다녀요.','我在公司上班。'],['작년에 학원에 다녔어요.','去年上了補習班。'],['내년에 대학교에 다닐 거예요.','明年要上大學。']]},
+ {k:'좋아하다',zh:'喜歡',t:'v',irr:'',l:'1B 1課',ex:[['저는 한국 음식을 좋아해요.','我喜歡韓國菜。'],['전에는 커피를 좋아했어요.','以前喜歡咖啡。'],['엄마도 이 선물을 좋아할 거예요.','媽媽應該也會喜歡這個禮物。']]},
+ {k:'싫어하다',zh:'討厭',t:'v',irr:'',l:'1B 1課',ex:[['동생은 야채를 싫어해요.','弟弟討厭蔬菜。'],['어릴 때 우유를 싫어했어요.','小時候討厭牛奶。'],['언니도 이 음식을 싫어할 거예요.','姊姊應該也會討厭這道菜。']]},
+ {k:'만들다',zh:'做、製作',t:'v',irr:'',l:'1B 1課',ex:[['저는 떡볶이를 만들어요.','我在做辣炒年糕。'],['어제 케이크를 만들었어요.','昨天做了蛋糕。'],['주말에 김치찌개를 만들 거예요.','週末要做泡菜鍋。']]},
+ {k:'주문하다',zh:'點餐、訂購',t:'v',irr:'',l:'1B 1課',ex:[['식당에서 냉면을 주문해요.','在餐廳點冷麵。'],['커피 두 잔을 주문했어요.','點了兩杯咖啡。'],['저는 불고기를 주문할 거예요.','我要點烤肉。']]},
+ {k:'빌리다',zh:'借(入)',t:'v',irr:'',l:'1B 2課',ex:[['도서관에서 책을 빌려요.','在圖書館借書。'],['친구에게 우산을 빌렸어요.','跟朋友借了雨傘。'],['내일 노트북을 빌릴 거예요.','明天要借筆電。']]},
+ {k:'찾다',zh:'找；領(錢)',t:'v',irr:'',l:'1B 2課',ex:[['은행에서 돈을 찾아요.','在銀行領錢。'],['잃어버린 가방을 찾았어요.','找到了弄丟的包包。'],['내일 은행에서 돈을 찾을 거예요.','明天要去銀行領錢。']]},
+ {k:'보내다',zh:'寄、送',t:'v',irr:'',l:'1B 2課',ex:[['우체국에서 소포를 보내요.','在郵局寄包裹。'],['어제 엄마에게 편지를 보냈어요.','昨天寄了信給媽媽。'],['친구에게 사진을 보낼 거예요.','要把照片傳給朋友。']]},
+ {k:'바꾸다',zh:'換',t:'v',irr:'',l:'1B 2課',ex:[['은행에서 돈을 바꿔요.','在銀行換錢。'],['어제 옷을 바꿨어요.','昨天換了衣服。'],['내일 신발을 바꿀 거예요.','明天要換鞋子。']]},
+ {k:'입다',zh:'穿(衣服)',t:'v',irr:'',l:'補充',ex:[['오늘은 치마를 입어요.','今天穿裙子。'],['어제 청바지를 입었어요.','昨天穿了牛仔褲。'],['내일 한복을 입을 거예요.','明天要穿韓服。']]},
+ {k:'타다',zh:'搭乘',t:'v',irr:'',l:'補充',ex:[['학교에 버스를 타요.','搭公車上學。'],['어제 지하철을 탔어요.','昨天搭了地鐵。'],['공항까지 택시를 탈 거예요.','要搭計程車到機場。']]},
+ {k:'걷다',zh:'走路',t:'v',irr:'ㄷ',l:'補充',ex:[['매일 삼십 분 걸어요.','每天走三十分鐘。'],['어제 많이 걸었어요.','昨天走了很多路。'],['오늘은 집까지 걸을 거예요.','今天要走路回家。']]},
+ {k:'알다',zh:'知道、認識',t:'v',irr:'',l:'補充',ex:[['저는 그 사람을 알아요.','我認識那個人。'],['그 이야기를 이미 알았어요.','那件事我早就知道了。'],['내일이면 결과를 알 거예요.','到明天就會知道結果。']]},
+ {k:'모르다',zh:'不知道',t:'v',irr:'르',l:'補充',ex:[['저는 그 단어를 몰라요.','我不知道那個單字。'],['처음에는 길을 몰랐어요.','一開始不知道路。'],['아마 동생도 모를 거예요.','弟弟大概也不知道。']]},
+ {k:'있다',zh:'有、在',t:'e',irr:'',l:'1A',ex:[['교실에 학생이 있어요.','教室裡有學生。'],['어제 시험이 있었어요.','昨天有考試。'],['내일 약속이 있을 거예요.','明天應該有約。']]},
+ {k:'없다',zh:'沒有、不在',t:'e',irr:'',l:'1A',ex:[['지갑에 돈이 없어요.','錢包裡沒有錢。'],['어제 수업이 없었어요.','昨天沒有課。'],['내일은 시간이 없을 거예요.','明天應該沒有時間。']]},
+ {k:'좋다',zh:'好',t:'a',irr:'',l:'1A',ex:[['날씨가 좋아요.','天氣很好。'],['어제 기분이 좋았어요.','昨天心情很好。'],['내일도 날씨가 좋을 거예요.','明天天氣應該也會很好。']]},
+ {k:'괜찮다',zh:'沒關係、還不錯',t:'a',irr:'',l:'1A',ex:[['저는 괜찮아요.','我沒關係。'],['어제 시험은 괜찮았어요.','昨天的考試還不錯。'],['그 식당도 괜찮을 거예요.','那家餐廳應該也不錯。']]},
+ {k:'크다',zh:'大',t:'a',irr:'',l:'1A',ex:[['이 가방이 커요.','這個包包很大。'],['그 집은 아주 컸어요.','那間房子非常大。'],['그 신발은 아마 클 거예요.','那雙鞋大概會太大。']]},
+ {k:'작다',zh:'小',t:'a',irr:'',l:'1A',ex:[['제 방은 작아요.','我的房間很小。'],['옛날 교실은 작았어요.','以前的教室很小。'],['그 옷은 조금 작을 거예요.','那件衣服應該有點小。']]},
+ {k:'많다',zh:'多',t:'a',irr:'',l:'1A',ex:[['교실에 학생이 많아요.','教室裡學生很多。'],['어제 숙제가 많았어요.','昨天作業很多。'],['주말에는 사람이 많을 거예요.','週末人應該會很多。']]},
+ {k:'적다',zh:'少',t:'a',irr:'',l:'1A',ex:[['오늘은 손님이 적어요.','今天客人很少。'],['어제는 사람이 적었어요.','昨天人很少。'],['평일에는 손님이 적을 거예요.','平日客人應該會很少。']]},
+ {k:'비싸다',zh:'貴',t:'a',irr:'',l:'1A',ex:[['이 사과는 비싸요.','這個蘋果很貴。'],['그 가방은 정말 비쌌어요.','那個包包真的很貴。'],['백화점은 아마 비쌀 거예요.','百貨公司大概會比較貴。']]},
+ {k:'싸다',zh:'便宜',t:'a',irr:'',l:'1A',ex:[['시장 과일이 싸요.','市場的水果很便宜。'],['어제 산 옷이 쌌어요.','昨天買的衣服很便宜。'],['인터넷이 더 쌀 거예요.','網路上應該更便宜。']]},
+ {k:'재미있다',zh:'有趣',t:'a',irr:'',l:'1A',ex:[['한국어 공부가 재미있어요.','學韓文很有趣。'],['그 영화는 재미있었어요.','那部電影很好看。'],['이 책도 재미있을 거예요.','這本書應該也很有趣。']]},
+ {k:'재미없다',zh:'無聊',t:'a',irr:'',l:'1A',ex:[['그 드라마는 재미없어요.','那部劇很無聊。'],['어제 수업이 재미없었어요.','昨天的課很無聊。'],['그 영화는 재미없을 거예요.','那部電影應該很無聊。']]},
+ {k:'바쁘다',zh:'忙',t:'a',irr:'',l:'1A',ex:[['요즘 일이 바빠요.','最近工作很忙。'],['지난주에 정말 바빴어요.','上週真的很忙。'],['다음 주에도 바쁠 거예요.','下週應該也會很忙。']]},
+ {k:'예쁘다',zh:'漂亮',t:'a',irr:'',l:'1A',ex:[['이 꽃이 예뻐요.','這朵花很漂亮。'],['어제 본 옷이 예뻤어요.','昨天看到的衣服很漂亮。'],['그 원피스는 예쁠 거예요.','那件洋裝應該很漂亮。']]},
+ {k:'어렵다',zh:'難',t:'a',irr:'ㅂ',l:'1A',ex:[['한국어 발음이 어려워요.','韓文發音很難。'],['어제 시험이 어려웠어요.','昨天的考試很難。'],['다음 시험은 더 어려울 거예요.','下次考試應該會更難。']]},
+ {k:'쉽다',zh:'簡單',t:'a',irr:'ㅂ',l:'1A',ex:[['이 문제는 쉬워요.','這題很簡單。'],['숙제가 쉬웠어요.','作業很簡單。'],['이번 시험은 쉬울 거예요.','這次考試應該很簡單。']]},
+ {k:'맛있다',zh:'好吃',t:'a',irr:'',l:'1B 1課',ex:[['이 떡볶이가 맛있어요.','這個辣炒年糕很好吃。'],['어제 먹은 냉면이 맛있었어요.','昨天吃的冷麵很好吃。'],['이 식당 음식은 맛있을 거예요.','這家餐廳的菜應該很好吃。']]},
+ {k:'맛없다',zh:'難吃',t:'a',irr:'',l:'1B 1課',ex:[['이 빵은 맛없어요.','這個麵包很難吃。'],['그 음식은 맛없었어요.','那道菜很難吃。'],['그 라면은 아마 맛없을 거예요.','那個泡麵大概很難吃。']]},
+ {k:'맵다',zh:'辣',t:'a',irr:'ㅂ',l:'1B 1課',ex:[['김치찌개가 매워요.','泡菜鍋很辣。'],['어제 먹은 떡볶이가 매웠어요.','昨天吃的辣炒年糕很辣。'],['이 라면은 매울 거예요.','這個泡麵應該很辣。']]},
+ {k:'달다',zh:'甜',t:'a',irr:'',l:'1B 1課',ex:[['이 케이크는 달아요.','這個蛋糕很甜。'],['그 커피는 너무 달았어요.','那杯咖啡太甜了。'],['이 과일은 달 거예요.','這個水果應該很甜。']]},
+ {k:'짜다',zh:'鹹',t:'a',irr:'',l:'1B 1課',ex:[['국이 조금 짜요.','湯有點鹹。'],['어제 먹은 라면이 짰어요.','昨天吃的泡麵很鹹。'],['이 김치는 짤 거예요.','這個泡菜應該很鹹。']]},
+ {k:'덥다',zh:'熱',t:'a',irr:'ㅂ',l:'補充',ex:[['오늘은 날씨가 더워요.','今天天氣很熱。'],['어제는 정말 더웠어요.','昨天真的很熱。'],['내일도 더울 거예요.','明天應該也會很熱。']]},
+ {k:'춥다',zh:'冷',t:'a',irr:'ㅂ',l:'補充',ex:[['겨울에는 추워요.','冬天很冷。'],['어제 아침은 추웠어요.','昨天早上很冷。'],['내일은 추울 거예요.','明天應該會很冷。']]},
+ {k:'가깝다',zh:'近',t:'a',irr:'ㅂ',l:'補充',ex:[['학교가 집에서 가까워요.','學校離家很近。'],['예전 집은 역에서 가까웠어요.','以前的房子離車站很近。'],['그 식당은 여기에서 가까울 거예요.','那家餐廳應該離這裡很近。']]},
+ {k:'멀다',zh:'遠',t:'a',irr:'',l:'補充',ex:[['우리 집은 학교에서 멀어요.','我家離學校很遠。'],['어제 간 식당은 멀었어요.','昨天去的餐廳很遠。'],['부산은 서울에서 멀 거예요.','釜山應該離首爾很遠。']]},
+ {k:'조용하다',zh:'安靜',t:'a',irr:'',l:'補充',ex:[['도서관이 조용해요.','圖書館很安靜。'],['어제 교실이 조용했어요.','昨天教室很安靜。'],['밤에는 조용할 거예요.','晚上應該會很安靜。']]},
+ {k:'친절하다',zh:'親切',t:'a',irr:'',l:'補充',ex:[['선생님이 친절해요.','老師很親切。'],['가게 직원이 친절했어요.','店員很親切。'],['그 사람은 친절할 거예요.','那個人應該很親切。']]},
+ {k:'아프다',zh:'痛、不舒服',t:'a',irr:'',l:'補充',ex:[['머리가 아파요.','頭很痛。'],['어제 배가 아팠어요.','昨天肚子痛。'],['내일은 다리가 아플 거예요.','明天腿應該會痠痛。']]}
+];
+const ATTR_EX=[['매운 음식을 좋아해요.','我喜歡辣的食物。'],['큰 가방을 샀어요.','買了大包包。'],['지금 먹는 음식이 뭐예요?','你現在吃的是什麼？'],['조용한 카페에서 공부해요.','在安靜的咖啡廳讀書。'],['재미있는 영화를 봤어요.','看了一部有趣的電影。'],['제가 사는 곳은 타이난이에요.','我住的地方是台南。']];
+const PURP_EX=[['도서관에 책을 빌리러 가요.','去圖書館借書。'],['식당에 밥을 먹으러 가요.','去餐廳吃飯。'],['친구하고 놀러 가요.','和朋友去玩。'],['은행에 돈을 찾으러 갔어요.','去銀行領了錢。'],['시장에 과일을 사러 갈 거예요.','要去市場買水果。'],['카페에 커피를 마시러 가요.','去咖啡廳喝咖啡。']];
+</script>
+<script>
+const $=s=>document.querySelector(s);
+const qa=(r,s)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const LS={get(k,d){try{const v=localStorage.getItem('krpv_'+k);return v==null?d:JSON.parse(v);}catch(e){return d;}},set(k,v){try{localStorage.setItem('krpv_'+k,JSON.stringify(v));}catch(e){}}};
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const uniq=a=>[...new Set(a)];
+
+// ---------- speech ----------
+let rate=LS.get('rate',1);
+function koVoice(){try{return speechSynthesis.getVoices().find(v=>/^ko/i.test(v.lang));}catch(e){return null;}}
+function voiceStatus(){
+  const el=$('#voice');
+  if(!('speechSynthesis' in window)){el.textContent='這個瀏覽器不支援朗讀';el.className='vs warn';return;}
+  const v=koVoice();
+  if(v){el.textContent='韓文語音：'+v.name;el.className='vs';}
+  else{el.textContent='尚未偵測到韓文語音；若按喇叭沒有聲音，請在系統設定加入韓文語音';el.className='vs warn';}
+}
+function say(t){
+  try{
+    if(!('speechSynthesis' in window))return;
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(t);u.lang='ko-KR';
+    const v=koVoice();if(v)u.voice=v;u.rate=rate;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+function setRate(r){rate=r;LS.set('rate',r);$('#rate-n').setAttribute('aria-pressed',r===1);$('#rate-s').setAttribute('aria-pressed',r!==1);}
+const SPK='<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 7.5h3l4-3.5v12l-4-3.5H3z" fill="currentColor"/><path d="M13 6.8a4.6 4.6 0 0 1 0 6.4M15.4 4.4a8 8 0 0 1 0 11.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+const sayBtn=t=>`<button type="button" class="say" data-say="${esc(t)}" aria-label="朗讀 ${esc(t)}">${SPK}</button>`;
+
+// ---------- rendering helpers ----------
+function diffHTML(orig,pron){const o=[...orig],p=[...pron];if(o.length!==p.length)return esc(pron);return p.map((c,i)=>c!==o[i]?`<b class="chg">${esc(c)}</b>`:esc(c)).join('');}
+const prHTML=t=>`<span class="pr">[${diffHTML(t,pronSentence(t))}]</span>`;
+function boxes(str,ref){return `<span class="gw" lang="ko">${[...str].map((c,i)=>c===' '?'<i class="sp"></i>':`<span class="${ref&&ref[i]!==c?'cg':''}">${esc(c)}</span>`).join('')}</span>`;}
+function wordCard(w){const p=pronSentence(w);return `<div class="wc"><div class="wc-row"><span class="lab">拼寫</span>${boxes(w)}</div><div class="wc-row"><span class="lab">發音</span>${boxes(p,[...w])}</div>${sayBtn(w)}</div>`;}
+function sentRow([ko,zh],tag){return `<li class="sent">${sayBtn(ko)}<div class="sent-b"><div class="ko" lang="ko">${tag?`<span class="tag">${tag}</span>`:''}${esc(ko)}</div>${prHTML(ko)}<div class="zh">${esc(zh)}</div></div></li>`;}
+
+// ---------- tabs ----------
+const TABS=['pron','pquiz','verbs','vquiz'];
+function showTab(t){
+  if(!TABS.includes(t))t='pron';
+  qa(document,'.tab').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===t));
+  TABS.forEach(id=>{document.getElementById(id).hidden=id!==t;});
+  LS.set('tab',t);
+}
+
+// ---------- pronunciation lessons ----------
+let done=new Set(LS.get('done',[]));
+let cur=Math.min(LS.get('lesson',0),PL.length-1);
+function renderSteps(){
+  $('#steps').innerHTML=PL.map((l,i)=>`<li><button type="button" class="step ${i===cur?'on':''} ${done.has(l.id)?'done':''}" data-step="${i}"><span class="n">${i+1}</span><span class="t"><b>${l.name}</b><small>${l.ko}</small></span><span class="ck">${done.has(l.id)?'✓':''}</span></button></li>`).join('');
+  $('#pgbar').style.width=(done.size/PL.length*100)+'%';
+  $('#pgtxt').textContent=`已完成 ${done.size} / ${PL.length} 課`;
+}
+function renderLesson(){
+  const l=PL[cur];
+  let rule='';
+  if(l.table)rule+=`<div class="reptable">${l.table.map(([r,s])=>`<div class="rep"><span class="big">${r}</span><span class="src">← ${s}</span></div>`).join('')}</div>`;
+  if(l.rules)rule+=`<ul class="rules">${l.rules.map(r=>`<li>${esc(r)}</li>`).join('')}</ul>`;
+  $('#lesson').innerHTML=`
+  <header class="lh"><p class="eyebrow">第 ${cur+1} 步 · <span lang="ko">${l.ko}</span></p><h2>${l.name}</h2><p class="lead">${l.sum}</p></header>
+  <div class="block"><h3>規則</h3>${rule}${l.tip?`<p class="tip">${l.tip}</p>`:''}</div>
+  <div class="block"><h3>例詞<small>紅色格子是發音和拼寫不同的地方</small></h3><div class="wcs">${l.words.map(wordCard).join('')}</div></div>
+  <div class="block"><h3>實用例句<small>先看拼寫自己念，再按喇叭比對</small></h3><ol class="sents">${l.sents.map(s=>sentRow(s)).join('')}</ol><p class="note">[ ] 裡是以單字為單位的標準發音；整句連著說時，相鄰單字之間還會再連音。</p></div>
+  <div class="block"><h3>跟讀練習</h3><div id="pfc"></div></div>
+  <div class="lnav">
+    <button type="button" class="btn ghost" id="prevL" ${cur===0?'disabled':''}>上一課</button>
+    <button type="button" class="btn" id="doneL">${cur===PL.length-1?(done.has(l.id)?'已完成全部課程':'完成全部課程'):'我學會了，下一課'}</button>
+    <button type="button" class="btn ghost" id="quizL">測驗這一課</button>
+  </div>`;
+  pfcInit(l);
+}
+function pfcInit(l){
+  const items=shuffle(l.words).concat(shuffle(l.sents.map(s=>s[0])).slice(0,3));
+  let i=0,rev=false;
+  const draw=()=>{const w=items[i];$('#pfc').innerHTML=`<div class="fc-card"><p class="fc-q">${i+1} / ${items.length}　先自己念念看</p><div class="fc-w hg" lang="ko">${esc(w)}</div>${rev?`<div class="fc-a">${prHTML(w)}${sayBtn(w)}</div>`:'<div class="fc-a muted">想好了再按「顯示發音」</div>'}</div><div class="fc-btns"><button type="button" class="btn" data-fc="rev">${rev?'再聽一次':'顯示發音'}</button><button type="button" class="btn ghost" data-fc="next">下一個</button></div>`;};
+  draw();
+  $('#pfc').onclick=e=>{const b=e.target.closest('[data-fc]');if(!b)return;if(b.dataset.fc==='rev'){rev=true;draw();say(items[i]);}else{i=(i+1)%items.length;rev=false;draw();}};
+}
+function gotoLesson(i){cur=i;LS.set('lesson',i);renderSteps();renderLesson();}
+
+// ---------- generic quiz runner ----------
+function runQuiz(root,qs,key,restart){
+  const st={i:0,score:0,wrong:[],answered:false};
+  function draw(){
+    if(st.i>=qs.length){
+      const best=Math.max(LS.get(key,0),st.score);LS.set(key,best);
+      const pct=st.score/qs.length;
+      root.innerHTML=`<div class="result"><p class="eyebrow">這一回的結果</p><div class="score"><b>${st.score}</b> / ${qs.length}</div><p>${pct>=0.9?'很好，這部分已經掌握了。':pct>=0.7?'大致理解了，把下面的錯題再看一次。':'建議回到規則頁再練一次，然後再來挑戰。'}</p><p class="muted">最佳紀錄 ${best} / ${qs.length}</p>${st.wrong.length?`<h3 style="font-size:16px">錯題回顧</h3><ol class="review">${st.wrong.map(q=>`<li><div class="qprompt">${q.prompt}</div><div class="ans">正確答案：${q.options.find(o=>o.v===q.ans).h}</div><div class="exp">${q.exp}</div></li>`).join('')}</ol>`:''}<button type="button" class="btn" data-q="again">再測一回</button></div>`;
+      return;
+    }
+    const q=qs[st.i];st.answered=false;
+    root.innerHTML=`<div class="qhead"><span>第 ${st.i+1} / ${qs.length} 題</span><span>答對 ${st.score}</span></div><div class="qbar"><i style="width:${st.i/qs.length*100}%"></i></div><div class="qtype">${q.type}</div><div class="qprompt">${q.prompt}</div><div class="opts">${q.options.map((o,j)=>`<button type="button" class="opt" data-o="${j}">${o.h}</button>`).join('')}</div><div class="fb" aria-live="polite"></div>`;
+    if(q.auto)setTimeout(()=>say(q.auto),200);
+  }
+  root.onclick=e=>{
+    const b=e.target.closest('[data-o]');
+    if(b&&!st.answered){
+      st.answered=true;const q=qs[st.i];const o=q.options[+b.dataset.o];const ok=o.v===q.ans;
+      if(ok)st.score++;else st.wrong.push(q);
+      qa(root,'.opt').forEach((x,j)=>{x.disabled=true;if(q.options[j].v===q.ans)x.classList.add('right');});
+      if(!ok)b.classList.add('wrong');
+      root.querySelector('.fb').innerHTML=`<p class="${ok?'okm':'badm'}">${ok?'答對了！':'不對，正確答案已標出。'}</p><div class="exp">${q.exp}</div><div><button type="button" class="btn" data-q="next">${st.i===qs.length-1?'看結果':'下一題'}</button></div>`;
+      if(q.after)say(q.after);
+      return;
+    }
+    const n=e.target.closest('[data-q]');
+    if(n){if(n.dataset.q==='next'){st.i++;draw();}else restart();}
+  };
+  draw();
+}
+
+// ---------- pronunciation quiz ----------
+function buildPQ(f){
+  const pool=shuffle(f==='all'?PQ:PQ.filter(q=>q.r===f));
+  const rk=Object.keys(RULES);
+  const mk={
+    pron:q=>{const p=pronWord(q.w);return{type:'選出正確發音',prompt:`<div class="qw hg" lang="ko">${esc(q.w)}</div><p>實際念成哪一個？</p>`,options:shuffle([p,...q.wr].map(x=>({v:x,h:`<span lang="ko">[${esc(x)}]</span>`}))),ans:p,exp:`${sayBtn(q.w)}<span><b lang="ko">${esc(q.w)}</b> → <b lang="ko">[${esc(p)}]</b>　${RULES[q.r]}</span>`,after:q.w};},
+    rule:q=>{const p=pronWord(q.w);return{type:'判斷規則',prompt:`<div class="qw hg" lang="ko">${esc(q.w)} → [${esc(p)}]</div><p>這個變化是哪一條規則？</p>`,options:shuffle([q.r,...shuffle(rk.filter(r=>r!==q.r)).slice(0,3)]).map(r=>({v:r,h:RULES[r]})),ans:q.r,exp:`<span>${RULES[q.r]}：${PL.find(l=>l.id===q.r).sum}</span>`,after:q.w};},
+    listen:q=>{const others=shuffle(PQ.filter(x=>x.w!==q.w)).slice(0,3).map(x=>x.w);return{type:'聽音選字',prompt:`<p>聽發音，選出正確的拼寫</p><button type="button" class="btn big" data-say="${esc(q.w)}">${SPK}再播一次</button>`,options:shuffle([q.w,...others]).map(x=>({v:x,h:`<span class="hg" lang="ko">${esc(x)}</span>`})),ans:q.w,exp:`${sayBtn(q.w)}<span><b lang="ko">${esc(q.w)}</b> 念 <b lang="ko">[${esc(pronWord(q.w))}]</b>　${RULES[q.r]}</span>`,auto:q.w};}
+  };
+  const plan=f==='all'?['pron','pron','pron','pron','pron','rule','rule','rule','listen','listen']:['pron','pron','pron','pron','pron','pron','listen','listen','listen','listen'];
+  return shuffle(plan.map((t,i)=>mk[t](pool[i%pool.length])));
+}
+function startPQ(){const f=$('#pq-f').value;runQuiz($('#pq-box'),buildPQ(f),'best_pq_'+f,startPQ);}
+
+// ---------- verbs ----------
+let custom=LS.get('custom',[]);
+const allWords=()=>W.concat(custom);
+const TYPE={v:'動詞',a:'形容詞',e:'存在詞'};
+const LESSONS=['1A','1B 1課','1B 2課','補充','自訂'];
+const TN={pres:'現在式',past:'過去式',fut:'未來式',attr:'冠形詞形'};
+const tn=(w,k)=>k==='fut'&&w.t==='a'?'未來式（推測）':k==='attr'?(w.t==='a'?'冠形詞形 -(으)ㄴ':'冠形詞形 -는'):TN[k];
+const NOPURP=['알다','모르다','살다','좋아하다','싫어하다','일어나다'];
+const fcell=f=>`<button type="button" class="fm" data-say="${esc(f)}"><span class="hg" lang="ko">${esc(f)}</span>${prHTML(f)}</button>`;
+
+function explain(w){
+  const stem=w.k.slice(0,-1),last=[...stem].pop(),d=dec(last),f=forms(w),out=[];
+  out.push(`語幹：<b lang="ko">${w.k}</b> 去掉 다 → <b lang="ko">${stem}</b>`);
+  if(last==='하')out.push(`語幹以「하」結尾：하 → 해，所以 <b lang="ko">${f.pres}</b>、<b lang="ko">${f.past}</b>。`);
+  else if(w.irr==='ㅂ')out.push(`ㅂ 不規則：收音 ㅂ 遇到母音變成 우，우＋어 → 워：<b lang="ko">${f.pres}</b>、<b lang="ko">${f.past}</b>、<b lang="ko">${f.fut}</b>。`);
+  else if(w.irr==='ㄷ')out.push(`ㄷ 不規則：收音 ㄷ 遇到母音變成 ㄹ：<b lang="ko">${f.pres}</b>、<b lang="ko">${f.fut}</b>；遇到子音（-는、-고）則不變：<b lang="ko">${f.attr}</b>。`);
+  else if(w.irr==='르')out.push(`르 不規則：前一個字多一個 ㄹ 收音，르 變成 라／러：<b lang="ko">${f.pres}</b>。`);
+  else if(d.T){
+    out.push(`最後一字「<span lang="ko">${last}</span>」的母音是 ${d.V}，${BRIGHT.includes(d.V)?'屬於 ㅏ／ㅗ → 加 아요':'不是 ㅏ／ㅗ → 加 어요'}：<b lang="ko">${f.pres}</b>。`);
+  }else{
+    const m={'ㅏ':'ㅏ＋아 重複，合併成一個','ㅓ':'ㅓ＋어 重複，合併成一個','ㅐ':'ㅐ 後面的 어 省略','ㅕ':'ㅕ 後面的 어 省略','ㅗ':'ㅗ＋아 → ㅘ','ㅜ':'ㅜ＋어 → ㅝ','ㅣ':'ㅣ＋어 → ㅕ','ㅟ':'ㅟ 不縮約，直接加 어','ㅡ':'ㅡ 脫落，再看前一字母音決定 아／어（單音節一律用 어）','ㅚ':'ㅚ＋어 → ㅙ'};
+    out.push(`語幹沒有收音，${m[d.V]||'直接加 아/어'}：<b lang="ko">${f.pres}</b>。`);
+  }
+  out.push(`過去式：把現在式的「요」拿掉，最後一字加 ㅆ 收音再接 어요：<b lang="ko">${f.past}</b>，念 [${esc(pronSentence(f.past))}]。`);
+  if(d.T==='ㄹ')out.push(`ㄹ 語幹：未來式不加 을，直接 <b lang="ko">${f.fut}</b>；冠形詞形 ㄹ 脫落：<b lang="ko">${f.attr}</b>。`);
+  out.push(w.t==='a'?`形容詞加 -(으)ㄹ 거예요 表示「推測」：應該會…。거 念 [꺼]。`:`未來式 <b lang="ko">${f.fut}</b> 的 거 念 [꺼]：[${esc(pronSentence(f.fut))}]。`);
+  return out;
+}
+function detailHTML(w){
+  const f=forms(w),keys=['pres','past','fut'];
+  const purp=f.purp&&!NOPURP.includes(w.k)?`<p class="purp"><span class="tag">1B 第2課</span>目的 -(으)러 가요：<button type="button" class="fm inline" data-say="${esc(f.purp)}"><span class="hg" lang="ko">${esc(f.purp)}</span>${prHTML(f.purp)}</button></p>`:'';
+  return `<div class="dt"><div><h4>變化說明</h4><ul>${explain(w).map(x=>`<li>${x}</li>`).join('')}</ul>${purp}</div><div><h4>例句</h4>${w.ex.length?`<ol class="sents">${w.ex.map((s,i)=>sentRow(s,tn(w,keys[i]).replace(/（.*/,''))).join('')}</ol>`:'<p class="muted">自訂單字沒有內建例句，可以用左邊的變化形自己造句再按喇叭聽。</p>'}${w.custom?`<p style="margin-top:10px"><button type="button" class="btn ghost small" data-del="${esc(w.k)}">刪除這個自訂單字</button></p>`:''}</div></div>`;
+}
+function renderTable(){
+  const t=$('#f-type').value,l=$('#f-lesson').value,q=$('#f-q').value.trim();
+  const list=allWords().filter(w=>(t==='all'||w.t===t||(t==='v'&&w.t==='e'))&&(l==='all'||w.l===l)&&(!q||w.k.includes(q)||w.zh.includes(q)));
+  $('#vt-count').textContent=`共 ${list.length} 個`;
+  $('#vt-body').innerHTML=list.length?list.map(w=>{const f=forms(w);return `<tr class="vr"><td><button type="button" class="tog" data-tog="${esc(w.k)}" aria-expanded="false"><span class="hg" lang="ko">${esc(w.k)}</span><span class="chev"></span></button><span class="meta">${TYPE[w.t]}・${w.l}${w.irr?`・${w.irr} 不規則`:''}</span></td><td data-label="中文">${esc(w.zh)}</td>${['pres','past','fut','attr'].map(k=>`<td data-label="${tn(w,k)}">${fcell(f[k])}</td>`).join('')}</tr><tr class="detail" data-d="${esc(w.k)}" hidden><td colspan="6"></td></tr>`;}).join(''):'<tr><td colspan="6" class="muted" style="padding:20px">沒有符合條件的單字。</td></tr>';
+}
+function previewNew(){
+  const k=$('#nw-k').value.trim(),msg=$('#nw-msg');
+  if(!/^[가-힣]{2,}$/.test(k)||!k.endsWith('다')){msg.textContent='輸入原型後會先顯示自動變化的結果。新增的字只存在這個瀏覽器。';return;}
+  try{const f=forms({k,t:$('#nw-t').value,irr:$('#nw-irr').value});msg.innerHTML=`預覽：<span lang="ko">${[f.pres,f.past,f.fut,f.attr].map(esc).join('　')}</span>`;}catch(e){}
+}
+function addWord(e){
+  e.preventDefault();
+  const k=$('#nw-k').value.trim(),zh=$('#nw-zh').value.trim(),t=$('#nw-t').value,irr=$('#nw-irr').value,msg=$('#nw-msg');
+  if(!/^[가-힣]{2,}$/.test(k)||!k.endsWith('다')){msg.textContent='請輸入韓文原型，結尾要是「다」，例如 타다。';return;}
+  if(allWords().some(w=>w.k===k)){msg.textContent=`「${k}」已經在表裡了。`;return;}
+  const pre=dec([...k.slice(0,-1)].pop());
+  if(irr==='르'&&!k.endsWith('르다')){msg.textContent='르 不規則的字要以「르다」結尾，例如 모르다。';return;}
+  if(irr==='ㅂ'&&pre.T!=='ㅂ'){msg.textContent='ㅂ 不規則的字，다 前面一字要有 ㅂ 收音，例如 춥다。';return;}
+  if(irr==='ㄷ'&&pre.T!=='ㄷ'){msg.textContent='ㄷ 不規則的字，다 前面一字要有 ㄷ 收音，例如 듣다。';return;}
+  const w={k,zh:zh||'（未填）',t,irr,l:'自訂',ex:[],custom:true};
+  custom.push(w);LS.set('custom',custom);
+  msg.textContent=`已加入「${k}」，現在式是 ${forms(w).pres}。`;
+  $('#nw-k').value='';$('#nw-zh').value='';
+  $('#f-lesson').value='all';$('#f-q').value='';renderTable();
+}
+function renderRules(){
+  const ex=(ks,i)=>ks.map(k=>W.find(w=>w.k===k)).map(w=>sentRow(w.ex[i],w.k)).join('');
+  const C=[
+    ['先找語幹','어간 찾기',`<p>字典裡的原型都以「다」結尾，去掉 다 就是語幹。所有變化都接在語幹後面。</p><div class="ctab-wrap"><table class="ctab"><tr><th>原型</th><th>語幹</th><th>語幹最後一字</th></tr>${[['가다','가','沒有收音'],['먹다','먹','有收音，母音 ㅓ'],['공부하다','공부하','하'],['좋다','좋','有收音，母音 ㅗ']].map(r=>`<tr><td class="hg">${r[0]}</td><td class="hg">${r[1]}</td><td>${r[2]}</td></tr>`).join('')}</table></div><p>判斷三件事：① 是不是 하다 ② 最後母音是不是 ㅏ／ㅗ ③ 有沒有收音、是不是不規則。</p>`],
+    ['現在式 -아요／어요','현재',`<ul class="rules"><li>最後母音是 ㅏ、ㅗ → 加 <b>아요</b>：좋다 → 좋아요</li><li>其他母音 → 加 <b>어요</b>：먹다 → 먹어요</li><li>하다 → <b>해요</b>：공부하다 → 공부해요</li></ul><p>沒有收音時會縮約：</p><div class="ctab-wrap"><table class="ctab"><tr><th>母音</th><th>變化</th><th>例子</th></tr>${[['ㅏ','가＋아 → 가','가요'],['ㅗ','ㅗ＋아 → ㅘ','봐요'],['ㅜ','ㅜ＋어 → ㅝ','배워요'],['ㅣ','ㅣ＋어 → ㅕ','마셔요'],['ㅐ','ㅐ＋어 → ㅐ','보내요'],['ㅡ','ㅡ 脫落','써요、바빠요']].map(r=>`<tr><td class="hg">${r[0]}</td><td>${r[1]}</td><td class="hg">${r[2]}</td></tr>`).join('')}</table></div><ol class="sents">${ex(['가다','먹다','마시다','보다','공부하다','배우다','쓰다'],0)}</ol>`],
+    ['過去式 -았어요／었어요','과거',`<p>把現在式的「요」拿掉，在最後一字加上 ㅆ 收音，再接 어요。ㅆ 後面接 어，所以一定連音：먹었어요 念 [머거써요]。</p><div class="ctab-wrap"><table class="ctab"><tr><th>現在</th><th>過去</th><th>發音</th></tr>${['가요|갔어요','먹어요|먹었어요','해요|했어요','들어요|들었어요','매워요|매웠어요'].map(s=>s.split('|')).map(r=>`<tr><td class="hg">${r[0]}</td><td class="hg">${r[1]}</td><td>[${pronSentence(r[1])}]</td></tr>`).join('')}</table></div><ol class="sents">${ex(['가다','먹다','하다','듣다','만나다','쉬다'],1)}</ol>`],
+    ['未來式 -(으)ㄹ 거예요','미래',`<ul class="rules"><li>沒有收音 → 加 ㄹ 收音＋거예요：가다 → 갈 거예요</li><li>有收音 → 을 거예요：먹다 → 먹을 거예요</li><li>ㄹ 收音 → 直接 거예요：살다 → 살 거예요</li><li>發音：ㄹ 後面的 거 念 [꺼]，갈 거예요 → [갈 꺼예요]</li><li>形容詞或第三人稱時表示推測：내일은 추울 거예요（明天應該會冷）</li></ul><ol class="sents">${ex(['가다','먹다','살다','보다','만들다','춥다'],2)}</ol>`],
+    ['冠形詞形（修飾名詞）','관형형',`<ul class="rules"><li>動詞現在：語幹＋<b>는</b>：먹는 음식、가는 사람</li><li>形容詞：沒有收音＋<b>ㄴ</b>、有收音＋<b>은</b>：큰 가방、작은 방</li><li>있다、없다（含 맛있다、재미있다）用 <b>는</b>：맛있는 빵</li><li>ㅂ 不規則：매운、더운；ㄹ 語幹 ㄹ 脫落：사는、먼、단</li><li>發音：먹는 [멍는]、맛있는 [마신는] 都是鼻音化</li></ul><ol class="sents">${ATTR_EX.map(s=>sentRow(s)).join('')}</ol>`],
+    ['不規則變化','불규칙',`<div class="ctab-wrap"><table class="ctab"><tr><th>類型</th><th>規則</th><th>例子</th></tr>${[['ㄷ 不規則','ㄷ＋母音 → ㄹ','듣다 → 들어요、들을 거예요'],['ㅂ 不規則','ㅂ＋母音 → 우（워）','맵다 → 매워요、매울 거예요'],['르 不規則','르 → ㄹ라／ㄹ러','모르다 → 몰라요'],['ㄹ 語幹','遇 ㄴ 脫落，未來不加 을','살다 → 사는、살 거예요'],['ㅡ 脫落','ㅡ 遇 아/어 脫落','쓰다 → 써요、바쁘다 → 바빠요']].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="hg">${r[2]}</td></tr>`).join('')}</table></div><p class="note">注意：不是所有 ㅂ、ㄷ 收音都不規則，例如 입다 → 입어요、받다 → 받아요 是規則變化。</p><ol class="sents">${['듣다','맵다','모르다','살다','바쁘다','쓰다'].map((k,i)=>{const w=W.find(x=>x.k===k);return sentRow(w.ex[i===5?1:0],k);}).join('')}</ol>`],
+    ['-(으)러 가요 去做…','1B 2과',`<ul class="rules"><li>語幹沒有收音或是 ㄹ 收音 → 러 가요：사러 가요、놀러 가요</li><li>有收音 → 으러 가요：먹으러 가요、찾으러 가요</li><li>ㄷ 不規則：들으러 가요</li><li>「가요」可以換成過去 갔어요、未來 갈 거예요</li></ul><ol class="sents">${PURP_EX.map(s=>sentRow(s)).join('')}</ol>`]
+  ];
+  $('#rcards').innerHTML=C.map((c,i)=>`<article class="rcard"><span class="num">${i+1}</span><h3>${c[0]} <small class="muted hg" lang="ko" style="font-size:13px;font-weight:400">${c[1]}</small></h3><div class="body">${c[2]}</div></article>`).join('');
+}
+// verb flashcards
+let vfc={w:null,k:null,rev:false};
+function drawVfc(){
+  if(!vfc.w){const w=pick(allWords());vfc={w,k:pick(['pres','past','fut','attr']),rev:false};}
+  const {w,k,rev}=vfc;const f=forms(w)[k];
+  $('#vfc').innerHTML=`<div class="fc-card"><p class="fc-q">${TYPE[w.t]}・${esc(w.zh)}</p><div class="fc-w hg" lang="ko">${esc(w.k)}</div><p>請說出 <b>${tn(w,k)}</b></p>${rev?`<div class="fc-a"><span class="hg" lang="ko">${esc(f)}</span>${prHTML(f)}${sayBtn(f)}</div>`:'<div class="fc-a muted">想好了再翻開</div>'}</div><div class="fc-btns"><button type="button" class="btn" data-v="rev">${rev?'再聽一次':'翻開答案'}</button><button type="button" class="btn ghost" data-v="next">下一張</button></div>`;
+}
+
+// ---------- verb quiz ----------
+function wrongForms(w,k){
+  const stem=w.k.slice(0,-1),f=forms(w),reg=forms({...w,irr:''}),c=[];
+  if(k==='pres')c.push(stem+'아요',stem+'어요',reg.pres);
+  if(k==='past')c.push(stem+'았어요',stem+'었어요',reg.past);
+  if(k==='fut')c.push(stem+'을 거예요',stem+' 거예요',reg.fut,f.pres.replace(/요$/,'ㄹ 거예요'));
+  if(k==='attr')c.push(stem+'는',stem+'은',reg.attr);
+  return uniq(c.filter(x=>x!==f[k]&&/^[가-힣 ]+$/.test(x)));
+}
+function vpool(){const t=$('#vq-type').value,l=$('#vq-lesson').value;return allWords().filter(w=>(t==='all'||w.t===t||(t==='v'&&w.t==='e'))&&(l==='all'||w.l===l));}
+function buildVQ(){
+  const pool=vpool();if(!pool.length)return null;
+  const K=['pres','past','fut','attr'];
+  const formQ=w=>{const k=pick(K),f=forms(w),r=f[k];let d=shuffle(wrongForms(w,k)).slice(0,3);for(const x of shuffle(K.map(z=>f[z])))if(d.length<3&&x!==r&&!d.includes(x))d.push(x);
+    return{type:'選出正確變化',prompt:`<div class="qw hg" lang="ko">${esc(w.k)}</div><p>${esc(w.zh)}　請選出 <b>${tn(w,k)}</b></p>`,options:shuffle([r,...d]).map(x=>({v:x,h:`<span class="hg" lang="ko">${esc(x)}</span>`})),ans:r,exp:`${sayBtn(r)}<span><b lang="ko">${esc(r)}</b> [${esc(pronSentence(r))}]　${explain(w)[1]}</span>`,after:r};};
+  const fillQ=w=>{if(!w.ex.length)return formQ(w);const i=Math.floor(Math.random()*3),k=['pres','past','fut'][i],f=forms(w),[ko,zh]=w.ex[i];const r=f[k];const wr=wrongForms(w,k);const opts=uniq([f.pres,f.past,f.fut,pick(wr.length?wr:[f.attr])]);
+    return{type:'句子填空',prompt:`<p>${esc(zh)}</p><div class="qs" lang="ko">${esc(ko).replace(esc(r),'<span class="blank">　？　</span>')}</div><p class="muted">提示：${esc(w.k)}（${esc(w.zh)}）</p>`,options:shuffle(opts).map(x=>({v:x,h:`<span class="hg" lang="ko">${esc(x)}</span>`})),ans:r,exp:`${sayBtn(ko)}<span lang="ko"><b>${esc(ko)}</b> ${prHTML(ko)}</span>`,after:ko};};
+  const listenQ=w=>{const k=pick(K),f=forms(w)[k];return{type:'聽音判斷時態',prompt:`<p>聽到的是「<span class="hg" lang="ko">${esc(w.k)}</span>」的哪一種形態？</p><button type="button" class="btn big" data-say="${esc(f)}">${SPK}再播一次</button>`,options:K.map(z=>({v:z,h:tn(w,z)})),ans:k,exp:`${sayBtn(f)}<span><b lang="ko">${esc(f)}</b> [${esc(pronSentence(f))}] 是${tn(w,k)}</span>`,auto:f};};
+  const pronQ=w=>{const f=forms(w);const ks=shuffle(K).filter(k=>pronSentence(f[k])!==f[k]);if(!ks.length)return formQ(w);const k=ks[0],x=f[k],p=pronSentence(x);let o=uniq([p,x,detense(x,p),pronSentence(f[pick(K.filter(z=>z!==k))])]);for(const z of shuffle(allWords()))if(o.length<4){const y=pronSentence(forms(z)[k]);if(!o.includes(y))o.push(y);}
+    return{type:'選出正確發音',prompt:`<div class="qw hg" lang="ko">${esc(x)}</div><p>${tn(w,k)}　實際念成哪一個？</p>`,options:shuffle(o.slice(0,4)).map(y=>({v:y,h:`<span lang="ko">[${esc(y)}]</span>`})),ans:p,exp:`${sayBtn(x)}<span><b lang="ko">${esc(x)}</b> → <b lang="ko">[${esc(p)}]</b></span>`,after:x};};
+  const meanQ=w=>{const all=allWords();if(all.length<4)return formQ(w);const o=shuffle([w.k,...shuffle(all.filter(z=>z.k!==w.k&&z.zh!==w.zh)).slice(0,3).map(z=>z.k)]);return{type:'中韓配對',prompt:`<div class="qw">${esc(w.zh)}</div><p>的韓文原型是？</p>`,options:o.map(x=>({v:x,h:`<span class="hg" lang="ko">${esc(x)}</span>`})),ans:w.k,exp:`${sayBtn(w.k)}<span><b lang="ko">${esc(w.k)}</b> ${prHTML(w.k)} ${esc(w.zh)}</span>`,after:w.k};};
+  const plan=[formQ,formQ,formQ,fillQ,fillQ,fillQ,listenQ,listenQ,pronQ,meanQ];
+  const sp=shuffle(pool);
+  return shuffle(plan.map((fn,i)=>fn(sp[i%sp.length])));
+}
+function startVQ(){const qs=buildVQ();if(!qs){$('#vq-box').innerHTML='<p class="muted">這個範圍沒有單字，請換一個詞類或課別。</p>';return;}runQuiz($('#vq-box'),qs,'best_vq_'+$('#vq-type').value+$('#vq-lesson').value,startVQ);}
+
+// ---------- init ----------
+function init(){
+  setRate(rate);voiceStatus();setTimeout(voiceStatus,1200);
+  $('#rate-n').onclick=()=>setRate(1);$('#rate-s').onclick=()=>setRate(0.7);
+  document.addEventListener('click',e=>{const s=e.target.closest('[data-say]');if(s)say(s.dataset.say);});
+  qa(document,'.tab').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+  const h=(location.hash||'').slice(1);showTab(TABS.includes(h)?h:LS.get('tab','pron'));
+
+  renderSteps();renderLesson();
+  $('#steps').onclick=e=>{const b=e.target.closest('[data-step]');if(b){gotoLesson(+b.dataset.step);if(window.innerWidth<860)$('#lesson').scrollIntoView({behavior:'smooth',block:'start'});}};
+  $('#lesson').addEventListener('click',e=>{
+    if(e.target.closest('#prevL')&&cur>0)gotoLesson(cur-1);
+    if(e.target.closest('#doneL')){done.add(PL[cur].id);LS.set('done',[...done]);gotoLesson(Math.min(cur+1,PL.length-1));window.scrollTo({top:0,behavior:'smooth'});}
+    if(e.target.closest('#quizL')){const id=PL[cur].id;$('#pq-f').value=RULES[id]?id:'all';showTab('pquiz');startPQ();window.scrollTo({top:0});}
+  });
+
+  $('#pq-f').innerHTML=`<option value="all">全部規則（綜合）</option>`+Object.entries(RULES).map(([k,v])=>`<option value="${k}">${v}</option>`).join('');
+  $('#pq-start').onclick=startPQ;$('#pq-f').onchange=startPQ;startPQ();
+
+  const lopts=`<option value="all">全部課別</option>`+LESSONS.map(l=>`<option value="${l}">${l==='1A'?'1A 全冊':l}</option>`).join('');
+  $('#f-lesson').innerHTML=lopts;$('#vq-lesson').innerHTML=lopts;
+  ['#f-type','#f-lesson'].forEach(s=>$(s).onchange=renderTable);$('#f-q').oninput=renderTable;
+  renderTable();
+  $('#vt-body').addEventListener('click',e=>{
+    const t=e.target.closest('[data-tog]');
+    if(t){const k=t.dataset.tog;const row=qa($('#vt-body'),'tr.detail').find(r=>r.dataset.d===k);const open=row.hidden;row.hidden=!open;t.setAttribute('aria-expanded',open);if(open){row.firstElementChild.innerHTML=detailHTML(allWords().find(w=>w.k===k));say(k);}return;}
+    const d=e.target.closest('[data-del]');
+    if(d){custom=custom.filter(w=>w.k!==d.dataset.del);LS.set('custom',custom);renderTable();$('#nw-msg').textContent=`已刪除「${d.dataset.del}」。`;}
+  });
+  $('#add-form').onsubmit=addWord;['#nw-k','#nw-t','#nw-irr'].forEach(s=>$(s).addEventListener('input',previewNew));
+  qa(document,'.subtab').forEach(b=>b.onclick=()=>{qa(document,'.subtab').forEach(x=>x.setAttribute('aria-selected',x===b));['v-table','v-rules','v-cards'].forEach(id=>document.getElementById(id).hidden=id!==b.dataset.sub);});
+  renderRules();
+  drawVfc();
+  $('#vfc').onclick=e=>{const b=e.target.closest('[data-v]');if(!b)return;if(b.dataset.v==='rev'){vfc.rev=true;drawVfc();say(forms(vfc.w)[vfc.k]);}else{vfc.w=null;drawVfc();}};
+
+  $('#vq-start').onclick=startVQ;$('#vq-type').onchange=startVQ;$('#vq-lesson').onchange=startVQ;startVQ();
+}
+init();
+</script>
+</body>
+</html>
