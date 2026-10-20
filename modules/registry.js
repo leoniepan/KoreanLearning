@@ -4,6 +4,7 @@ import daily from './daily/index.js';
 import pronunciation from './pronunciation/index.js';
 import verbs from './verbs/index.js';
 import nouns from './nouns/index.js';
+import numbers from './numbers/index.js';
 import questions from './questions/index.js';
 
 export default [
@@ -11,5 +12,6 @@ export default [
   pronunciation,
   verbs,
   nouns,
+  numbers,
   questions
 ];

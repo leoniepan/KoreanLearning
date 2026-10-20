@@ -318,6 +318,23 @@ tr.detail td{background:var(--bg)}
 .ini[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .ini:disabled{opacity:.3;cursor:default}
 
+/* 數字 */
+.numgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start}
+.ntab{width:100%}
+.ntab td{vertical-align:middle}
+.ntab .fm{margin:0;flex-direction:row;align-items:baseline;gap:8px;border-color:transparent;width:auto}
+.ntab td{padding-block:4px}
+.ntab .fm .hg,.ntab .fm .pr{white-space:nowrap}
+.num-n{font-variant-numeric:tabular-nums;font-weight:700;text-align:right;white-space:nowrap}
+.rom{font-family:ui-monospace,Consolas,monospace;font-size:13px;color:var(--muted);white-space:nowrap}
+.conv-in{display:flex;flex-direction:column;gap:4px;font-size:13px}
+.conv-in input{font-size:22px;padding:8px 12px;max-width:260px;font-variant-numeric:tabular-nums}
+.conv-out{display:flex;flex-direction:column;gap:10px}
+.conv-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;padding:8px 0;border-top:1px dashed var(--line)}
+.conv-row:first-child{border-top:0}
+.conv-l{font-size:12px;color:var(--muted);min-width:4.5em}
+.conv-k{font-size:22px}
+
 /* 今日測驗 */
 .dhead{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;display:flex;flex-direction:column;gap:12px}
 .dtop{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
@@ -341,6 +358,9 @@ tr.detail td{background:var(--bg)}
 /* 單元子頁籤 */
 .subtabs:empty{display:none}
 
+@container content (max-width:900px){
+  .numgrid{grid-template-columns:minmax(0,1fr)}
+}
 /* 窄內容的分類列與字首列（放在最後，覆蓋上面的基本樣式） */
 @container content (max-width:560px){
   .chip-g{width:100%}
@@ -351,4 +371,7 @@ tr.detail td{background:var(--bg)}
   .inits{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
   .inits .chip-g{width:auto;flex:none;min-width:0;margin-right:4px}
   .ini{flex:none}
+}
+@container content (max-width:560px){
+  .ntab .fm .hg,.ntab .fm .pr{white-space:nowrap}
 }
