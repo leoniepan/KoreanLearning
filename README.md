@@ -1,6 +1,6 @@
 # 발음·동사 연습장 — 韓文發音、動詞與句型練習帳
 
-配合世宗韓國語 1A～1B 的自學網站，網址：https://leoniepan.github.io/KoreanLearning/
+配合世宗韓國語 1A～1B 的私人自學網站，架設在 Azure Static Web Apps，需以受邀的 Microsoft 帳號登入。設定步驟見 [AZURE-SETUP.md](AZURE-SETUP.md)。
 
 目前的單元：
 
@@ -62,6 +62,9 @@ modules/
 - VS Code 安裝「Live Server」擴充套件，在 `index.html` 上按右鍵選「Open with Live Server」。
 - 在這個資料夾執行 `python -m http.server`，再打開 http://localhost:8000 。
 
-## 部署
+## 部署與權限
 
-推送到 `main` 分支後，GitHub Pages（Settings → Pages，來源 `main`、`/ (root)`）會自動更新。
+- 網站架設在 Azure Static Web Apps（免費方案），推送到 `main` 分支後會自動部署。
+- `staticwebapp.config.json`：整個網站需要 `learner` 角色，未登入時導向 Microsoft 登入。
+- `403.html`：已登入但尚未被邀請時顯示的頁面。
+- 第一次設定與邀請使用者的步驟：[AZURE-SETUP.md](AZURE-SETUP.md)。
