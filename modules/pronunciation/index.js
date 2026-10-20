@@ -7,7 +7,7 @@ import { runQuiz } from '../../js/core/quiz.js';
 import { RULES, PL } from './lessons.js';
 import { PQ } from './quiz-data.js';
 
-function buildQuiz(f) {
+export function buildQuiz(f) {
   const pool = shuffle(f === 'all' ? PQ : PQ.filter(q => q.r === f));
   const rk = Object.keys(RULES);
   const mk = {

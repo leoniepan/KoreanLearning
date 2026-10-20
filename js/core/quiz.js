@@ -1,14 +1,16 @@
 // 通用測驗流程：一題一題作答、即時回饋、最後顯示分數與錯題回顧
+// onDone(score, total)：選填，作答完成時呼叫
 // 題目格式：{type, prompt(html), options:[{v, h(html)}], ans, exp(html), word?, auto?(出題時朗讀), after?(作答後朗讀)}
 import { qa } from './dom.js';
 import { LS } from './storage.js';
 import { say, nvBtn } from './speech.js';
 
-export function runQuiz(root, qs, key, restart) {
+export function runQuiz(root, qs, key, restart, onDone) {
   const st = { i: 0, score: 0, wrong: [], answered: false };
   function draw() {
     if (st.i >= qs.length) {
       const best = Math.max(LS.get(key, 0), st.score); LS.set(key, best);
+      if (onDone) onDone(st.score, qs.length);
       const pct = st.score / qs.length;
       root.innerHTML = `<div class="result"><p class="eyebrow">這一回的結果</p><div class="score"><b>${st.score}</b> / ${qs.length}</div><p>${pct >= 0.9 ? '很好，這部分已經掌握了。' : pct >= 0.7 ? '大致理解了，把下面的錯題再看一次。' : '建議回到學習頁再練一次，然後再來挑戰。'}</p><p class="muted">最佳紀錄 ${best} / ${qs.length}</p>${st.wrong.length ? `<h3 style="font-size:16px">錯題回顧</h3><ol class="review">${st.wrong.map(q => `<li><div class="qprompt">${q.prompt}</div><div class="ans">正確答案：${q.options.find(o => o.v === q.ans).h}</div>${q.word ? `<div>${nvBtn(q.word)}</div>` : ''}<div class="exp">${q.exp}</div></li>`).join('')}</ol>` : ''}<button type="button" class="btn" data-q="again">再測一回</button></div>`;
       return;

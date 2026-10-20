@@ -6,7 +6,7 @@
 //   opts: ['몇','뭐','언제','어디']   選項（會自動打亂順序）
 //   a:    '몇'            正確答案（必須是 opts 其中之一）
 //   exp:  '몇 + 量詞…'     作答後的說明（可省略）
-//   word: '몇'            錯題回顧時附上的 Naver 查詢字（可省略，預設是答案）
+//   word: '몇'            錯題回顧時附上 Naver 按鈕要查的字（可省略；語尾、助詞類的題目不要填）
 import { $, esc, shuffle } from './dom.js';
 import { sayBtn } from './speech.js';
 import { prHTML } from './render.js';
@@ -17,7 +17,7 @@ export function itemToQ(it, lesson) {
   const shown = it.ko ? esc(it.ko).replace('＿', '<span class="blank">　？　</span>') : '';
   return {
     type: lesson.name,
-    word: it.word || (/^[가-힣]+$/.test(it.a) ? it.a : null),
+    word: it.word || null,
     prompt: `${it.p ? `<p>${esc(it.p)}</p>` : ''}${shown ? `<div class="qs" lang="ko">${shown}</div>` : ''}`,
     options: shuffle(it.opts).map(o => ({ v: o, h: `<span class="hg" lang="ko">${esc(o)}</span>` })),
     ans: it.a,
