@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1d6b58">
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>발음·동사 연습장</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -200,27 +201,104 @@ tr.detail td{background:var(--bg)}
 .ctab td.hg{font-size:16px}
 .ctab-wrap{overflow-x:auto}
 
-@media (max-width:860px){
-  .pgrid{grid-template-columns:minmax(0,1fr)}
-  .rail{position:static}
-  .steps{flex-direction:row;overflow-x:auto;padding-bottom:4px}
-  .steps li{flex:none}
-  .step{grid-template-columns:28px auto;width:auto}
-  .step .ck{display:none}
-  .dt{grid-template-columns:minmax(0,1fr)}
+/* ===== RWD ===== */
+/* Large desktop: a little more room */
+@media (min-width:1280px){
+  .wrap{max-width:1200px}
+  .pgrid{grid-template-columns:300px minmax(0,1fr)}
 }
-@media (max-width:720px){
+/* Tablet & below: verb table turns into cards (4 forms in one row) */
+@media (max-width:1024px){
+  .tblwrap{overflow:visible}
   table{min-width:0}
   thead{display:none}
   table,tbody,tr,td{display:block;width:100%}
-  tr.vr{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);padding:10px 12px;gap:8px 12px}
+  tr.vr{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line);padding:12px 14px;gap:10px 14px}
   tr.vr:first-child{border-top:0}
-  tr.vr td{border:0;padding:0}
-  tr.vr td:nth-child(1),tr.vr td:nth-child(2){grid-column:span 1}
-  tr.vr td[data-label]::before{content:attr(data-label);display:block;font-size:11px;color:var(--muted)}
+  tr.vr td{border:0;padding:0;min-width:0}
+  tr.vr td:nth-child(1){grid-column:span 2}
+  tr.vr td:nth-child(2){grid-column:span 2}
+  tr.vr td[data-label]::before{content:attr(data-label);display:block;font-size:11px;color:var(--muted);margin-bottom:2px}
   tr.vr td:first-child::before{display:none}
-  .opts{grid-template-columns:minmax(0,1fr)}
+  tr.detail td{padding:10px 14px}
+  .fm{margin:0;padding:4px 6px;border-color:var(--line);width:100%}
   .fm .hg,.fm .pr{white-space:normal}
+  .filters .count{margin-left:0}
+}
+/* Tablet portrait & below: lesson rail becomes a chip strip */
+@media (max-width:860px){
+  .pgrid{grid-template-columns:minmax(0,1fr);gap:18px}
+  .rail{position:static}
+  .steps{flex-direction:row;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x proximity;position:relative;scrollbar-width:thin}
+  .steps li{flex:none;scroll-snap-align:center}
+  .step{grid-template-columns:28px auto;width:auto;border-color:var(--line);background:var(--surface)}
+  .step.on{border-color:var(--accent)}
+  .step .ck{display:none}
+  .dt{grid-template-columns:minmax(0,1fr)}
+  .lh h2{font-size:24px}
+  .mast .wrap{align-items:flex-start;flex-direction:column}
+  .tools{flex-direction:row;flex-wrap:wrap;align-items:center;gap:4px 12px}
+}
+/* Phone */
+@media (max-width:600px){
+  body{font-size:15px}
+  .mast{padding-block:16px 12px}
+  .mast .wrap{gap:10px}
+  .mast h1{font-size:28px}
+  .mast .sub{font-size:13px;margin-top:2px}
+  .tools{flex-direction:row;flex-wrap:wrap;align-items:center;width:100%;gap:4px 10px}
+  .vs{font-size:11px;line-height:1.4;flex:1 1 180px}
+  .tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;overflow:visible}
+  .tab{padding:10px 2px 8px;font-size:13px;white-space:normal;line-height:1.3;text-align:center}
+  .tab small{font-size:10px}
+  main{padding-block:16px 48px}
+  .step .t small{display:none}
+  .block{padding:14px 14px;gap:12px}
+  .wcs{grid-template-columns:minmax(0,1fr)}
+  .reptable{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sent .ko{font-size:17px}
+  .lnav{display:grid;grid-template-columns:1fr 1fr}
+  .lnav #doneL{grid-column:1/-1;order:-1}
+  .fc-w{font-size:28px}
+  .qcard{padding:16px 14px}
+  .qw{font-size:26px}
+  .qs{font-size:19px}
+  .opts{grid-template-columns:minmax(0,1fr)}
+  .qctl{display:grid;grid-template-columns:1fr 1fr}
+  .qctl .btn{grid-column:1/-1}
+  .qctl label{display:none}
+  #pq-f{grid-column:1/-1}
+  .subtabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  .subtab{padding:6px 4px;font-size:13px}
+  .filters{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .filters #f-q{grid-column:1/-1}
+  .filters .count{grid-column:1/-1}
+  tr.vr{grid-template-columns:repeat(2,minmax(0,1fr));padding:12px}
+  tr.vr td:nth-child(1),tr.vr td:nth-child(2){grid-column:span 1}
+  .addbox{padding:14px}
+  .addbox form{display:grid;grid-template-columns:1fr 1fr}
+  .addbox form .btn{grid-column:1/-1}
+  .addbox input,.addbox select{width:100%}
+  .rcard{grid-template-columns:minmax(0,1fr);padding:16px 14px}
+  .rcard .num{grid-row:auto;width:32px;height:32px;font-size:16px}
+  .ctab td,.ctab th{padding:4px 6px;font-size:13px}
+  /* 16px stops iOS from zooming into form fields */
+  select,input[type=text]{font-size:16px}
+}
+/* Very narrow phones */
+@media (max-width:360px){
+  .mast h1{font-size:24px}
+  .tab{font-size:12px}
+  .gw span{font-size:16px}
+}
+/* Touch screens: bigger tap targets */
+@media (pointer:coarse){
+  .say{width:42px;height:42px}
+  .say svg{width:19px;height:19px}
+  .opt{min-height:52px}
+  .btn{min-height:44px}
+  .btn.small{min-height:36px}
+  .tog{min-height:40px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -276,7 +354,7 @@ tr.detail td{background:var(--bg)}
   <section id="verbs" hidden>
     <div class="subtabs" role="tablist">
       <button type="button" class="subtab" data-sub="v-table" aria-selected="true">變化表</button>
-      <button type="button" class="subtab" data-sub="v-rules" aria-selected="false">變化規則（一步步）</button>
+      <button type="button" class="subtab" data-sub="v-rules" aria-selected="false">變化規則</button>
       <button type="button" class="subtab" data-sub="v-cards" aria-selected="false">閃卡練習</button>
     </div>
 
@@ -641,6 +719,9 @@ function renderSteps(){
   $('#steps').innerHTML=PL.map((l,i)=>`<li><button type="button" class="step ${i===cur?'on':''} ${done.has(l.id)?'done':''}" data-step="${i}"><span class="n">${i+1}</span><span class="t"><b>${l.name}</b><small>${l.ko}</small></span><span class="ck">${done.has(l.id)?'✓':''}</span></button></li>`).join('');
   $('#pgbar').style.width=(done.size/PL.length*100)+'%';
   $('#pgtxt').textContent=`已完成 ${done.size} / ${PL.length} 課`;
+  // on narrow screens the steps are a horizontal strip: keep the current one in view
+  const s=$('#steps'),on=s.querySelector('.on');
+  if(on&&s.scrollWidth>s.clientWidth)s.scrollLeft=on.parentElement.offsetLeft-(s.clientWidth-on.offsetWidth)/2;
 }
 function renderLesson(){
   const l=PL[cur];
