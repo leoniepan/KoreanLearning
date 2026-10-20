@@ -15,18 +15,18 @@
 :root{
   --bg:#eef2f0;--surface:#fbfcfb;--ink:#17232a;--muted:#566a6c;--line:#d3ddd9;--grid:#9fc0b4;
   --accent:#1d6b58;--accent-ink:#ffffff;--chip:#e1ebe7;
-  --mark:#b42d22;--markbg:#fbe3df;--ok:#2c7a3a;--okbg:#e2f1e3;--bad:#b42d22;--badbg:#fbe3df;
+  --nv:#03a94d;--nvink:#ffffff;--mark:#b42d22;--markbg:#fbe3df;--ok:#2c7a3a;--okbg:#e2f1e3;--bad:#b42d22;--badbg:#fbe3df;
   --f-hg:"Gowun Batang","Noto Serif KR","Apple SD Gothic Neo",serif;
   --f-body:"Noto Sans TC","Noto Sans KR","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
   --r:10px;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0f1719;--surface:#162123;--ink:#e3ece9;--muted:#9db0ad;--line:#26383a;--grid:#3d6359;
-  --accent:#5fc3a6;--accent-ink:#0b1513;--chip:#1e2d2f;
+  --accent:#5fc3a6;--accent-ink:#0b1513;--chip:#1e2d2f;--nv:#3fd17e;--nvink:#0b1513;
   --mark:#ff8a7a;--markbg:#3b1d1a;--ok:#7fd08a;--okbg:#173020;--bad:#ff8a7a;--badbg:#3b1d1a;color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0f1719;--surface:#162123;--ink:#e3ece9;--muted:#9db0ad;--line:#26383a;--grid:#3d6359;
-  --accent:#5fc3a6;--accent-ink:#0b1513;--chip:#1e2d2f;
+  --accent:#5fc3a6;--accent-ink:#0b1513;--chip:#1e2d2f;--nv:#3fd17e;--nvink:#0b1513;
   --mark:#ff8a7a;--markbg:#3b1d1a;--ok:#7fd08a;--okbg:#173020;--bad:#ff8a7a;--badbg:#3b1d1a;color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.65}
@@ -71,6 +71,10 @@ main{padding-block:24px 64px}
 .say{flex:none;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--surface);display:inline-grid;place-items:center;cursor:pointer;color:var(--accent)}
 .say:hover{border-color:var(--accent)}
 .say svg{width:17px;height:17px}
+.nv{display:inline-flex;align-items:center;justify-content:center;height:26px;padding:0 8px;border-radius:6px;background:var(--nv);color:var(--nvink);font-size:12px;font-weight:700;text-decoration:none;letter-spacing:.02em;flex:none;vertical-align:middle}
+.nv:hover{filter:brightness(1.08)}
+.wc-act{grid-row:1/3;grid-column:2;display:flex;flex-direction:column;gap:6px;align-items:center}
+td .nv{margin-top:4px}
 
 /* pron lessons */
 .pgrid{display:grid;grid-template-columns:270px minmax(0,1fr);gap:28px;align-items:start}
@@ -102,7 +106,6 @@ main{padding-block:24px 64px}
 .rep .src{font-family:var(--f-hg);font-size:16px;line-height:1.5;color:var(--muted);word-spacing:3px}
 .wcs{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
 .wc{display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:8px}
-.wc .say{grid-row:1/3;grid-column:2}
 .wc-row{display:flex;gap:8px;align-items:center;min-width:0}
 .lab{font-size:11px;color:var(--muted);width:2.4em;flex:none}
 .gw{display:inline-flex;flex-wrap:wrap}
@@ -299,6 +302,7 @@ tr.detail td{background:var(--bg)}
   .btn{min-height:44px}
   .btn.small{min-height:36px}
   .tog{min-height:40px}
+  .nv{height:34px;padding:0 10px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -694,13 +698,15 @@ function say(t){
 }
 function setRate(r){rate=r;LS.set('rate',r);$('#rate-n').setAttribute('aria-pressed',r===1);$('#rate-s').setAttribute('aria-pressed',r!==1);}
 const SPK='<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 7.5h3l4-3.5v12l-4-3.5H3z" fill="currentColor"/><path d="M13 6.8a4.6 4.6 0 0 1 0 6.4M15.4 4.4a8 8 0 0 1 0 11.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+const NAVER=w=>'https://korean.dict.naver.com/kozhdict/#/search?query='+encodeURIComponent(w);
+const nvBtn=w=>`<a class="nv" href="${NAVER(w)}" target="_blank" rel="noopener" title="在 Naver 辭典聽真人發音" aria-label="在 Naver 辭典查「${esc(w)}」">Naver</a>`;
 const sayBtn=t=>`<button type="button" class="say" data-say="${esc(t)}" aria-label="朗讀 ${esc(t)}">${SPK}</button>`;
 
 // ---------- rendering helpers ----------
 function diffHTML(orig,pron){const o=[...orig],p=[...pron];if(o.length!==p.length)return esc(pron);return p.map((c,i)=>c!==o[i]?`<b class="chg">${esc(c)}</b>`:esc(c)).join('');}
 const prHTML=t=>`<span class="pr">[${diffHTML(t,pronSentence(t))}]</span>`;
 function boxes(str,ref){return `<span class="gw" lang="ko">${[...str].map((c,i)=>c===' '?'<i class="sp"></i>':`<span class="${ref&&ref[i]!==c?'cg':''}">${esc(c)}</span>`).join('')}</span>`;}
-function wordCard(w){const p=pronSentence(w);return `<div class="wc"><div class="wc-row"><span class="lab">拼寫</span>${boxes(w)}</div><div class="wc-row"><span class="lab">發音</span>${boxes(p,[...w])}</div>${sayBtn(w)}</div>`;}
+function wordCard(w){const p=pronSentence(w);return `<div class="wc"><div class="wc-row"><span class="lab">拼寫</span>${boxes(w)}</div><div class="wc-row"><span class="lab">發音</span>${boxes(p,[...w])}</div><div class="wc-act">${sayBtn(w)}${nvBtn(w)}</div></div>`;}
 function sentRow([ko,zh],tag){return `<li class="sent">${sayBtn(ko)}<div class="sent-b"><div class="ko" lang="ko">${tag?`<span class="tag">${tag}</span>`:''}${esc(ko)}</div>${prHTML(ko)}<div class="zh">${esc(zh)}</div></div></li>`;}
 
 // ---------- tabs ----------
@@ -731,7 +737,7 @@ function renderLesson(){
   $('#lesson').innerHTML=`
   <header class="lh"><p class="eyebrow">第 ${cur+1} 步 · <span lang="ko">${l.ko}</span></p><h2>${l.name}</h2><p class="lead">${l.sum}</p></header>
   <div class="block"><h3>規則</h3>${rule}${l.tip?`<p class="tip">${l.tip}</p>`:''}</div>
-  <div class="block"><h3>例詞<small>紅色格子是發音和拼寫不同的地方</small></h3><div class="wcs">${l.words.map(wordCard).join('')}</div></div>
+  <div class="block"><h3>例詞<small>紅色格子是發音和拼寫不同的地方；按 Naver 可在新分頁聽真人發音</small></h3><div class="wcs">${l.words.map(wordCard).join('')}</div></div>
   <div class="block"><h3>實用例句<small>先看拼寫自己念，再按喇叭比對</small></h3><ol class="sents">${l.sents.map(s=>sentRow(s)).join('')}</ol><p class="note">[ ] 裡是以單字為單位的標準發音；整句連著說時，相鄰單字之間還會再連音。</p></div>
   <div class="block"><h3>跟讀練習</h3><div id="pfc"></div></div>
   <div class="lnav">
@@ -744,7 +750,7 @@ function renderLesson(){
 function pfcInit(l){
   const items=shuffle(l.words).concat(shuffle(l.sents.map(s=>s[0])).slice(0,3));
   let i=0,rev=false;
-  const draw=()=>{const w=items[i];$('#pfc').innerHTML=`<div class="fc-card"><p class="fc-q">${i+1} / ${items.length}　先自己念念看</p><div class="fc-w hg" lang="ko">${esc(w)}</div>${rev?`<div class="fc-a">${prHTML(w)}${sayBtn(w)}</div>`:'<div class="fc-a muted">想好了再按「顯示發音」</div>'}</div><div class="fc-btns"><button type="button" class="btn" data-fc="rev">${rev?'再聽一次':'顯示發音'}</button><button type="button" class="btn ghost" data-fc="next">下一個</button></div>`;};
+  const draw=()=>{const w=items[i];$('#pfc').innerHTML=`<div class="fc-card"><p class="fc-q">${i+1} / ${items.length}　先自己念念看</p><div class="fc-w hg" lang="ko">${esc(w)}</div>${rev?`<div class="fc-a">${prHTML(w)}${sayBtn(w)}${/\s/.test(w)?'':nvBtn(w)}</div>`:'<div class="fc-a muted">想好了再按「顯示發音」</div>'}</div><div class="fc-btns"><button type="button" class="btn" data-fc="rev">${rev?'再聽一次':'顯示發音'}</button><button type="button" class="btn ghost" data-fc="next">下一個</button></div>`;};
   draw();
   $('#pfc').onclick=e=>{const b=e.target.closest('[data-fc]');if(!b)return;if(b.dataset.fc==='rev'){rev=true;draw();say(items[i]);}else{i=(i+1)%items.length;rev=false;draw();}};
 }
@@ -757,7 +763,7 @@ function runQuiz(root,qs,key,restart){
     if(st.i>=qs.length){
       const best=Math.max(LS.get(key,0),st.score);LS.set(key,best);
       const pct=st.score/qs.length;
-      root.innerHTML=`<div class="result"><p class="eyebrow">這一回的結果</p><div class="score"><b>${st.score}</b> / ${qs.length}</div><p>${pct>=0.9?'很好，這部分已經掌握了。':pct>=0.7?'大致理解了，把下面的錯題再看一次。':'建議回到規則頁再練一次，然後再來挑戰。'}</p><p class="muted">最佳紀錄 ${best} / ${qs.length}</p>${st.wrong.length?`<h3 style="font-size:16px">錯題回顧</h3><ol class="review">${st.wrong.map(q=>`<li><div class="qprompt">${q.prompt}</div><div class="ans">正確答案：${q.options.find(o=>o.v===q.ans).h}</div><div class="exp">${q.exp}</div></li>`).join('')}</ol>`:''}<button type="button" class="btn" data-q="again">再測一回</button></div>`;
+      root.innerHTML=`<div class="result"><p class="eyebrow">這一回的結果</p><div class="score"><b>${st.score}</b> / ${qs.length}</div><p>${pct>=0.9?'很好，這部分已經掌握了。':pct>=0.7?'大致理解了，把下面的錯題再看一次。':'建議回到規則頁再練一次，然後再來挑戰。'}</p><p class="muted">最佳紀錄 ${best} / ${qs.length}</p>${st.wrong.length?`<h3 style="font-size:16px">錯題回顧</h3><ol class="review">${st.wrong.map(q=>`<li><div class="qprompt">${q.prompt}</div><div class="ans">正確答案：${q.options.find(o=>o.v===q.ans).h}</div>${q.word?`<div>${nvBtn(q.word)}</div>`:''}<div class="exp">${q.exp}</div></li>`).join('')}</ol>`:''}<button type="button" class="btn" data-q="again">再測一回</button></div>`;
       return;
     }
     const q=qs[st.i];st.answered=false;
@@ -786,9 +792,9 @@ function buildPQ(f){
   const pool=shuffle(f==='all'?PQ:PQ.filter(q=>q.r===f));
   const rk=Object.keys(RULES);
   const mk={
-    pron:q=>{const p=pronWord(q.w);return{type:'選出正確發音',prompt:`<div class="qw hg" lang="ko">${esc(q.w)}</div><p>實際念成哪一個？</p>`,options:shuffle([p,...q.wr].map(x=>({v:x,h:`<span lang="ko">[${esc(x)}]</span>`}))),ans:p,exp:`${sayBtn(q.w)}<span><b lang="ko">${esc(q.w)}</b> → <b lang="ko">[${esc(p)}]</b>　${RULES[q.r]}</span>`,after:q.w};},
-    rule:q=>{const p=pronWord(q.w);return{type:'判斷規則',prompt:`<div class="qw hg" lang="ko">${esc(q.w)} → [${esc(p)}]</div><p>這個變化是哪一條規則？</p>`,options:shuffle([q.r,...shuffle(rk.filter(r=>r!==q.r)).slice(0,3)]).map(r=>({v:r,h:RULES[r]})),ans:q.r,exp:`<span>${RULES[q.r]}：${PL.find(l=>l.id===q.r).sum}</span>`,after:q.w};},
-    listen:q=>{const others=shuffle(PQ.filter(x=>x.w!==q.w)).slice(0,3).map(x=>x.w);return{type:'聽音選字',prompt:`<p>聽發音，選出正確的拼寫</p><button type="button" class="btn big" data-say="${esc(q.w)}">${SPK}再播一次</button>`,options:shuffle([q.w,...others]).map(x=>({v:x,h:`<span class="hg" lang="ko">${esc(x)}</span>`})),ans:q.w,exp:`${sayBtn(q.w)}<span><b lang="ko">${esc(q.w)}</b> 念 <b lang="ko">[${esc(pronWord(q.w))}]</b>　${RULES[q.r]}</span>`,auto:q.w};}
+    pron:q=>{const p=pronWord(q.w);return{word:q.w,type:'選出正確發音',prompt:`<div class="qw hg" lang="ko">${esc(q.w)}</div><p>實際念成哪一個？</p>`,options:shuffle([p,...q.wr].map(x=>({v:x,h:`<span lang="ko">[${esc(x)}]</span>`}))),ans:p,exp:`${sayBtn(q.w)}<span><b lang="ko">${esc(q.w)}</b> → <b lang="ko">[${esc(p)}]</b>　${RULES[q.r]}</span>`,after:q.w};},
+    rule:q=>{const p=pronWord(q.w);return{word:q.w,type:'判斷規則',prompt:`<div class="qw hg" lang="ko">${esc(q.w)} → [${esc(p)}]</div><p>這個變化是哪一條規則？</p>`,options:shuffle([q.r,...shuffle(rk.filter(r=>r!==q.r)).slice(0,3)]).map(r=>({v:r,h:RULES[r]})),ans:q.r,exp:`<span>${RULES[q.r]}：${PL.find(l=>l.id===q.r).sum}</span>`,after:q.w};},
+    listen:q=>{const others=shuffle(PQ.filter(x=>x.w!==q.w)).slice(0,3).map(x=>x.w);return{word:q.w,type:'聽音選字',prompt:`<p>聽發音，選出正確的拼寫</p><button type="button" class="btn big" data-say="${esc(q.w)}">${SPK}再播一次</button>`,options:shuffle([q.w,...others]).map(x=>({v:x,h:`<span class="hg" lang="ko">${esc(x)}</span>`})),ans:q.w,exp:`${sayBtn(q.w)}<span><b lang="ko">${esc(q.w)}</b> 念 <b lang="ko">[${esc(pronWord(q.w))}]</b>　${RULES[q.r]}</span>`,auto:q.w};}
   };
   const plan=f==='all'?['pron','pron','pron','pron','pron','rule','rule','rule','listen','listen']:['pron','pron','pron','pron','pron','pron','listen','listen','listen','listen'];
   return shuffle(plan.map((t,i)=>mk[t](pool[i%pool.length])));
@@ -832,7 +838,7 @@ function renderTable(){
   const t=$('#f-type').value,l=$('#f-lesson').value,q=$('#f-q').value.trim();
   const list=allWords().filter(w=>(t==='all'||w.t===t||(t==='v'&&w.t==='e'))&&(l==='all'||w.l===l)&&(!q||w.k.includes(q)||w.zh.includes(q)));
   $('#vt-count').textContent=`共 ${list.length} 個`;
-  $('#vt-body').innerHTML=list.length?list.map(w=>{const f=forms(w);return `<tr class="vr"><td><button type="button" class="tog" data-tog="${esc(w.k)}" aria-expanded="false"><span class="hg" lang="ko">${esc(w.k)}</span><span class="chev"></span></button><span class="meta">${TYPE[w.t]}・${w.l}${w.irr?`・${w.irr} 不規則`:''}</span></td><td data-label="中文">${esc(w.zh)}</td>${['pres','past','fut','attr'].map(k=>`<td data-label="${tn(w,k)}">${fcell(f[k])}</td>`).join('')}</tr><tr class="detail" data-d="${esc(w.k)}" hidden><td colspan="6"></td></tr>`;}).join(''):'<tr><td colspan="6" class="muted" style="padding:20px">沒有符合條件的單字。</td></tr>';
+  $('#vt-body').innerHTML=list.length?list.map(w=>{const f=forms(w);return `<tr class="vr"><td><button type="button" class="tog" data-tog="${esc(w.k)}" aria-expanded="false"><span class="hg" lang="ko">${esc(w.k)}</span><span class="chev"></span></button><span class="meta">${TYPE[w.t]}・${w.l}${w.irr?`・${w.irr} 不規則`:''}</span>${nvBtn(w.k)}</td><td data-label="中文">${esc(w.zh)}</td>${['pres','past','fut','attr'].map(k=>`<td data-label="${tn(w,k)}">${fcell(f[k])}</td>`).join('')}</tr><tr class="detail" data-d="${esc(w.k)}" hidden><td colspan="6"></td></tr>`;}).join(''):'<tr><td colspan="6" class="muted" style="padding:20px">沒有符合條件的單字。</td></tr>';
 }
 function previewNew(){
   const k=$('#nw-k').value.trim(),msg=$('#nw-msg');
@@ -872,7 +878,7 @@ let vfc={w:null,k:null,rev:false};
 function drawVfc(){
   if(!vfc.w){const w=pick(allWords());vfc={w,k:pick(['pres','past','fut','attr']),rev:false};}
   const {w,k,rev}=vfc;const f=forms(w)[k];
-  $('#vfc').innerHTML=`<div class="fc-card"><p class="fc-q">${TYPE[w.t]}・${esc(w.zh)}</p><div class="fc-w hg" lang="ko">${esc(w.k)}</div><p>請說出 <b>${tn(w,k)}</b></p>${rev?`<div class="fc-a"><span class="hg" lang="ko">${esc(f)}</span>${prHTML(f)}${sayBtn(f)}</div>`:'<div class="fc-a muted">想好了再翻開</div>'}</div><div class="fc-btns"><button type="button" class="btn" data-v="rev">${rev?'再聽一次':'翻開答案'}</button><button type="button" class="btn ghost" data-v="next">下一張</button></div>`;
+  $('#vfc').innerHTML=`<div class="fc-card"><p class="fc-q">${TYPE[w.t]}・${esc(w.zh)}</p><div class="fc-w hg" lang="ko">${esc(w.k)}</div><p>請說出 <b>${tn(w,k)}</b></p>${rev?`<div class="fc-a"><span class="hg" lang="ko">${esc(f)}</span>${prHTML(f)}${sayBtn(f)}</div><p class="note">原型真人發音 ${nvBtn(w.k)}</p>`:'<div class="fc-a muted">想好了再翻開</div>'}</div><div class="fc-btns"><button type="button" class="btn" data-v="rev">${rev?'再聽一次':'翻開答案'}</button><button type="button" class="btn ghost" data-v="next">下一張</button></div>`;
 }
 
 // ---------- verb quiz ----------
@@ -889,13 +895,13 @@ function buildVQ(){
   const pool=vpool();if(!pool.length)return null;
   const K=['pres','past','fut','attr'];
   const formQ=w=>{const k=pick(K),f=forms(w),r=f[k];let d=shuffle(wrongForms(w,k)).slice(0,3);for(const x of shuffle(K.map(z=>f[z])))if(d.length<3&&x!==r&&!d.includes(x))d.push(x);
-    return{type:'選出正確變化',prompt:`<div class="qw hg" lang="ko">${esc(w.k)}</div><p>${esc(w.zh)}　請選出 <b>${tn(w,k)}</b></p>`,options:shuffle([r,...d]).map(x=>({v:x,h:`<span class="hg" lang="ko">${esc(x)}</span>`})),ans:r,exp:`${sayBtn(r)}<span><b lang="ko">${esc(r)}</b> [${esc(pronSentence(r))}]　${explain(w)[1]}</span>`,after:r};};
+    return{word:w.k,type:'選出正確變化',prompt:`<div class="qw hg" lang="ko">${esc(w.k)}</div><p>${esc(w.zh)}　請選出 <b>${tn(w,k)}</b></p>`,options:shuffle([r,...d]).map(x=>({v:x,h:`<span class="hg" lang="ko">${esc(x)}</span>`})),ans:r,exp:`${sayBtn(r)}<span><b lang="ko">${esc(r)}</b> [${esc(pronSentence(r))}]　${explain(w)[1]}</span>`,after:r};};
   const fillQ=w=>{if(!w.ex.length)return formQ(w);const i=Math.floor(Math.random()*3),k=['pres','past','fut'][i],f=forms(w),[ko,zh]=w.ex[i];const r=f[k];const wr=wrongForms(w,k);const opts=uniq([f.pres,f.past,f.fut,pick(wr.length?wr:[f.attr])]);
-    return{type:'句子填空',prompt:`<p>${esc(zh)}</p><div class="qs" lang="ko">${esc(ko).replace(esc(r),'<span class="blank">　？　</span>')}</div><p class="muted">提示：${esc(w.k)}（${esc(w.zh)}）</p>`,options:shuffle(opts).map(x=>({v:x,h:`<span class="hg" lang="ko">${esc(x)}</span>`})),ans:r,exp:`${sayBtn(ko)}<span lang="ko"><b>${esc(ko)}</b> ${prHTML(ko)}</span>`,after:ko};};
-  const listenQ=w=>{const k=pick(K),f=forms(w)[k];return{type:'聽音判斷時態',prompt:`<p>聽到的是「<span class="hg" lang="ko">${esc(w.k)}</span>」的哪一種形態？</p><button type="button" class="btn big" data-say="${esc(f)}">${SPK}再播一次</button>`,options:K.map(z=>({v:z,h:tn(w,z)})),ans:k,exp:`${sayBtn(f)}<span><b lang="ko">${esc(f)}</b> [${esc(pronSentence(f))}] 是${tn(w,k)}</span>`,auto:f};};
+    return{word:w.k,type:'句子填空',prompt:`<p>${esc(zh)}</p><div class="qs" lang="ko">${esc(ko).replace(esc(r),'<span class="blank">　？　</span>')}</div><p class="muted">提示：${esc(w.k)}（${esc(w.zh)}）</p>`,options:shuffle(opts).map(x=>({v:x,h:`<span class="hg" lang="ko">${esc(x)}</span>`})),ans:r,exp:`${sayBtn(ko)}<span lang="ko"><b>${esc(ko)}</b> ${prHTML(ko)}</span>`,after:ko};};
+  const listenQ=w=>{const k=pick(K),f=forms(w)[k];return{word:w.k,type:'聽音判斷時態',prompt:`<p>聽到的是「<span class="hg" lang="ko">${esc(w.k)}</span>」的哪一種形態？</p><button type="button" class="btn big" data-say="${esc(f)}">${SPK}再播一次</button>`,options:K.map(z=>({v:z,h:tn(w,z)})),ans:k,exp:`${sayBtn(f)}<span><b lang="ko">${esc(f)}</b> [${esc(pronSentence(f))}] 是${tn(w,k)}</span>`,auto:f};};
   const pronQ=w=>{const f=forms(w);const ks=shuffle(K).filter(k=>pronSentence(f[k])!==f[k]);if(!ks.length)return formQ(w);const k=ks[0],x=f[k],p=pronSentence(x);let o=uniq([p,x,detense(x,p),pronSentence(f[pick(K.filter(z=>z!==k))])]);for(const z of shuffle(allWords()))if(o.length<4){const y=pronSentence(forms(z)[k]);if(!o.includes(y))o.push(y);}
-    return{type:'選出正確發音',prompt:`<div class="qw hg" lang="ko">${esc(x)}</div><p>${tn(w,k)}　實際念成哪一個？</p>`,options:shuffle(o.slice(0,4)).map(y=>({v:y,h:`<span lang="ko">[${esc(y)}]</span>`})),ans:p,exp:`${sayBtn(x)}<span><b lang="ko">${esc(x)}</b> → <b lang="ko">[${esc(p)}]</b></span>`,after:x};};
-  const meanQ=w=>{const all=allWords();if(all.length<4)return formQ(w);const o=shuffle([w.k,...shuffle(all.filter(z=>z.k!==w.k&&z.zh!==w.zh)).slice(0,3).map(z=>z.k)]);return{type:'中韓配對',prompt:`<div class="qw">${esc(w.zh)}</div><p>的韓文原型是？</p>`,options:o.map(x=>({v:x,h:`<span class="hg" lang="ko">${esc(x)}</span>`})),ans:w.k,exp:`${sayBtn(w.k)}<span><b lang="ko">${esc(w.k)}</b> ${prHTML(w.k)} ${esc(w.zh)}</span>`,after:w.k};};
+    return{word:w.k,type:'選出正確發音',prompt:`<div class="qw hg" lang="ko">${esc(x)}</div><p>${tn(w,k)}　實際念成哪一個？</p>`,options:shuffle(o.slice(0,4)).map(y=>({v:y,h:`<span lang="ko">[${esc(y)}]</span>`})),ans:p,exp:`${sayBtn(x)}<span><b lang="ko">${esc(x)}</b> → <b lang="ko">[${esc(p)}]</b></span>`,after:x};};
+  const meanQ=w=>{const all=allWords();if(all.length<4)return formQ(w);const o=shuffle([w.k,...shuffle(all.filter(z=>z.k!==w.k&&z.zh!==w.zh)).slice(0,3).map(z=>z.k)]);return{word:w.k,type:'中韓配對',prompt:`<div class="qw">${esc(w.zh)}</div><p>的韓文原型是？</p>`,options:o.map(x=>({v:x,h:`<span class="hg" lang="ko">${esc(x)}</span>`})),ans:w.k,exp:`${sayBtn(w.k)}<span><b lang="ko">${esc(w.k)}</b> ${prHTML(w.k)} ${esc(w.zh)}</span>`,after:w.k};};
   const plan=[formQ,formQ,formQ,fillQ,fillQ,fillQ,listenQ,listenQ,pronQ,meanQ];
   const sp=shuffle(pool);
   return shuffle(plan.map((fn,i)=>fn(sp[i%sp.length])));
