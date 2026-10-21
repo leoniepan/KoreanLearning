@@ -6,6 +6,7 @@ import verbs from './verbs/index.js';
 import nouns from './nouns/index.js';
 import numbers from './numbers/index.js';
 import grammar from './grammar/index.js';
+import records from './records/index.js';
 
 export default [
   daily,
@@ -13,5 +14,6 @@ export default [
   verbs,
   nouns,
   numbers,
-  grammar
+  grammar,
+  records
 ];
