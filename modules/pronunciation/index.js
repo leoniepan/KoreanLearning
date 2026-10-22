@@ -32,6 +32,9 @@ export default {
   id: 'pron',
   title: '發音規則',
   ko: '발음',
+  icon: 'sound',
+  glyph: '발',
+  desc: '收音、連音、鼻音化等 8 條發音規則',
   pages: [
     { id: 'learn', title: '學習', render: lessonPage({ lessons: PL, doneKey: 'done', curKey: 'lesson', quizRoute: 'pron-quiz' }) },
     { id: 'quiz', title: '測驗', render: quizPage }
