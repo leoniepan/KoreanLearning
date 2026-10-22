@@ -23,7 +23,7 @@ function streak() {
 // 每個單元卡片底部顯示的進度
 function progressOf(id) {
   switch (id) {
-    case 'daily': { const s = LS.get('daily_log', {})[today()]; return s != null ? `今天 ${s}/10 分` : '今天還沒做'; }
+    case 'daily': { const s = LS.get('daily_log', {})[today()]; return s != null ? `今天答對 ${s} 題` : "今天還沒做"; }
     case 'pron': return `已完成 ${LS.get('done', []).length}/${PL.length} 課`;
     case 'verbs': return `${W.length + LS.get('custom', []).length} 個單字`;
     case 'nouns': return `${N.length + LS.get('custom_nouns', []).length} 個單字`;

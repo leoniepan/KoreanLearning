@@ -589,3 +589,14 @@ tr.detail td{background:var(--bg)}
 .dprog{display:flex;justify-content:flex-end}
 .pp-pick{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;font-weight:600}
 .pp-pick select{min-width:5em}
+.dscope summary{cursor:pointer;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.dscope[open] summary{margin-bottom:6px}
+.ds-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.ds-l{font-weight:700;min-width:5em}
+.ds-kinds{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;flex:1}
+.dscope .dprog{display:inline-flex}
+@media (max-width:600px){
+  .ds-l{width:100%}
+  .ds-kinds{grid-template-columns:1fr 1fr}
+  .ds-kinds .tk-chk{padding:6px}
+}

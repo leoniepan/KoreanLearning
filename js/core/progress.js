@@ -7,7 +7,7 @@ export const UNITS = { '1A': 10, '1B': 12, '2A': 12, '2B': 12, '3A': 12, '3B': 1
 export const DEFAULT = { book: '1B', unit: 2 };
 
 const ORDER = Object.fromEntries(BOOKS.map((b, i) => [b, i + 1]));
-const parse = s => { const m = /^(\d[AB])-(\d+)$/.exec(s || ''); return m && UNITS[m[1]] ? { book: m[1], unit: Math.min(+m[2], UNITS[m[1]]) } : null; };
+export const parse = s => { const m = /^(\d[AB])-(\d+)$/.exec(s || ''); return m && UNITS[m[1]] ? { book: m[1], unit: Math.min(+m[2], UNITS[m[1]]) } : null; };
 
 export function getProgress() { return parse(LS.get('progress', '')) || DEFAULT; }
 export function setProgress(book, unit) { LS.set('progress', `${book}-${unit}`); }
@@ -29,4 +29,12 @@ export function progressPicker(el, onChange) {
   fill(p.unit);
   bs.onchange = () => { fill(1); setProgress(bs.value, 1); onChange && onChange(); };
   us.onchange = () => { setProgress(bs.value, +us.value); onChange && onChange(); };
+}
+
+// 課別比較：a 在 b 之前回傳負數
+export const cmp = (a, b) => (ORDER[a.book] - ORDER[b.book]) || (a.unit - b.unit);
+// 是否在「from ～ 目前進度」之間；沒有冊別（補充、自訂）一律算在內
+export function inRange(book, unit = 1, from = { book: '1A', unit: 1 }) {
+  if (!ORDER[book]) return true;
+  return isLearned(book, unit) && cmp({ book, unit: unit || 1 }, from) >= 0;
 }

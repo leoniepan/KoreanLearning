@@ -31,13 +31,13 @@ function toQ(q, i) {
 }
 
 // 聽力題的播放按鈕（runQuiz 只處理選項，播放在外層攔截）
-function bindPlay(box, qs) {
+export function bindPlay(box, qs) {
   box.addEventListener('click', e => {
     const b = e.target.closest('[data-play]'); if (!b) return;
     const q = qs.find(x => x._i === +b.dataset.play); if (q) sayLines(q._q.listen.map(x => x[1]));
   }, true);
 }
-function build(list) {
+export function build(list) {
   return list.map((q, i) => { const x = toQ(q, i); x._i = i; return x; });
 }
 

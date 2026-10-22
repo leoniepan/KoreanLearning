@@ -11,7 +11,7 @@ import { mergeState } from './merge.js';
 import { buildStats } from './stats.js';
 
 // 需要跨裝置同步的學習狀態（語速、目前頁面這類只跟這台裝置有關的設定不同步）
-const SYNCED = /^(done.*|best_.*|daily_log|daily_best_.*|custom|custom_nouns|lesson.*|progress)$/;
+const SYNCED = /^(done.*|best_.*|daily_log|daily_best_.*|custom|custom_nouns|lesson.*|progress|daily_scope)$/;
 const MAX_LOCAL = 300;   // 這台裝置最多保留幾回測驗紀錄
 
 export const sync = { mode: 'checking', me: null, error: null };
