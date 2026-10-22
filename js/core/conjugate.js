@@ -5,7 +5,7 @@ const BRIGHT=['ㅏ','ㅗ','ㅑ'];
 function aeo(stem,irr){
   const a=[...stem]; const n=a.length; const last=a[n-1]; const d=dec(last);
   if(last==='하') return a.slice(0,-1).join('')+'해';
-  if(irr==='ㅂ'){d.T='';a[n-1]=com(d);return a.join('')+'워';}
+  if(irr==='ㅂ'){d.T='';a[n-1]=com(d);return a.join('')+(/^(돕|곱)$/.test(stem)?'와':'워');}
   if(irr==='르'){const p=dec(a[n-2]);p.T='ㄹ';a[n-2]=com(p);a[n-1]=BRIGHT.includes(p.V)?'라':'러';return a.join('');}
   if(irr==='ㄷ'){d.T='ㄹ';a[n-1]=com(d);}
   if(d.T) return a.join('')+(BRIGHT.includes(d.V)?'아':'어');
