@@ -1,6 +1,5 @@
 // 單元：動詞・形容詞（變化表、變化規則、閃卡、測驗）
 import { $, qa, esc, shuffle, pick, uniq } from '../../js/core/dom.js';
-import { isLearned, progressLabel } from '../../js/core/progress.js';
 import { dec, pronSentence, detense } from '../../js/core/hangul.js';
 import { BRIGHT, forms } from '../../js/core/conjugate.js';
 import { LS } from '../../js/core/storage.js';
@@ -19,8 +18,8 @@ const K = ['pres', 'past', 'fut', 'attr'];
 const tn = (w, k) => k === 'fut' && w.t === 'a' ? '未來式（推測）' : k === 'attr' ? (w.t === 'a' ? '冠形詞形 -(으)ㄴ' : '冠形詞形 -는') : TN[k];
 const NOPURP = ['알다', '모르다', '살다', '좋아하다', '싫어하다', '일어나다'];
 const fcell = f => `<button type="button" class="fm" data-say="${esc(f)}"><span class="hg" lang="ko">${esc(f)}</span>${prHTML(f)}</button>`;
-const inL = (w, l) => l === 'all' || (l === 'learned' ? isLearned(w.l, w.u) : w.l === l);
-const lessonOpts = () => `<option value="all">全部課別</option><option value="learned">已學範圍（到 ${progressLabel()}）</option>` + LESSONS.map(l => `<option value="${l}">${l}</option>`).join('');
+const inL = (w, l) => l === 'all' || w.l === l;
+const lessonOpts = () => `<option value="all">全部課別</option>` + LESSONS.map(l => `<option value="${l}">${l}</option>`).join('');
 // 主題分類：動詞與形容詞各自一組；自訂單字若沒有分類，歸在「自訂」
 const CAT_GROUPS = [{ label: '動詞', items: Object.entries(VCATS) }, { label: '形容詞', items: Object.entries(ACATS) }];
 const catOf = w => w.c && (VCATS[w.c] || ACATS[w.c]) ? w.c : 'custom';
@@ -57,7 +56,7 @@ function detailHTML(w) {
 // ---------- 變化表 ----------
 function tablePage(el, ctx) {
   el.innerHTML = `
-  <p class="intro" style="margin-bottom:14px">依主題分類整理世宗韓國語 1A 與 1B 第1～2課常見的動詞和形容詞。標「補充」的是常用但不一定出現在你課本裡的字。點原型可展開變化說明與例句，點任何變化形可以聽發音；缺少的字可在表格下方自行加入。</p>
+  <p class="intro" style="margin-bottom:14px">依主題分類整理世宗韓國語 1A～4B 常見的動詞和形容詞。標「補充」的是常用但不一定出現在你課本裡的字。點原型可展開變化說明與例句，點任何變化形可以聽發音；缺少的字可在表格下方自行加入。</p>
   <div class="catbar" id="v-cats"></div>
   <div class="filters">
     <select id="f-lesson" aria-label="課別">${lessonOpts()}</select>
@@ -216,7 +215,6 @@ export function buildQuiz(pool = allWords()) {
 function quizPage(el) {
   el.innerHTML = `<div class="qwrap"><p class="intro">每回 10 題：選出正確變化、句子填空、聽音判斷時態、選出正確發音、中韓配對。可以只練某一個主題。</p><div class="qctl"><select class="vq-type qf" aria-label="範圍">${selOptions}</select><select class="vq-lesson" aria-label="課別">${lessonOpts()}</select><button type="button" class="btn qs-start">開始新的一回</button></div><div class="qcard qbox"></div></div>`;
   const ty = $('.vq-type', el), ls = $('.vq-lesson', el), box = $('.qbox', el);
-  ls.value = 'learned';
   const start = () => {
     const pool = allWords().filter(w => selMatch(w, ty.value) && inL(w, ls.value));
     if (!pool.length) { box.innerHTML = '<p class="muted">這個範圍沒有單字，請換一個詞類或課別。</p>'; return; }
