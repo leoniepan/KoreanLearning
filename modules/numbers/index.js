@@ -87,8 +87,11 @@ function tablePage(el) {
 // ---------- 用法與量詞 ----------
 function usagePage(el) {
   const C = [
-    ['什麼時候用哪一套', '언제 무엇을', `${table({ head: ['漢字語數字', '固有語數字'], rows: [['日期：年、月、日', '個數：개（個）'], ['時間的「分」：분', '時間的「點」：시'], ['價錢：원（元）', '人數：명（名）'], ['電話號碼、門牌、樓層：층', '年齡：살（歲）'], ['分鐘數、公里、公斤等單位', '杯：잔、本：권、張：장、瓶：병']] })}<p>簡單記法：<b>數「東西、人、年紀、點鐘」用固有語</b>；其他大多用漢字語。</p>`],
-    ['固有語接量詞的變形', '수 관형사', `<ul class="rules"><li>1～4 和 20 接量詞時要變形：하나 → <b>한</b>、둘 → <b>두</b>、셋 → <b>세</b>、넷 → <b>네</b>、스물 → <b>스무</b></li><li>十幾、二十幾也一樣：열한 개、스물두 살</li><li>5 以上不變：다섯 명、여섯 잔</li></ul><ol class="sents">${[['사과 세 개 주세요.', '請給我三個蘋果。'], ['커피 두 잔 주세요.', '請給我兩杯咖啡。'], ['학생이 다섯 명 있어요.', '有五個學生。'], ['저는 스무 살이에요.', '我二十歲。'], ['책을 한 권 샀어요.', '買了一本書。'], ['동생은 열한 살이에요.', '弟弟十一歲。']].map(s => sentRow(s)).join('')}</ol>`],
+    ['什麼時候用哪一套', '언제 무엇을', `${table({ head: ['漢字語數字', '固有語數字'], rows: [['日期：年、月、日', '個數：개（個）'], ['時間的「分」：분', '時間的「點」：시'], ['價錢：원（元）', '人數：명（名）'], ['電話號碼、門牌、樓層：층', '年齡：살（歲）'], ['', '動物：마리（隻、頭、條）'], ['分鐘數、公里、公斤等單位', '杯：잔、本：권、張：장、瓶：병']] })}<p>簡單記法：<b>數「東西、人、年紀、點鐘」用固有語</b>；其他大多用漢字語。</p>`],
+    ['固有語接量詞的變形', '수 관형사', `<ul class="rules"><li>常用量詞：개（個）、명（人）、마리（動物）、잔（杯）、병（瓶）、권（本）、장（張）、살（歲）、대（車、機器）、켤레（雙）、벌（套衣服）</li><li>1～4 和 20 接量詞時要變形：하나 → <b>한</b>、둘 → <b>두</b>、셋 → <b>세</b>、넷 → <b>네</b>、스물 → <b>스무</b></li><li>十幾、二十幾也一樣：열한 개、스물두 살</li><li>5 以上不變：다섯 명、여섯 잔</li></ul><ol class="sents">${[['사과 세 개 주세요.', '請給我三個蘋果。'], ['커피 두 잔 주세요.', '請給我兩杯咖啡。'], ['학생이 다섯 명 있어요.', '有五個學生。'], ['저는 스무 살이에요.', '我二十歲。'], ['책을 한 권 샀어요.', '買了一本書。'], ['동생은 열한 살이에요.', '弟弟十一歲。']].map(s => sentRow(s)).join('')}</ol>`],
+    ['動物：마리', '동물 세는 법', `<ul class="rules"><li>所有動物都用 <b>마리</b>：狗、貓、鳥、魚、牛都一樣（中文的隻、頭、條、匹）</li><li>順序：動物＋固有語數字＋마리：고양이 두 마리</li><li>問幾隻：몇 마리예요?、강아지가 몇 마리 있어요?</li><li>人不用 마리，用 명（尊敬用 분）</li></ul>
+      ${table({ head: ['中文', '韓文'], rows: [['一隻小狗', '강아지 한 마리'], ['兩隻貓', '고양이 두 마리'], ['三隻鳥', '새 세 마리'], ['四條魚', '물고기 네 마리'], ['五頭牛', '소 다섯 마리'], ['二十隻雞', '닭 스무 마리']] })}
+      <ol class="sents">${[['우리 집에는 고양이가 두 마리 있어요.', '我們家有兩隻貓。'], ['강아지를 몇 마리 키워요? — 한 마리 키워요.', '養幾隻小狗？— 養一隻。'], ['공원에 새가 많이 있어요. 열 마리쯤 있어요.', '公園裡有很多鳥，大約十隻。'], ['어항에 물고기가 세 마리 있어요.', '魚缸裡有三條魚。'], ['동물원에서 호랑이 두 마리를 봤어요.', '在動物園看到兩隻老虎。']].map(s => sentRow(s)).join('')}</ol>`],
     ['漢字語數字的用法', '한자어 수사', `<ul class="rules"><li>價錢：삼만 원（30,000 元）、사천오백 원（4,500 元）</li><li>樓層、分鐘：이 층（2 樓）、오십 분（50 分鐘）</li><li>年份：이천이십육 년（2026 年）</li><li>發音：십육 念 [심뉵]、칠십 念 [칠씹]、팔십 念 [팔씹]</li></ul><ol class="sents">${[['이 가방은 삼만 원이에요.', '這個包包三萬元。'], ['커피는 사천오백 원이에요.', '咖啡四千五百元。'], ['저는 이 층에 살아요.', '我住在二樓。'], ['수업은 오십 분이에요.', '一堂課五十分鐘。'], ['이천이십육 년에 한국에 갔어요.', '2026 年去了韓國。']].map(([ko, zh]) => `<li class="sent">${sayBtn(ko)}<div class="sent-b"><div class="ko" lang="ko">${esc(ko)}</div>${prNum(ko)}<div class="zh">${esc(zh)}</div></div></li>`).join('')}</ol>`],
     ['時間：點用固有語、分用漢字語', '시간', `<ul class="rules"><li>「幾點」用固有語：한 시、두 시、열두 시</li><li>「幾分」用漢字語：십 분、삼십 분；30 分也可以說 반（半）</li><li>問時間：지금 몇 시예요?（現在幾點？）</li></ul>${table({ head: ['時間', '念法'], rows: [['1:00', timeRead(1, 0)], ['3:30', timeRead(3, 30) + '／세 시 반'], ['7:15', timeRead(7, 15)], ['10:45', timeRead(10, 45)], ['12:20', timeRead(12, 20)]] })}<ol class="sents">${[['지금 세 시예요.', '現在三點。'], ['아침 일곱 시에 일어나요.', '早上七點起床。'], ['두 시 반에 만나요.', '兩點半見。']].map(s => sentRow(s)).join('')}</ol>`],
     ['月份與日期', '월과 일', `<p>月份都用漢字語數字，只有 <b>6 月 유월</b>、<b>10 月 시월</b> 要特別記（不是 육월、십월）。</p>${table({ head: ['月', '念法', '月', '念法'], rows: [1, 2, 3, 4, 5, 6].map(m => [`${m} 月`, month(m), `${m + 6} 月`, month(m + 6)]) })}<ol class="sents">${[['제 생일은 유월 십오 일이에요.', '我的生日是六月十五日。'], ['시월에 한국에 갈 거예요.', '十月要去韓國。']].map(([ko, zh]) => `<li class="sent">${sayBtn(ko)}<div class="sent-b"><div class="ko" lang="ko">${esc(ko)}</div>${prNum(ko)}<div class="zh">${esc(zh)}</div></div></li>`).join('')}</ol>`]
@@ -203,6 +206,10 @@ const COUNTERS = [
   { nat: true, k: '잔', zh: '杯', noun: '커피', nzh: '咖啡', max: 5 },
   { nat: true, k: '권', zh: '本', noun: '책', nzh: '書', max: 10 },
   { nat: true, k: '살', zh: '歲', noun: '', nzh: '年齡', max: 40 },
+  { nat: true, k: '마리', zh: '隻', noun: '고양이', nzh: '貓', max: 10 },
+  { nat: true, k: '마리', zh: '隻', noun: '강아지', nzh: '小狗', max: 10 },
+  { nat: true, k: '마리', zh: '隻', noun: '새', nzh: '鳥', max: 20 },
+  { nat: true, k: '마리', zh: '條', noun: '물고기', nzh: '魚', max: 12 },
   { nat: false, k: '원', zh: '元', noun: '', nzh: '價錢', vals: [500, 1000, 3000, 4500, 12000, 25000] },
   { nat: false, k: '층', zh: '樓', noun: '', nzh: '樓層', max: 15 },
   { nat: false, k: '분', zh: '分鐘', noun: '', nzh: '時間長度', vals: [10, 15, 20, 30, 45, 50] }
@@ -228,7 +235,12 @@ export function buildQuiz() {
   const dateQ = () => { const m = pick([rnd(1, 12), 6, 10]), d = rnd(1, 31 - (m === 2 ? 3 : 0)), r = dateRead(0, m, d); return { type: '日期', prompt: `<div class="qw">${m} 月 ${d} 日</div><p>韓文怎麼說？</p>`, options: fill([`${sino(m)}월 ${sino(d)} 일`, `${month(m)} ${native(d > 99 ? 1 : d)} 일`, dateRead(0, m, d === 31 ? 30 : d + 1)], r, () => dateRead(0, rnd(1, 12), rnd(1, 28))).map(opt), ans: r, exp: `${sayBtn(r)}<span><b lang="ko">${esc(r)}</b>　月、日都用漢字語數字${m === 6 || m === 10 ? '；6 月 유월、10 月 시월' : ''}</span>`, after: r }; };
   const durQ = () => { const h = rnd(1, 12), half = Math.random() < 0.4, r = hours(h) + (half ? ' 반' : ''); return { type: '時間長度', prompt: `<div class="qw">${h}${half ? ' 個半' : ''} 小時</div><p>「要花…小時」的韓文是？</p>`, options: fill([`${sino(h)} 시간${half ? ' 반' : ''}`, `${native(h, true)} 시${half ? ' 반' : ''}`, hours(h % 12 + 1) + (half ? ' 반' : '')], r, () => hours(rnd(1, 12))).map(opt), ans: r, exp: `${sayBtn(r)}<span><b lang="ko">${esc(r)}</b>　시간（小時）前面用固有語數字</span>`, after: r }; };
   const moneyQ = () => { const n = pick([1000, 1500, 3000, 5000, 7500, 10000, 12000, 15000, 25000, 30000, 50000, 120000, 350000]), r = won(n); return { type: '金錢', prompt: `<div class="qw">${fmt(n)} 원</div><p>韓文怎麼念？</p>`, options: fill([/^[백천만]/.test(sino(n)) ? `일${sino(n)} 원` : won(n / 10), won(n * 10), n % 10000 ? won(n + 1000) : won(n + 10000)], r, () => won(pick([2000, 4000, 8000, 20000, 60000]))).map(opt), ans: r, exp: `${sayBtn(r)}<span><b lang="ko">${esc(r)}</b> ${prNum(r)}　價錢用漢字語數字，천、만 前面不加 일</span>`, after: r }; };
-  return shuffle([sinoQ, nativeQ, counterQ, counterQ, timeQ, listenQ, monthQ, weekQ, dateQ, durQ, moneyQ, moneyQ].map(f => f())).slice(0, 10);
+  const unitQ = () => {
+    const U = [['고양이', '貓', '마리'], ['강아지', '小狗', '마리'], ['소', '牛', '마리'], ['물고기', '魚', '마리'], ['학생', '學生', '명'], ['친구', '朋友', '명'], ['사과', '蘋果', '개'], ['커피', '咖啡', '잔'], ['책', '書', '권'], ['표', '票', '장'], ['맥주', '啤酒', '병']];
+    const [nn, nz, r] = pick(U), n = rnd(2, 5);
+    return { type: '選出量詞', prompt: `<div class="qw">${nz} ${n} ${nz === '魚' ? '條' : { 마리: '隻', 명: '名', 개: '個', 잔: '杯', 권: '本', 장: '張', 병: '瓶' }[r]}</div><p class="qs" lang="ko">${esc(nn)} ${native(n, true)} ＿</p>`, options: shuffle(shuffle(['마리', '명', '개', '잔', '권', '장'].filter(x => x !== r)).slice(0, 3).concat(r)).map(opt), ans: r, exp: `${sayBtn(`${nn} ${native(n, true)} ${r}`)}<span><b lang="ko">${esc(nn)} ${native(n, true)} ${r}</b>　${r === '마리' ? '動物都用 마리' : r === '명' ? '人用 명' : '量詞 ' + r}</span>`, after: `${nn} ${native(n, true)} ${r}` };
+  };
+  return shuffle([sinoQ, nativeQ, counterQ, counterQ, unitQ, timeQ, listenQ, monthQ, weekQ, dateQ, durQ, moneyQ, moneyQ].map(f => f())).slice(0, 10);
 }
 function quizPage(el) {
   el.innerHTML = `<div class="qwrap"><p class="intro">每回 10 題：漢字語與固有語數字、量詞、星期、日期、時間與時間長度、金錢、聽音選數字。</p><div class="qctl"><button type="button" class="btn qs-start">開始新的一回</button></div><div class="qcard qbox"></div></div>`;
@@ -244,7 +256,7 @@ export default {
   ko: '숫자',
   icon: 'hash',
   glyph: '일',
-  desc: '數字、量詞、星期、日期、時間與金錢',
+  desc: '數字、量詞（含動物）、星期、日期、時間與金錢',
   pages: [
     { id: 'table', title: '數字表', render: tablePage },
     { id: 'usage', title: '用法與量詞', render: usagePage },
