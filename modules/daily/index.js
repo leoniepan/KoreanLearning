@@ -81,5 +81,8 @@ export default {
   id: 'daily',
   title: '今日測驗',
   ko: '오늘의 퀴즈',
+  icon: 'quiz',
+  glyph: '오',
+  desc: '每天一組 10 題：當天新題加上各單元複習',
   pages: [{ id: 'quiz', title: '今日測驗', render }]
 };

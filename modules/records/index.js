@@ -156,6 +156,9 @@ export default {
   id: 'records',
   title: '我的紀錄',
   ko: '학습 기록',
+  icon: 'chart',
+  glyph: '록',
+  desc: '練習紀錄、正確率與錯題本',
   pages: [
     { id: 'overview', title: '總覽', render: overviewPage, fresh: true },
     { id: 'mistakes', title: '錯題本', render: mistakesPage, fresh: true },

@@ -44,7 +44,7 @@ function detailHTML(n) {
 }
 
 // ---------- 名詞表 ----------
-function tablePage(el) {
+function tablePage(el, ctx) {
   el.innerHTML = `
   <p class="intro" style="margin-bottom:14px">依主題分類整理世宗韓國語 1A～1B 第2課常見的名詞，標「補充」的是常用但不一定出現在課本裡的字。每個名詞都列出接上助詞後的形態和發音，點原型可展開說明與例句，點任何形態可以聽發音。</p>
   <div class="catbar" id="n-cats"></div>
@@ -112,6 +112,7 @@ function tablePage(el) {
     $('#nn-k', el).value = ''; $('#nn-zh', el).value = '';
     st.cat = c; st.ini = ''; $('#n-lesson', el).value = 'all'; $('#n-q', el).value = ''; render();
   };
+  if (ctx?.params?.q) { $('#n-q', el).value = ctx.params.q; $('#n-lesson', el).value = 'all'; }
   render();
 }
 
@@ -187,6 +188,9 @@ export default {
   id: 'nouns',
   title: '名詞',
   ko: '명사',
+  icon: 'book',
+  glyph: '책',
+  desc: '依主題分類，附助詞形態與發音',
   pages: [
     { id: 'table', title: '名詞表', render: tablePage },
     { id: 'rules', title: '助詞規則', render: rulesPage },
