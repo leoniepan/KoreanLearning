@@ -1,21 +1,25 @@
-// 單元：文法（世宗韓國語 1A～2B）
-// 每冊一個學習頁，另有測驗頁。每課的文法依課名推估，請對照課本修正 1a.js～2b.js。
+// 單元：文法（世宗韓國語 1A～4B）
+// 每冊一個學習頁，另有測驗頁。各課文法依世宗學堂教學投影片整理（1a.js～4b.js）；說明、例句與題目為原創。
 import { lessonPage } from '../../js/core/lesson.js';
 import { lessonQuizPage } from '../../js/core/lessonQuiz.js';
 import { G1A } from './1a.js';
 import { G1B } from './1b.js';
 import { G2A } from './2a.js';
 import { G2B } from './2b.js';
+import { G3A } from './3a.js';
+import { G3B } from './3b.js';
+import { G4A } from './4a.js';
+import { G4B } from './4b.js';
 
 // 目前上到的進度：今日測驗只會從這裡以前的文法出題。上到新的課時修改這裡。
 export const PROGRESS = { book: '1B', unit: 2 };
 
-const BOOKS = [['1A', G1A], ['1B', G1B], ['2A', G2A], ['2B', G2B]];
-const ORDER = { '1A': 1, '1B': 2, '2A': 3, '2B': 4 };
+const BOOKS = [['1A', G1A], ['1B', G1B], ['2A', G2A], ['2B', G2B], ['3A', G3A], ['3B', G3B], ['4A', G4A], ['4B', G4B]];
+const ORDER = Object.fromEntries(BOOKS.map(([b], i) => [b, i + 1]));
 export const ALL = BOOKS.flatMap(([, g]) => g);
 export const learned = l => ORDER[l.book] < ORDER[PROGRESS.book] || (l.book === PROGRESS.book && l.unit <= PROGRESS.unit);
 
-const intro = book => `世宗韓國語 ${book} 各課的主要文法，依課名推估整理${book === '2B' ? '（2B 只查到英文版課名，所以課名以中文表示）' : ''}，例句與題目為原創。如果和課本不同，請告訴我修正。${book === PROGRESS.book ? `目前進度：${PROGRESS.book} 第 ${PROGRESS.unit} 課。` : ''}`;
+const intro = book => `世宗韓國語 ${book} 各課的文法，課別依世宗學堂教學投影片整理；說明、例句與題目為原創。每課先看規則和例句，再按「測驗這一課」。${book === PROGRESS.book ? `目前進度：${PROGRESS.book} 第 ${PROGRESS.unit} 課。` : ''}`;
 
 export default {
   id: 'grammar',
@@ -23,7 +27,7 @@ export default {
   ko: '문법',
   icon: 'layers',
   glyph: '문',
-  desc: '世宗韓國語 1A～2B 各課文法',
+  desc: '世宗韓國語 1A～4B 各課文法',
   pages: [
     ...BOOKS.map(([book, g]) => ({
       id: book.toLowerCase(), title: book,
