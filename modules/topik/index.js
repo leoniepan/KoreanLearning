@@ -1,5 +1,5 @@
 // 單元：TOPIK（韓國語能力考試）
-// 考試介紹、TOPIK I 題型練習（原創題）、迷你模擬考、歷屆試題連結（連到 Google Drive 的資料夾）
+// 考試介紹、TOPIK I 題型練習（原創題）、可選題型的模擬考
 import { $, esc, shuffle } from '../../js/core/dom.js';
 import { LS } from '../../js/core/storage.js';
 import { SPK, sayLines } from '../../js/core/speech.js';
@@ -54,13 +54,13 @@ function intro(el, ctx) {
       ['滿分', '200 分', '300 分'],
       ['級數', '1級 80 分以上；2級 140 分以上', '3級 120、4級 150、5級 190、6級 230 分以上']
     ] })}
-    <p class="tip">報名日期、考場和紙本／網路（IBT）考試方式每年會調整，報名前請到官方網站 topik.go.kr 確認。</p>
+    <p class="tip">報名日期、考場和紙本／網路（IBT）考試方式每年會調整，報名前請再確認最新公告。</p>
   </div>
   <div class="block"><h3>建議目標</h3>
     <p>世宗韓國語 1A～1B 大致對應 TOPIK I 1級，2A～2B 對應 2級；3A 以後開始進入 TOPIK II 的範圍。目前上到 1B，可以先熟悉 TOPIK I 的題型，目標 1級（80 分）。</p>
   </div>
   <div class="block"><h3>TOPIK I 題型一覽</h3>${table({ head: ['科目', '題號', '題型'], rows })}
-    <p class="note">15～16（看圖選對話）和 25～30（長對話）等題型需要圖片或較長的錄音，這裡先不收；練習請搭配歷屆試題。</p>
+    <p class="note">15～16（看圖選對話）和 25～30（長對話）等題型需要圖片或較長的錄音，這裡先不收。</p>
   </div>
   <div class="block"><h3>各題型解題提示</h3><ul class="rules">${Object.values(TYPES).map(T => `<li><b>${T.no}　${esc(T.name)}</b>：${esc(T.tip)}</li>`).join('')}</ul></div>
   <div class="lnav"><button type="button" class="btn" data-go="topik-practice">開始題型練習</button><button type="button" class="btn ghost" data-go="topik-mock">迷你模擬考</button></div>
@@ -87,21 +87,39 @@ function practice(el, ctx) {
   start();
 }
 
-// ---------- 迷你模擬考 ----------
+// ---------- 模擬考：可勾選題型 ----------
 function mock(el) {
-  el.innerHTML = `<div class="qwrap"><p class="intro">聽力 8 題＋閱讀 12 題，依 TOPIK I 的題號順序出題。完成後換算成 200 分制，估計級數（只是練習參考，不代表正式成績）。</p>
+  const keys = Object.keys(TYPES);
+  const saved = LS.get('topik_mock_types', keys);
+  const count = k => Q.filter(q => q.t === k).length;
+  const group = sec => keys.filter(k => TYPES[k].sec === sec).map(k => `<label class="tk-chk"><input type="checkbox" value="${k}" ${saved.includes(k) ? 'checked' : ''}><span>${TYPES[k].no}　${esc(TYPES[k].name)}</span><small>${count(k)} 題</small></label>`).join('');
+  el.innerHTML = `<div class="qwrap">
+  <p class="intro">勾選想考的題型和題數，題目會依 TOPIK I 的題號順序排列。完成後換算成 200 分制並估計級數（只是練習參考，不代表正式成績）。</p>
+  <div class="block tk-setup">
+    <div class="tk-grp"><div class="tk-grp-h"><b>聽力</b><button type="button" class="btn ghost small" data-all="聽力">全選／全不選</button></div>${group('聽力')}</div>
+    <div class="tk-grp"><div class="tk-grp-h"><b>閱讀</b><button type="button" class="btn ghost small" data-all="閱讀">全選／全不選</button></div>${group('閱讀')}</div>
+    <div class="qctl"><select class="tk-n" aria-label="題數"><option value="10">10 題</option><option value="20" selected>20 題</option><option value="30">30 題</option><option value="0">選到的全部</option></select><button type="button" class="btn tk-go">開始模擬考</button></div>
+    <p class="tk-msg note" aria-live="polite"></p>
+  </div>
   <div class="dhead mock-head"></div><div class="qcard qbox"></div></div>`;
-  const box = $('.qbox', el), head = $('.mock-head', el);
-  const order = Object.keys(TYPES);
+  const box = $('.qbox', el), head = $('.mock-head', el), msg = $('.tk-msg', el);
   let qs = [];
   bindPlay(box, { find: f => qs.find(f) });
+  const chosen = () => [...el.querySelectorAll('.tk-chk input:checked')].map(c => c.value);
   const drawHead = () => {
     const log = LS.get('topik_mock_log', []);
-    head.innerHTML = log.length ? `<p class="dnew">最近成績：${log.slice(-5).map(r => `<b>${r.s}</b>`).join('、')}（200 分制）</p>` : '<p class="dnew">還沒有模擬考紀錄。</p>';
+    head.innerHTML = log.length ? `<p class="dnew">最近成績：${log.slice(-5).map(r => `<b>${r.s}</b>`).join('、')}（200 分制）</p>` : '';
   };
   const start = () => {
-    const L = shuffle(Q.filter(q => q.t[0] === 'L')).slice(0, 8), R = shuffle(Q.filter(q => q.t[0] === 'R')).slice(0, 12);
-    const pick = L.concat(R).sort((a, b) => order.indexOf(a.t) - order.indexOf(b.t));
+    const types = chosen(); LS.set('topik_mock_types', types);
+    if (!types.length) { msg.textContent = '請至少勾選一種題型。'; box.innerHTML = ''; return; }
+    const n = +$('.tk-n', el).value;
+    const pool = shuffle(Q.filter(q => types.includes(q.t)));
+    // 先讓每個勾選的題型至少出一題，再隨機補滿
+    const first = types.map(t => pool.find(q => q.t === t)).filter(Boolean);
+    const rest = pool.filter(q => !first.includes(q));
+    const pick = (n ? first.concat(rest).slice(0, n) : pool).sort((a, b) => keys.indexOf(a.t) - keys.indexOf(b.t));
+    msg.textContent = `共 ${pick.length} 題${n && pick.length < n ? `（勾選的題型只有 ${pick.length} 題）` : ''}`;
     qs = build(pick);
     runQuiz(box, qs, 'best_topik_mock', start, (score, total) => {
       const s = Math.round(score / total * 200);
@@ -113,36 +131,15 @@ function mock(el) {
         drawHead();
       });
     });
+    box.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
-  drawHead(); start();
-}
-
-// ---------- 歷屆試題 ----------
-const DRIVE = 'https://example.invalid/';
-const PAPERS = [
-  { name: '第 35 屆 TOPIK I', id: 'REMOVED' },
-  { name: '第 36 屆 TOPIK I', id: 'REMOVED' },
-  { name: '第 47 屆 TOPIK I', id: 'REMOVED' },
-  { name: '第 60 屆 TOPIK I', id: 'REMOVED' },
-  { name: '第 64 屆 TOPIK I', id: 'REMOVED' }
-];
-const OTHER = [
-  { name: '初級：改革後試題（全部）', id: 'REMOVED' },
-  { name: '初級：第 10～34 屆（改革前）', id: 'REMOVED' },
-  { name: '初級：改革前試題（附聽力文本）', id: 'REMOVED' }
-];
-function papers(el) {
-  const done = LS.get('topik_papers_done', {});
-  const row = p => `<li class="pp"><label><input type="checkbox" data-pp="${p.id}" ${done[p.id] ? 'checked' : ''}> <span>${esc(p.name)}</span></label><a class="btn ghost small" href="${DRIVE + p.id}" target="_blank" rel="noopener">開啟資料夾</a></li>`;
-  el.innerHTML = `<div class="stack">
-  <p class="intro">連到你的 Google Drive 資料夾（試題 PDF、答案、聽力 MP3）。需要用有權限的 Google 帳號登入才能開啟。做完一屆可以打勾，紀錄存在這台裝置。</p>
-  <div class="block"><h3>TOPIK I（改革後，現行題型）</h3><ul class="pplist">${PAPERS.map(row).join('')}</ul>
-    <p class="tip">建議做法：照正式時間（聽力 40 分、閱讀 60 分）一次做完，對完答案後，把錯的題型回到「題型練習」加強。</p></div>
-  <div class="block"><h3>其他資料夾</h3><ul class="pplist">${OTHER.map(row).join('')}</ul>
-    <p class="note">改革前（第 35 屆以前）的題型和現在不同，可當作額外的閱讀練習。中高級（TOPIK II）的資料夾等進度到 3A 以後再加入。</p></div>
-  <div class="block"><h3>官方公開試題</h3><p>國立國際教育院的 TOPIK 官方網站也有公開的歷屆試題可以下載：<a href="https://www.topik.go.kr" target="_blank" rel="noopener">topik.go.kr</a></p></div>
-  </div>`;
-  el.onchange = e => { const c = e.target.closest('[data-pp]'); if (!c) return; const d = LS.get('topik_papers_done', {}); if (c.checked) d[c.dataset.pp] = new Date().toISOString().slice(0, 10); else delete d[c.dataset.pp]; LS.set('topik_papers_done', d); };
+  el.querySelector('.tk-setup').addEventListener('click', e => {
+    const a = e.target.closest('[data-all]'); if (!a) return;
+    const cs = [...el.querySelectorAll('.tk-chk input')].filter(c => TYPES[c.value].sec === a.dataset.all);
+    const on = !cs.every(c => c.checked); cs.forEach(c => { c.checked = on; });
+  });
+  $('.tk-go', el).onclick = start;
+  drawHead();
 }
 
 export default {
@@ -151,11 +148,10 @@ export default {
   ko: '한국어능력시험',
   icon: 'note',
   glyph: '토',
-  desc: 'TOPIK I 題型練習、模擬考與歷屆試題',
+  desc: 'TOPIK I 考試介紹、題型練習與模擬考',
   pages: [
     { id: 'intro', title: '考試介紹', render: intro },
     { id: 'practice', title: '題型練習', render: practice },
-    { id: 'mock', title: '模擬考', render: mock },
-    { id: 'papers', title: '歷屆試題', render: papers }
+    { id: 'mock', title: '模擬考', render: mock }
   ]
 };

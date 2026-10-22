@@ -579,3 +579,10 @@ tr.detail td{background:var(--bg)}
 .pp{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--line)}
 .pp:last-child{border-bottom:0}
 .pp label{display:flex;align-items:center;gap:8px;cursor:pointer}
+.tk-setup{gap:12px}
+.tk-grp{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:6px 14px}
+.tk-grp-h{grid-column:1/-1;display:flex;align-items:center;gap:10px}
+.tk-chk{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--line);border-radius:10px;cursor:pointer}
+.tk-chk span{flex:1}.tk-chk small{color:var(--muted)}
+.tk-chk:has(input:checked){border-color:var(--accent);background:var(--bg)}
+.qbox:empty,.mock-head:empty,.tk-msg:empty{display:none}
