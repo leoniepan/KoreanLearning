@@ -31,6 +31,7 @@ function progressOf(id) {
       const done = ['1A', '1B', '2A', '2B', '3A', '3B', '4A', '4B'].reduce((n, b) => n + LS.get('done_grammar_' + b, []).length, 0);
       return `已完成 ${done}/${GRAMMAR.length} 個文法`;
     }
+    case 'topik': { const l = LS.get('topik_mock_log', []); return l.length ? `模擬考最近 ${l[l.length - 1].s}/200` : 'TOPIK I 題型練習'; }
     case 'records': { const n = LS.get('history', []).length; return n ? `已練習 ${n} 回` : '還沒有紀錄'; }
     default: return '';
   }
