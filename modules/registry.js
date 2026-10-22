@@ -7,6 +7,7 @@ import verbs from './verbs/index.js';
 import nouns from './nouns/index.js';
 import numbers from './numbers/index.js';
 import grammar from './grammar/index.js';
+import topik from './topik/index.js';
 import records from './records/index.js';
 
 export default [
@@ -17,5 +18,6 @@ export default [
   nouns,
   numbers,
   grammar,
+  topik,
   records
 ];

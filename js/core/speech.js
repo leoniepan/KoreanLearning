@@ -18,6 +18,20 @@ export function say(t) {
   } catch (e) { }
 }
 
+// 依序朗讀多句（例如聽力對話），句子之間不會互相打斷
+export function sayLines(lines) {
+  try {
+    if (!('speechSynthesis' in window)) return;
+    speechSynthesis.cancel();
+    const v = koVoice();
+    lines.forEach(t => {
+      const u = new SpeechSynthesisUtterance(t);
+      u.lang = 'ko-KR'; if (v) u.voice = v; u.rate = rate;
+      speechSynthesis.speak(u);
+    });
+  } catch (e) { }
+}
+
 function voiceStatus() {
   const el = $('#voice'); if (!el) return;
   if (!('speechSynthesis' in window)) { el.textContent = '這個瀏覽器不支援朗讀'; el.className = 'vs warn'; return; }
