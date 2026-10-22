@@ -168,6 +168,9 @@ export default {
   id: 'numbers',
   title: '數字',
   ko: '숫자',
+  icon: 'hash',
+  glyph: '일',
+  desc: '漢字語與固有語數字、量詞與時間',
   pages: [
     { id: 'table', title: '數字表', render: tablePage },
     { id: 'usage', title: '用法與量詞', render: usagePage },

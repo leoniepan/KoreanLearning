@@ -53,7 +53,7 @@ function detailHTML(w) {
 }
 
 // ---------- 變化表 ----------
-function tablePage(el) {
+function tablePage(el, ctx) {
   el.innerHTML = `
   <p class="intro" style="margin-bottom:14px">依主題分類整理世宗韓國語 1A 與 1B 第1～2課常見的動詞和形容詞。標「補充」的是常用但不一定出現在你課本裡的字。點原型可展開變化說明與例句，點任何變化形可以聽發音；缺少的字可在表格下方自行加入。</p>
   <div class="catbar" id="v-cats"></div>
@@ -133,6 +133,7 @@ function tablePage(el) {
     $('#nw-k', el).value = ''; $('#nw-zh', el).value = '';
     st.cat = c; st.ini = ''; $('#f-lesson', el).value = 'all'; $('#f-q', el).value = ''; renderTable();
   };
+  if (ctx?.params?.q) { $('#f-q', el).value = ctx.params.q; $('#f-lesson', el).value = 'all'; }
   renderTable();
 }
 
@@ -226,6 +227,9 @@ export default {
   id: 'verbs',
   title: '動詞・形容詞',
   ko: '동사 · 형용사',
+  icon: 'verb',
+  glyph: '먹',
+  desc: '現在、過去、未來與冠形詞形變化',
   pages: [
     { id: 'table', title: '變化表', render: tablePage },
     { id: 'rules', title: '變化規則', render: rulesPage },

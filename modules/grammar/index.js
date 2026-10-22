@@ -21,6 +21,9 @@ export default {
   id: 'grammar',
   title: '文法',
   ko: '문법',
+  icon: 'layers',
+  glyph: '문',
+  desc: '世宗韓國語 1A～2B 各課文法',
   pages: [
     ...BOOKS.map(([book, g]) => ({
       id: book.toLowerCase(), title: book,

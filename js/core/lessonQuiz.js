@@ -17,6 +17,7 @@ export function itemToQ(it, lesson) {
   const shown = it.ko ? esc(it.ko).replace('＿', '<span class="blank">　？　</span>') : '';
   return {
     type: lesson.name,
+    key: (lesson.id ? lesson.id + '|' : '') + (it.ko || it.p) + '|' + it.a,
     word: it.word || null,
     prompt: `${it.p ? `<p>${esc(it.p)}</p>` : ''}${shown ? `<div class="qs" lang="ko">${shown}</div>` : ''}`,
     options: shuffle(it.opts).map(o => ({ v: o, h: `<span class="hg" lang="ko">${esc(o)}</span>` })),
