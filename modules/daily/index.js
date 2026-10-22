@@ -1,6 +1,6 @@
 // 單元：今日測驗
-// 每天依日期固定出一組 10 題：先放當天的「每日新題」（bank.js），其餘從發音、動詞、名詞、數字、已學文法與過去的新題中挑選。
-// 同一天不論打開幾次、在哪台裝置，題目都相同；隔天自動換一組。
+// 每天依日期固定出一組 10 題：先放當天的「每日新題」（bank.js），其餘從發音、已學範圍的動詞與名詞、數字、已學文法與過去的新題中挑選。
+// 「已學範圍」依使用者在本頁選擇的進度（js/core/progress.js）；同一天、同一個進度，題目都相同。
 import { $, esc, shuffle } from '../../js/core/dom.js';
 import { LS } from '../../js/core/storage.js';
 import { runQuiz } from '../../js/core/quiz.js';
@@ -11,6 +11,9 @@ import { buildQuiz as nounQuiz } from '../nouns/index.js';
 import { buildQuiz as numberQuiz } from '../numbers/index.js';
 import { ALL as GRAMMAR, learned } from '../grammar/index.js';
 import { BANK } from './bank.js';
+import { W } from '../verbs/words.js';
+import { N } from '../nouns/nouns.js';
+import { isLearned, progressPicker, progressLabel } from '../../js/core/progress.js';
 
 const COUNT = 10;
 const pad = n => String(n).padStart(2, '0');
@@ -36,7 +39,7 @@ function buildDaily(date) {
     const older = BANK.filter(b => b.date < date).flatMap(b => b.items.map(it => [it, '複習・' + b.topic]));
     const lessonItems = GRAMMAR.filter(learned).flatMap(l => (l.quiz || []).map(it => [it, '文法・' + l.name]));
     const review = shuffle(older.concat(lessonItems)).slice(0, r).map(([it, name]) => itemToQ(it, { name }));
-    const others = shuffle([...pronQuiz('all').slice(0, p), ...verbQuiz().slice(0, v), ...nounQuiz().slice(0, n), ...numberQuiz().slice(0, nb), ...review]);
+    const others = shuffle([...pronQuiz('all').slice(0, p), ...verbQuiz(W.filter(w => isLearned(w.l, w.u))).slice(0, v), ...nounQuiz(N.filter(x => isLearned(x.l, x.u))).slice(0, n), ...numberQuiz().slice(0, nb), ...review]);
     return fresh.concat(others).slice(0, COUNT);
   });
 }
@@ -51,11 +54,13 @@ function render(el) {
   const t = today();
   const dates = [t, ...BANK.map(b => b.date).filter(d => d < t).reverse()];
   el.innerHTML = `<div class="qwrap">
+    <div class="dprog"></div>
     <section class="dhead" aria-live="polite"></section>
     <div class="qctl"><select class="qf" aria-label="日期">${dates.map(d => `<option value="${d}">${d === t ? `今天（${d}）` : `${d} 的題目`}</option>`).join('')}</select><button type="button" class="btn qs-start">重新開始這一組</button></div>
     <div class="qcard qbox"></div>
   </div>`;
   const head = $('.dhead', el), sel = $('.qf', el), box = $('.qbox', el);
+  progressPicker($('.dprog', el), () => start());
 
   function drawHead() {
     const log = LS.get('daily_log', {}), d = sel.value, entry = BANK.find(b => b.date === d);
@@ -63,7 +68,7 @@ function render(el) {
     head.innerHTML = `
       <div class="dtop"><div><p class="eyebrow">${d === t ? '今日測驗' : '過去的每日測驗'}</p><h2 class="dtitle">${d}</h2></div>
       <div class="dstreak"><b>${streak(log, t)}</b><span>天連續完成</span></div></div>
-      <p class="dnew">${entry ? `今日新題 <b>${entry.items.length}</b> 題・${esc(entry.topic)}` : '這一天沒有新題，題目從既有內容中挑選'}${log[d] != null ? `　｜　這一組最佳 ${log[d]} / ${COUNT}` : ''}</p>
+      <p class="dnew">出題範圍：到 <b>${progressLabel()}</b> 已學的文法和單字。${entry ? `今日新題 <b>${entry.items.length}</b> 題・${esc(entry.topic)}` : '這一天沒有新題，題目從既有內容中挑選'}${log[d] != null ? `　｜　這一組最佳 ${log[d]} / ${COUNT}` : ''}</p>
       <ol class="dweek" aria-label="最近七天">${week.map(w => `<li class="${log[w] != null ? 'on' : ''} ${w === t ? 'today' : ''}" title="${w}${log[w] != null ? ` 完成 ${log[w]} 分` : ''}"><span>${['日', '一', '二', '三', '四', '五', '六'][new Date(w + 'T00:00').getDay()]}</span><i></i></li>`).join('')}</ol>`;
   }
   const start = () => {
@@ -84,5 +89,5 @@ export default {
   icon: 'quiz',
   glyph: '오',
   desc: '每天一組 10 題：當天新題加上各單元複習',
-  pages: [{ id: 'quiz', title: '今日測驗', render }]
+  pages: [{ id: 'quiz', title: '今日測驗', render, fresh: true }]
 };

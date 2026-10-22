@@ -586,3 +586,6 @@ tr.detail td{background:var(--bg)}
 .tk-chk span{flex:1}.tk-chk small{color:var(--muted)}
 .tk-chk:has(input:checked){border-color:var(--accent);background:var(--bg)}
 .qbox:empty,.mock-head:empty,.tk-msg:empty{display:none}
+.dprog{display:flex;justify-content:flex-end}
+.pp-pick{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;font-weight:600}
+.pp-pick select{min-width:5em}

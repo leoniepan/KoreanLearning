@@ -1,5 +1,6 @@
 // 單元：名詞（名詞表＋助詞形態、助詞規則、閃卡、測驗）
 import { $, qa, esc, shuffle, pick, uniq } from '../../js/core/dom.js';
+import { isLearned, progressLabel } from '../../js/core/progress.js';
 import { dec, pronSentence, detense } from '../../js/core/hangul.js';
 import { LS } from '../../js/core/storage.js';
 import { say, SPK, sayBtn, nvBtn } from '../../js/core/speech.js';
@@ -10,7 +11,7 @@ import { CATS, N } from './nouns.js';
 
 let custom = LS.get('custom_nouns', []);
 const allNouns = () => N.concat(custom);
-const LESSONS = ['1A', '1B 1課', '1B 2課', '補充', '自訂'];
+const LESSONS = ['1A', '1B', '2A', '2B', '3A', '3B', '4A', '4B', '補充', '自訂'];
 
 // 助詞：依名詞最後一字有沒有收音選擇
 const P = [
@@ -25,7 +26,8 @@ export const nforms = k => Object.fromEntries(P.map(p => [p.id, k + (hasB(k) ? p
 const wrongForm = (k, p) => k + (hasB(k) ? p.nb : p.b);
 
 const fcell = f => `<button type="button" class="fm" data-say="${esc(f)}"><span class="hg" lang="ko">${esc(f)}</span>${prHTML(f)}</button>`;
-const lessonOpts = `<option value="all">全部課別</option>` + LESSONS.map(l => `<option value="${l}">${l === '1A' ? '1A 全冊' : l}</option>`).join('');
+const inL = (w, l) => l === 'all' || (l === 'learned' ? isLearned(w.l, w.u) : w.l === l);
+const lessonOpts = () => `<option value="all">全部課別</option><option value="learned">已學範圍（到 ${progressLabel()}）</option>` + LESSONS.map(l => `<option value="${l}">${l}</option>`).join('');
 const catOpts = `<option value="all">全部分類</option>` + Object.entries(CATS).map(([k, v]) => `<option value="${k}">${v}</option>`).join('');
 
 function explain(n) {
@@ -49,7 +51,7 @@ function tablePage(el, ctx) {
   <p class="intro" style="margin-bottom:14px">依主題分類整理世宗韓國語 1A～1B 第2課常見的名詞，標「補充」的是常用但不一定出現在課本裡的字。每個名詞都列出接上助詞後的形態和發音，點原型可展開說明與例句，點任何形態可以聽發音。</p>
   <div class="catbar" id="n-cats"></div>
   <div class="filters">
-    <select id="n-lesson" aria-label="課別">${lessonOpts}</select>
+    <select id="n-lesson" aria-label="課別">${lessonOpts()}</select>
     <input type="text" id="n-q" placeholder="搜尋韓文或中文（搜尋全部分類）" aria-label="搜尋">
     <span class="count" id="n-count"></span>
   </div>
@@ -72,7 +74,7 @@ function tablePage(el, ctx) {
   const st = { cat: LS.get('ncat', Object.keys(CATS)[0]), ini: '' };
   function render() {
     const l = $('#n-lesson', el).value, q = $('#n-q', el).value.trim();
-    const base = allNouns().filter(n => (l === 'all' || n.l === l) && (!q || n.k.includes(q) || n.zh.includes(q)));
+    const base = allNouns().filter(n => inL(n, l) && (!q || n.k.includes(q) || n.zh.includes(q)));
     const cat = q ? 'all' : st.cat;
     const counts = { all: base.length };
     base.forEach(n => { counts[n.c] = (counts[n.c] || 0) + 1; });
@@ -83,7 +85,7 @@ function tablePage(el, ctx) {
     $('#n-count', el).textContent = `顯示 ${list.length} 個`;
     body.innerHTML = list.length ? list.map(n => {
       const f = nforms(n.k);
-      return `<tr class="vr"><td><button type="button" class="tog" data-tog="${esc(n.k)}" aria-expanded="false"><span class="hg" lang="ko">${esc(n.k)}</span><span class="chev"></span></button><span class="meta">${CATS[n.c]}・${n.l}・${hasB(n.k) ? '有收音' : '無收音'}</span>${nvBtn(n.k)}</td><td data-label="中文">${esc(n.zh)}</td>${P.map(p => `<td data-label="${p.name}">${fcell(f[p.id])}</td>`).join('')}</tr><tr class="detail" data-d="${esc(n.k)}" hidden><td colspan="6"></td></tr>`;
+      return `<tr class="vr"><td><button type="button" class="tog" data-tog="${esc(n.k)}" aria-expanded="false"><span class="hg" lang="ko">${esc(n.k)}</span><span class="chev"></span></button><span class="meta">${CATS[n.c]}・${n.l}${n.u ? ` 第${n.u}課` : ''}・${hasB(n.k) ? '有收音' : '無收音'}</span>${nvBtn(n.k)}</td><td data-label="中文">${esc(n.zh)}</td>${P.map(p => `<td data-label="${p.name}">${fcell(f[p.id])}</td>`).join('')}</tr><tr class="detail" data-d="${esc(n.k)}" hidden><td colspan="6"></td></tr>`;
     }).join('') : '<tr><td colspan="6" class="muted" style="padding:20px">沒有符合條件的名詞。</td></tr>';
   }
   $('#n-cats', el).onclick = e => { const b = e.target.closest('[data-cat]'); if (!b) return; st.cat = b.dataset.cat; st.ini = ''; LS.set('ncat', st.cat); $('#n-q', el).value = ''; render(); };
@@ -173,10 +175,11 @@ export function buildQuiz(pool = allNouns()) {
   return shuffle(plan.map((fn, i) => fn(sp[i % sp.length])));
 }
 function quizPage(el) {
-  el.innerHTML = `<div class="qwrap"><p class="intro">每回 10 題：韓中互譯、選出正確助詞、聽音選字、助詞連音的發音。</p><div class="qctl"><select class="n-qc" aria-label="分類">${catOpts}</select><select class="n-ql" aria-label="課別">${lessonOpts}</select><button type="button" class="btn qs-start">開始新的一回</button></div><div class="qcard qbox"></div></div>`;
+  el.innerHTML = `<div class="qwrap"><p class="intro">每回 10 題：韓中互譯、選出正確助詞、聽音選字、助詞連音的發音。</p><div class="qctl"><select class="n-qc" aria-label="分類">${catOpts}</select><select class="n-ql" aria-label="課別">${lessonOpts()}</select><button type="button" class="btn qs-start">開始新的一回</button></div><div class="qcard qbox"></div></div>`;
   const c = $('.n-qc', el), l = $('.n-ql', el), box = $('.qbox', el);
+  l.value = 'learned';
   const start = () => {
-    const pool = allNouns().filter(n => (c.value === 'all' || n.c === c.value) && (l.value === 'all' || n.l === l.value));
+    const pool = allNouns().filter(n => (c.value === 'all' || n.c === c.value) && inL(n, l.value));
     if (!pool.length) { box.innerHTML = '<p class="muted">這個範圍沒有名詞，請換一個分類或課別。</p>'; return; }
     runQuiz(box, buildQuiz(pool), 'best_nq_' + c.value + l.value, start);
   };
@@ -195,6 +198,6 @@ export default {
     { id: 'table', title: '名詞表', render: tablePage },
     { id: 'rules', title: '助詞規則', render: rulesPage },
     { id: 'cards', title: '閃卡', render: cardsPage },
-    { id: 'quiz', title: '測驗', render: quizPage }
+    { id: 'quiz', title: '測驗', render: quizPage, fresh: true }
   ]
 };
