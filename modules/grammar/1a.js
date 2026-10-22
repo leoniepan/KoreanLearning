@@ -1,5 +1,5 @@
 // 世宗韓國語 1A 的文法。課別與文法項目依世宗學堂 1A 教學投影片整理；說明、例句與題目為原創。
-// 欄位說明見 js/core/lesson.js；book、unit 用來判斷「已學範圍」。
+// 欄位說明見 js/core/lesson.js；book、unit 是冊別與課別。
 export const G1A = [
   {
     id: '1a-01-a', book: '1A', unit: 1, name: 'N이에요/예요（是…）', ko: '1과 · 안녕하세요? 저는 안나예요',

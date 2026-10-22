@@ -1,5 +1,5 @@
 // 單元：今日測驗
-// 每天依日期固定出一組題目：使用者可以設定出題內容（新題、發音、單字、數字、文法、複習、TOPIK）、課別範圍（從哪一課到目前進度）和題數。
+// 每天依日期固定出一組題目：使用者可以設定出題內容（新題、發音、單字、數字、文法、複習、TOPIK）、課別範圍（從哪一課到哪一課）和題數。
 // 設定存在 daily_scope；同一天、同一組設定，題目都相同。
 import { $, esc, shuffle } from '../../js/core/dom.js';
 import { LS } from '../../js/core/storage.js';
@@ -9,7 +9,7 @@ import { buildQuiz as pronQuiz } from '../pronunciation/index.js';
 import { buildQuiz as verbQuiz } from '../verbs/index.js';
 import { buildQuiz as nounQuiz } from '../nouns/index.js';
 import { buildQuiz as numberQuiz } from '../numbers/index.js';
-import { ALL as GRAMMAR, learned } from '../grammar/index.js';
+import { ALL as GRAMMAR } from '../grammar/index.js';
 import { BANK } from './bank.js';
 import { W } from '../verbs/words.js';
 import { N } from '../nouns/nouns.js';
@@ -42,10 +42,12 @@ function seeded(seed, fn) {
 function buildDaily(date, sc) {
   const from = parse(sc.from) || { book: '1A', unit: 1 };
   const inR = (b, u) => inRange(b, u, from);
+  // 每日新題的 topic 開頭若標了冊別（例如「2A・…」），只在那一冊落在範圍內時才出題
+  const bankOk = b => { const m = /^(\d[AB])/.exec(b.topic || ''); return !m || BOOKS.slice(BOOKS.indexOf(from.book), BOOKS.indexOf(getProgress().book) + 1).includes(m[1]); };
   return seeded(date + JSON.stringify(sc) + progressLabel(), () => {
     const count = sc.count, k = new Set(sc.kinds);
     const entry = BANK.find(b => b.date === date);
-    const fresh = k.has('new') && entry ? entry.items.slice(0, Math.ceil(count / 2)).map(it => itemToQ(it, { name: '今日新題・' + entry.topic })) : [];
+    const fresh = k.has('new') && entry && bankOk(entry) ? entry.items.slice(0, Math.ceil(count / 2)).map(it => itemToQ(it, { name: '今日新題・' + entry.topic })) : [];
     const rest = count - fresh.length;
     // 每一類先產生最多 rest 題，再輪流挑選
     const pools = [];
@@ -58,7 +60,7 @@ function buildDaily(date, sc) {
       if (g.length) pools.push(g);
     }
     if (k.has('review')) {
-      const r = shuffle(BANK.filter(b => b.date < date).flatMap(b => b.items.map(it => itemToQ(it, { name: '複習・' + b.topic }))));
+      const r = shuffle(BANK.filter(b => b.date < date && bankOk(b)).flatMap(b => b.items.map(it => itemToQ(it, { name: '複習・' + b.topic }))));
       if (r.length) pools.push(r);
     }
     if (k.has('topik')) pools.push(topikBuild(shuffle(TK_Q).slice(0, rest)));
@@ -89,7 +91,7 @@ function render(el) {
       <div class="ds-row"><span class="ds-l">出題內容</span><div class="ds-kinds">${KINDS.map(([v, l]) => `<label class="tk-chk"><input type="checkbox" value="${v}" ${sc0.kinds.includes(v) ? 'checked' : ''}><span>${l}</span></label>`).join('')}</div></div>
       <div class="ds-row"><span class="ds-l">題數</span><select class="ds-count" aria-label="題數">${[10, 20, 30].map(n => `<option value="${n}" ${n === sc0.count ? 'selected' : ''}>${n} 題</option>`).join('')}</select>
         <button type="button" class="btn ghost small ds-reset">恢復預設</button></div>
-      <p class="note">「到」的那一課就是你的進度；文法和單字只會從這個範圍出題。發音、數字、TOPIK 題型不分課別。設定會自動儲存。</p>
+      <p class="note">文法和單字只從選擇的課別範圍出題；發音、數字、TOPIK 題型不分課別。設定會自動儲存。</p>
     </details>
     <section class="dhead" aria-live="polite"></section>
     <div class="qctl"><select class="qf" aria-label="日期">${dates.map(d => `<option value="${d}">${d === t ? `今天（${d}）` : `${d} 的題目`}</option>`).join('')}</select><button type="button" class="btn qs-start">重新開始這一組</button></div>
@@ -102,7 +104,7 @@ function render(el) {
   const fillUnits = u => { fu.innerHTML = Array.from({ length: UNITS[fb.value] }, (_, i) => `<option value="${i + 1}" ${i + 1 === u ? 'selected' : ''}>第 ${i + 1} 課</option>`).join(''); };
   fillUnits(f0.unit);
 
-  // 讀取畫面上的設定；「從」不能晚於進度，晚於時自動拉回進度
+  // 讀取畫面上的設定；「從」不能晚於「到」，晚於時自動調整
   function readScope() {
     let from = { book: fb.value, unit: +fu.value };
     const p = getProgress();
@@ -116,7 +118,6 @@ function render(el) {
   }
   const changed = () => { const sc = readScope(); setScope(sc); summary(sc); start(); };
   progressPicker($('.dprog', el), changed);
-  $('.dprog .pp-pick > span', el).textContent = '到';
   fb.onchange = () => { fillUnits(1); changed(); };
   fu.onchange = changed;
   el.querySelector('.ds-kinds').onchange = changed;

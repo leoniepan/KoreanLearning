@@ -56,8 +56,8 @@ function intro(el, ctx) {
     ] })}
     <p class="tip">報名日期、考場和紙本／網路（IBT）考試方式每年會調整，報名前請再確認最新公告。</p>
   </div>
-  <div class="block"><h3>建議目標</h3>
-    <p>世宗韓國語 1A～1B 大致對應 TOPIK I 1級，2A～2B 對應 2級；3A 以後開始進入 TOPIK II 的範圍。目前上到 1B，可以先熟悉 TOPIK I 的題型，目標 1級（80 分）。</p>
+  <div class="block"><h3>各冊對應的級數</h3>
+    <p>世宗韓國語 1A～1B 大致對應 TOPIK I 1級，2A～2B 對應 2級；3A 以後開始進入 TOPIK II 的範圍。</p>
   </div>
   <div class="block"><h3>TOPIK I 題型一覽</h3>${table({ head: ['科目', '題號', '題型'], rows })}
     <p class="note">15～16（看圖選對話）和 25～30（長對話）等題型需要圖片或較長的錄音，這裡先不收。</p>

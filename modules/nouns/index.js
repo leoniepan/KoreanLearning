@@ -1,6 +1,5 @@
 // 單元：名詞（名詞表＋助詞形態、助詞規則、閃卡、測驗）
 import { $, qa, esc, shuffle, pick, uniq } from '../../js/core/dom.js';
-import { isLearned, progressLabel } from '../../js/core/progress.js';
 import { dec, pronSentence, detense } from '../../js/core/hangul.js';
 import { LS } from '../../js/core/storage.js';
 import { say, SPK, sayBtn, nvBtn } from '../../js/core/speech.js';
@@ -26,8 +25,8 @@ export const nforms = k => Object.fromEntries(P.map(p => [p.id, k + (hasB(k) ? p
 const wrongForm = (k, p) => k + (hasB(k) ? p.nb : p.b);
 
 const fcell = f => `<button type="button" class="fm" data-say="${esc(f)}"><span class="hg" lang="ko">${esc(f)}</span>${prHTML(f)}</button>`;
-const inL = (w, l) => l === 'all' || (l === 'learned' ? isLearned(w.l, w.u) : w.l === l);
-const lessonOpts = () => `<option value="all">全部課別</option><option value="learned">已學範圍（到 ${progressLabel()}）</option>` + LESSONS.map(l => `<option value="${l}">${l}</option>`).join('');
+const inL = (w, l) => l === 'all' || w.l === l;
+const lessonOpts = () => `<option value="all">全部課別</option>` + LESSONS.map(l => `<option value="${l}">${l}</option>`).join('');
 const catOpts = `<option value="all">全部分類</option>` + Object.entries(CATS).map(([k, v]) => `<option value="${k}">${v}</option>`).join('');
 
 function explain(n) {
@@ -48,7 +47,7 @@ function detailHTML(n) {
 // ---------- 名詞表 ----------
 function tablePage(el, ctx) {
   el.innerHTML = `
-  <p class="intro" style="margin-bottom:14px">依主題分類整理世宗韓國語 1A～1B 第2課常見的名詞，標「補充」的是常用但不一定出現在課本裡的字。每個名詞都列出接上助詞後的形態和發音，點原型可展開說明與例句，點任何形態可以聽發音。</p>
+  <p class="intro" style="margin-bottom:14px">依主題分類整理世宗韓國語 1A～4B 常見的名詞，標「補充」的是常用但不一定出現在課本裡的字。每個名詞都列出接上助詞後的形態和發音，點原型可展開說明與例句，點任何形態可以聽發音。</p>
   <div class="catbar" id="n-cats"></div>
   <div class="filters">
     <select id="n-lesson" aria-label="課別">${lessonOpts()}</select>
@@ -177,7 +176,6 @@ export function buildQuiz(pool = allNouns()) {
 function quizPage(el) {
   el.innerHTML = `<div class="qwrap"><p class="intro">每回 10 題：韓中互譯、選出正確助詞、聽音選字、助詞連音的發音。</p><div class="qctl"><select class="n-qc" aria-label="分類">${catOpts}</select><select class="n-ql" aria-label="課別">${lessonOpts()}</select><button type="button" class="btn qs-start">開始新的一回</button></div><div class="qcard qbox"></div></div>`;
   const c = $('.n-qc', el), l = $('.n-ql', el), box = $('.qbox', el);
-  l.value = 'learned';
   const start = () => {
     const pool = allNouns().filter(n => (c.value === 'all' || n.c === c.value) && inL(n, l.value));
     if (!pool.length) { box.innerHTML = '<p class="muted">這個範圍沒有名詞，請換一個分類或課別。</p>'; return; }

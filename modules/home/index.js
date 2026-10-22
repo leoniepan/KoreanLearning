@@ -7,7 +7,6 @@ import { W } from '../verbs/words.js';
 import { N } from '../nouns/nouns.js';
 import { PL } from '../pronunciation/lessons.js';
 import { ALL as GRAMMAR } from '../grammar/index.js';
-import { progressLabel } from '../../js/core/progress.js';
 import { BANK } from '../daily/bank.js';
 
 const pad = n => String(n).padStart(2, '0');
@@ -86,7 +85,7 @@ function render(el, ctx) {
   </section>` : ''}
 
   <section>
-    <div class="sec-h"><h3>學習單元</h3><span class="muted">進度：${progressLabel()}</span></div>
+    <div class="sec-h"><h3>學習單元</h3></div>
     <div class="courses">
       ${mods.map(m => `<button type="button" class="course" data-mod="${m.id}">
         <span class="course-top"><span class="tile" lang="ko">${esc(m.glyph || '가')}</span><span class="course-t"><b>${esc(m.title)}</b><small lang="ko">${esc(m.ko)}</small><span class="course-d">${esc(m.desc || '')}</span></span></span>
