@@ -28,7 +28,7 @@ function progressOf(id) {
     case 'nouns': return `${N.length + LS.get('custom_nouns', []).length} 個單字`;
     case 'numbers': { const b = LS.get('best_numq', null); return b != null ? `最佳 ${b}/10` : '漢字語・固有語'; }
     case 'grammar': {
-      const done = ['1A', '1B', '2A', '2B'].reduce((n, b) => n + LS.get('done_grammar_' + b, []).length, 0);
+      const done = ['1A', '1B', '2A', '2B', '3A', '3B', '4A', '4B'].reduce((n, b) => n + LS.get('done_grammar_' + b, []).length, 0);
       return `已完成 ${done}/${GRAMMAR.length} 個文法`;
     }
     case 'records': { const n = LS.get('history', []).length; return n ? `已練習 ${n} 回` : '還沒有紀錄'; }
