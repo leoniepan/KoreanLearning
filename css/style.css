@@ -695,3 +695,47 @@ tr.detail td{background:var(--bg)}
 .glide-g b{display:block;font-size:14px;margin-bottom:4px}
 @media (prefers-reduced-motion:reduce){.tis-card.go .tis,.tis-card.go .puff path{animation:none!important}}
 @media (max-width:600px){.lip-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* ===== 柔和主題：漸層背景＋霧面玻璃卡片 ===== */
+:root{
+  --surface:rgb(255 255 255 / .72);--surface-solid:#ffffff;--glass-line:rgb(255 255 255 / .7);
+  --line:#d6e2de;--chip:rgb(225 235 231 / .8);--accent:#2a7663;
+  --deep:#2f6f61;--deep-2:#3b7f70;
+  --grad-deep:linear-gradient(160deg,#2c6b5d 0%,#3a7884 55%,#5f76a0 100%);
+  --grad-btn:linear-gradient(135deg,#2f7565 0%,#3c7a8a 100%);
+  --page-bg:radial-gradient(1100px 700px at 0% 0%,#d8efe5 0%,transparent 60%),radial-gradient(900px 650px at 100% 0%,#e6e3f7 0%,transparent 58%),radial-gradient(1000px 700px at 70% 100%,#fbe7df 0%,transparent 60%),#f3f7f5;
+  --shadow:0 1px 2px rgb(40 70 90 / .05),0 8px 24px rgb(40 70 90 / .08);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --surface:rgb(24 36 40 / .68);--surface-solid:#172326;--glass-line:rgb(255 255 255 / .07);--line:#2a3d40;--chip:rgb(36 52 56 / .8);--accent:#6fcbb0;
+  --deep:#1f4c42;--deep-2:#2a5e52;
+  --grad-deep:linear-gradient(160deg,#1c463c 0%,#21495c 55%,#33406a 100%);
+  --grad-btn:linear-gradient(135deg,#2c6b5c 0%,#2f6077 100%);
+  --page-bg:radial-gradient(1100px 700px at 0% 0%,#14302a 0%,transparent 60%),radial-gradient(900px 650px at 100% 0%,#1f2140 0%,transparent 58%),radial-gradient(1000px 700px at 70% 100%,#2a1a24 0%,transparent 60%),#0e1517;
+}}
+:root[data-theme="dark"]{
+  --surface:rgb(24 36 40 / .68);--surface-solid:#172326;--glass-line:rgb(255 255 255 / .07);--line:#2a3d40;--chip:rgb(36 52 56 / .8);--accent:#6fcbb0;
+  --deep:#1f4c42;--deep-2:#2a5e52;
+  --grad-deep:linear-gradient(160deg,#1c463c 0%,#21495c 55%,#33406a 100%);
+  --grad-btn:linear-gradient(135deg,#2c6b5c 0%,#2f6077 100%);
+  --page-bg:radial-gradient(1100px 700px at 0% 0%,#14302a 0%,transparent 60%),radial-gradient(900px 650px at 100% 0%,#1f2140 0%,transparent 58%),radial-gradient(1000px 700px at 70% 100%,#2a1a24 0%,transparent 60%),#0e1517;
+}
+body{background:var(--page-bg);background-attachment:fixed}
+body::before{background:transparent}
+/* 大面積的深色區塊改成漸層 */
+.side,.mhero,.feature,.tabbar-b,.course-foot{background:var(--grad-deep)}
+.btn:not(.ghost):not(.light),.tile,.avatar,.cat-ic,.round-btn,.mbtn[aria-current="page"] .mi{background-image:var(--grad-btn)}
+/* 卡片：霧面玻璃 */
+.block,.qcard,.tblwrap,.rcard,.kpi,.mist-card,.dhead,.wc,.rep,.empty,.addbox,.search,.search-res,.course,.banner,.book,.voc-grid .voc,.hj,.vlink,.tis-card,.place,.lip,.streak{
+  backdrop-filter:blur(14px) saturate(1.15);-webkit-backdrop-filter:blur(14px) saturate(1.15);border-color:var(--glass-line)}
+.block,.qcard,.rcard,.book,.course,.tis-card,.place{border-radius:16px}
+/* 需要不透明底色的地方 */
+.ctab.bj tr>th:first-child,select,input[type=text]{background:var(--surface-solid)}
+@media (max-width:860px){
+  .topbar{background:rgb(255 255 255 / .55);backdrop-filter:blur(16px) saturate(1.2);-webkit-backdrop-filter:blur(16px) saturate(1.2)}
+}
+@media (max-width:860px) and (prefers-color-scheme: dark){:root:not([data-theme="light"]) .topbar{background:rgb(14 21 23 / .55)}}
+@media (max-width:860px){:root[data-theme="dark"] .topbar{background:rgb(14 21 23 / .55)}}
+.subtab{background:var(--surface);color:var(--accent);border:1px solid var(--glass-line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.subtab:hover{background:var(--surface-solid)}
+.subtab[aria-selected="true"]{background:var(--grad-btn);color:#fff;border-color:transparent}
