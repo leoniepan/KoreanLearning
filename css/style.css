@@ -684,18 +684,9 @@ tr.detail td{background:var(--bg)}
 @keyframes tisStrong{0%{transform:rotate(0)}18%{transform:rotate(-55deg)}38%{transform:rotate(-40deg)}55%{transform:rotate(-50deg)}100%{transform:rotate(0)}}
 @keyframes tisStill{0%,100%{transform:rotate(0)}40%{transform:rotate(-1.5deg)}}
 @keyframes puff{0%{opacity:0;transform:translateX(0)}30%{opacity:var(--pa)}100%{opacity:0;transform:translateX(16px)}}
-.place-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:12px 0}
+.place-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin:12px 0}
 .place{border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--surface);display:flex;flex-direction:column;gap:6px}
 .place .muted{font-size:13px;margin:4px 0 0}
-.head{width:100%;max-width:260px;height:auto;align-self:center;display:block}
-.head .hd-line{fill:none;stroke:var(--muted);stroke-width:1.5}
-.head .hd-palate{fill:none;stroke:var(--ink);stroke-width:3;stroke-linecap:round}
-.head .hd-tongue{fill:#e8a0a0;stroke:#b25c5c;stroke-width:1.5}
-.head .hd-lip{fill:#d9787a;stroke:#a94f52;stroke-width:1}
-.head .hd-teeth{fill:#fff;stroke:var(--muted);stroke-width:1}
-.head .hd-hit{fill:none;stroke:#d23c3c;stroke-width:2.5}
-.head .hd-air{fill:none;stroke:var(--accent);stroke-width:2;stroke-dasharray:4 3}
-.head .hd-lbl{font-size:10px;fill:var(--muted)}
 .lip-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
 .lip{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);cursor:pointer;text-align:center}
 .lip:hover{border-color:var(--accent)}.lip .muted{font-size:12px}

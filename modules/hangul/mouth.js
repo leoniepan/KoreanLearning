@@ -33,42 +33,16 @@ export const tissueHTML = () => `<section class="block"><h3>平音・激音・�
 </section>`;
 
 // ---------- 子音的發音位置 ----------
-// 側面剖面示意圖：臉朝左。舌頭形狀、嘴唇開合、接觸點、氣流依位置不同。
-const TONGUE = {
-  rest: 'M46,97 C44,89 50,84 62,82 C90,77 120,73 140,78 C156,84 162,102 160,130 L158,178 L72,178 C60,150 52,122 46,97 Z',
-  tip: 'M47,92 C42,80 44,68 52,63 C62,64 72,72 92,76 C116,74 136,74 148,82 C160,92 162,106 160,130 L158,178 L72,178 C60,150 52,122 47,92 Z',
-  near: 'M47,93 C43,83 46,74 54,70 C64,70 74,74 92,77 C116,75 136,75 148,82 C160,92 162,106 160,130 L158,178 L72,178 C60,150 52,122 47,93 Z',
-  blade: 'M48,95 C44,86 48,76 56,70 C62,62 72,58 84,60 C104,66 130,72 148,82 C160,92 162,106 160,130 L158,178 L72,178 C60,150 52,122 48,95 Z',
-  back: 'M46,97 C44,89 50,86 62,86 C82,86 102,80 118,66 C128,57 142,56 150,64 C160,76 162,102 160,130 L158,178 L72,178 C60,150 52,122 46,97 Z'
-};
-function headSVG({ tongue = 'rest', lips = 'open', hit, gap, air, nose }) {
-  const up = lips === 'closed' ? 5 : 0, dn = lips === 'closed' ? -5 : lips === 'wide' ? 5 : 0;
-  return `<svg viewBox="0 0 200 180" class="head" aria-hidden="true">
-    <path class="hd-line" d="M22,6 C24,18 12,30 10,38 C10,44 22,48 30,54"/>
-    <path class="hd-line" d="M30,${108 + dn} C24,120 28,136 46,146 C60,152 70,164 72,180"/>
-    <path class="hd-line" d="M62,40 C96,30 140,34 172,52" stroke-dasharray="3 3"/>
-    <path class="hd-line" d="M178,40 C182,80 180,130 176,180"/>
-    <path class="hd-tongue" d="${TONGUE[tongue]}"/>
-    <path class="hd-palate" d="M44,66 C46,60 52,56 60,55 C82,50 106,46 126,50 C142,53 152,60 158,72 C162,80 160,88 153,90"/>
-    <g transform="translate(0,${up})"><path class="hd-lip" d="M42,58 C30,56 20,60 16,68 C18,74 28,77 42,75 Z"/><path class="hd-teeth" d="M38,60 L46,62 L45,74 L39,76 Z"/></g>
-    <g transform="translate(0,${dn})"><path class="hd-lip" d="M42,88 C30,86 20,88 18,94 C20,102 30,106 42,102 Z"/><path class="hd-teeth" d="M39,86 L45,88 L46,98 L38,99 Z"/></g>
-    ${hit ? `<circle class="hd-hit" cx="${hit[0]}" cy="${hit[1]}" r="7"/>` : ''}
-    ${gap ? `<path class="hd-air" d="${gap}"/>` : ''}
-    ${air ? `<path class="hd-air" d="${air}"/>` : ''}
-    ${nose ? `<path class="hd-air" d="M168,150 C170,104 168,72 152,58 C132,42 92,36 62,40 C44,42 30,40 16,38"/>` : ''}
-    <text x="100" y="26" class="hd-lbl">鼻腔</text><text x="96" y="122" class="hd-lbl">舌頭</text><text x="182" y="120" class="hd-lbl" text-anchor="end">喉</text>
-  </svg>`;
-}
 const PLACES = [
-  ['雙唇', ['ㅁ', 'ㅂ', 'ㅍ', 'ㅃ'], '上下嘴唇閉起來再打開。ㅁ 是鼻音，嘴唇閉著時氣從鼻子出來（虛線）。', { lips: 'closed', hit: [22, 81], nose: true }],
-  ['舌尖碰齒齦', ['ㄴ', 'ㄷ', 'ㅌ', 'ㄸ', 'ㄹ'], '舌尖頂住上排牙齒後面那塊硬硬的牙齦（齒齦）。ㄹ 在字首只輕輕彈一下；收尾時舌尖頂著不放。ㄴ 的氣從鼻子出來。', { tongue: 'tip', hit: [52, 61] }],
-  ['舌尖靠近齒齦', ['ㅅ', 'ㅆ'], '舌尖靠近齒齦但不碰到，留一條細縫讓氣「ㄙ」地擦出來。ㅆ 更緊、氣更細。', { tongue: 'near', hit: [55, 64], gap: 'M70,70 C60,66 52,64 40,70 L20,80' }],
-  ['舌面貼硬顎前端', ['ㅈ', 'ㅊ', 'ㅉ'], '舌頭前半段的舌面貼住齒齦後方、上顎前端，放開時帶一點摩擦，像注音 ㄐ。', { tongue: 'blade', hit: [70, 56] }],
-  ['舌根碰軟顎', ['ㄱ', 'ㅋ', 'ㄲ', 'ㅇ'], '舌頭後半部抬高，頂住上顎後面軟軟的地方（軟顎）。收尾的 ㅇ 也是這個位置，氣從鼻子出來，念 ng。', { tongue: 'back', hit: [138, 58] }],
-  ['喉嚨', ['ㅎ'], '舌頭放鬆、嘴巴打開，氣直接從喉嚨呼出來，像輕輕的「哈」。', { lips: 'wide', air: 'M168,170 C170,120 168,96 140,92 C110,88 70,84 14,84' }]
+  ['雙唇', ['ㅁ', 'ㅂ', 'ㅍ', 'ㅃ'], '上下嘴唇閉起來再打開。ㅁ 是鼻音，嘴唇閉著時氣從鼻子出來。'],
+  ['舌尖碰齒齦', ['ㄴ', 'ㄷ', 'ㅌ', 'ㄸ', 'ㄹ'], '舌尖頂住上排牙齒後面那塊硬硬的牙齦（齒齦）。ㄹ 在字首只輕輕彈一下；收尾時舌尖頂著不放。ㄴ 的氣從鼻子出來。'],
+  ['舌尖靠近齒齦', ['ㅅ', 'ㅆ'], '舌尖靠近齒齦但不碰到，留一條細縫讓氣「ㄙ」地擦出來。ㅆ 更緊、氣更細。'],
+  ['舌面貼硬顎前端', ['ㅈ', 'ㅊ', 'ㅉ'], '舌頭前半段的舌面貼住齒齦後方、上顎前端，放開時帶一點摩擦，像注音 ㄐ。'],
+  ['舌根碰軟顎', ['ㄱ', 'ㅋ', 'ㄲ', 'ㅇ'], '舌頭後半部抬高，頂住上顎後面軟軟的地方（軟顎）。收尾的 ㅇ 也是這個位置，氣從鼻子出來，念 ng。'],
+  ['喉嚨', ['ㅎ'], '舌頭放鬆、嘴巴打開，氣直接從喉嚨呼出來，像輕輕的「哈」。']
 ];
-export const placeHTML = () => `<section class="block"><h3>子音的發音位置（舌頭擺放）<small>側面剖面示意圖，臉朝左；紅圈是接觸的地方，點字母聽發音</small></h3>
-  <div class="place-grid">${PLACES.map(([t, xs, d, o]) => `<div class="place">${headSVG(o)}<div class="place-b"><b>${t}</b><div class="chip-row">${xs.map(c => say(c === 'ㅇ' ? '앙' : String.fromCharCode(0xAC00 + 'ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ'.indexOf(c) * 588))).join('')}</div><p class="muted">${d}</p></div></div>`).join('')}</div>
+export const placeHTML = () => `<section class="block"><h3>子音的發音位置（舌頭擺放）<small>點字母聽發音，對著鏡子練習</small></h3>
+  <div class="place-grid">${PLACES.map(([t, xs, d]) => `<div class="place"><div class="place-b"><b>${t}</b><div class="chip-row">${xs.map(c => say(c === 'ㅇ' ? '앙' : String.fromCharCode(0xAC00 + 'ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ'.indexOf(c) * 588))).join('')}</div><p class="muted">${d}</p></div></div>`).join('')}</div>
   <p class="tip">韓文子音的字形就是照發音器官畫的：<b lang="ko">ㄱ</b> 像舌根往上擋住喉嚨、<b lang="ko">ㄴ</b> 像舌尖碰到齒齦、<b lang="ko">ㅁ</b> 像嘴巴、<b lang="ko">ㅅ</b> 像牙齒、<b lang="ko">ㅇ</b> 像喉嚨。其他子音是在這五個字上加筆畫（ㄱ→ㅋ、ㄴ→ㄷ→ㅌ、ㅁ→ㅂ→ㅍ、ㅅ→ㅈ→ㅊ、ㅇ→ㅎ）。</p>
   <div class="vlinks">${vlink(yt('韓文 子音 發音位置 舌頭'), 'YouTube 搜尋：子音舌頭位置', '韓文 子音 發音位置 舌頭')}${vlink(yt('한국어 자음 발음 위치 혀'), 'YouTube 搜尋（韓文）', '한국어 자음 발음 위치 혀')}</div>
 </section>`;
