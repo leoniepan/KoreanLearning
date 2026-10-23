@@ -8,6 +8,7 @@ import nouns from '../nouns/index.js';
 import numbers from '../numbers/index.js';
 import topik from '../topik/index.js';
 import { quizPage as hangulQuiz } from '../hangul/index.js';
+import { readingPage } from '../reading/index.js';
 
 const pg = (m, id) => m.pages.find(p => p.id === id);
 
@@ -17,9 +18,10 @@ export default {
   ko: '연습',
   icon: 'quiz',
   glyph: '연',
-  desc: '所有測驗都在這裡：今日測驗、文法、字母、發音、單字、數字、TOPIK',
+  desc: '所有測驗都在這裡：今日測驗、每日短文、文法、字母、發音、單字、數字、TOPIK',
   pages: [
     { id: 'daily', title: '今日測驗', render: pg(daily, 'quiz').render, fresh: true, mod: 'daily' },
+    { id: 'reading', title: '每日短文', render: readingPage, mod: 'reading' },
     { id: 'grammar', title: '文法', render: pg(grammar, 'quiz').render, mod: 'grammar' },
     { id: 'hangul', title: '字母', render: hangulQuiz, mod: 'hangul' },
     { id: 'pron', title: '發音', render: pg(pron, 'quiz').render, mod: 'pron' },
