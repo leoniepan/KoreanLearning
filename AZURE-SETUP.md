@@ -11,10 +11,12 @@
 
 ---
 
-## 1. 把 GitHub repo 改成私人，並停用 GitHub Pages
+## 1. 確認 GitHub repo 是私人的
 
-1. 打開 https://github.com/leoniepan/KoreanLearning/settings/pages ，在「Source」選 **None**（或按 **Unpublish site**），停用舊的公開網址。
-2. 打開 https://github.com/leoniepan/KoreanLearning/settings ，捲到最下方 **Danger Zone** → **Change repository visibility** → 選 **Make private**，依畫面確認。
+Azure 版放在 `leoniepan/KoreanLearning_Azure`。
+
+1. 打開 https://github.com/leoniepan/KoreanLearning_Azure/settings ，確認 repo 是 **Private**。如果不是，捲到最下方 **Danger Zone** → **Change repository visibility** → 選 **Make private**。
+2. 舊的 `leoniepan/KoreanLearning` 如果還開著 GitHub Pages，那個公開網址仍然看得到網站內容。不想公開的話，到 https://github.com/leoniepan/KoreanLearning/settings/pages 的「Source」選 **None**（或按 **Unpublish site**）。
 
 ## 2. 申請 Azure 帳號
 
@@ -36,7 +38,7 @@
 | 區域 Region | East Asia（或離你最近的區域） |
 | 來源 Source | **GitHub**，按「使用 GitHub 登入」並授權 |
 | 組織 Organization | `leoniepan` |
-| 存放庫 Repository | `KoreanLearning` |
+| 存放庫 Repository | `KoreanLearning_Azure` |
 | 分支 Branch | `main` |
 | 組建預設 Build Presets | **Custom** |
 | 應用程式位置 App location | `/` |
