@@ -1,4 +1,5 @@
 // 首頁：打招呼、搜尋、單元圖示入口、今日測驗、學習單元卡片
+import { latestReading } from '../reading/index.js';
 import { $, esc } from '../../js/core/dom.js';
 import { LS } from '../../js/core/storage.js';
 import { icon } from '../../js/core/icons.js';
@@ -35,6 +36,7 @@ function render(el, ctx) {
   const name = sync.me?.email ? sync.me.email.split('@')[0] : '同學';
   const st = streak();
   const t = today(), todayScore = LS.get('daily_log', {})[t];
+  const rd = latestReading();
   const done = new Set(LS.get('done_course', []));
   // 繼續學習：最後打開的冊別與那一冊目前的課
   const lastBook = (LS.get('page_course', '') || '').toUpperCase();
@@ -80,6 +82,7 @@ function render(el, ctx) {
     <div class="sec-h"><h3>練習與速查</h3></div>
     <div class="courses">
       <button type="button" class="course" data-go="practice-daily"><span class="course-top"><span class="tile" lang="ko">오</span><span class="course-t"><b>今日測驗</b><small>${todayScore != null ? `今天答對 ${todayScore} 題` : '今天還沒做'}</small><span class="course-d">每天一組，可以自己設定範圍</span></span></span><span class="course-foot">開始${icon('arrow')}</span></button>
+      <button type="button" class="course" data-go="practice-reading"><span class="course-top"><span class="tile" lang="ko">읽</span><span class="course-t"><b>每日短文</b><small>${rd.date ? `${rd.date.slice(5).replace('-', '/')} 更新 ${rd.n} 篇` : '읽기'}</small><span class="course-d">有趣的韓文短文，讀完做閱讀測驗</span></span></span><span class="course-foot">閱讀${icon('arrow')}</span></button>
       <button type="button" class="course" data-mod="practice"><span class="course-top"><span class="tile" lang="ko">연</span><span class="course-t"><b>練習</b><small>연습</small><span class="course-d">文法、字母、發音、單字、數字、TOPIK 測驗</span></span></span><span class="course-foot">前往${icon('arrow')}</span></button>
       <button type="button" class="course" data-mod="ref"><span class="course-top"><span class="tile" lang="ko">찾</span><span class="course-t"><b>速查</b><small>찾아보기</small><span class="course-d">字母表、發音規則、動詞變化、名詞、數字、文法總覽</span></span></span><span class="course-foot">前往${icon('arrow')}</span></button>
       <button type="button" class="course" data-go="records-mistakes"><span class="course-top"><span class="tile" lang="ko">틀</span><span class="course-t"><b>錯題本</b><small>오답 노트</small><span class="course-d">答錯的題目都在這裡，可以重練</span></span></span><span class="course-foot">前往${icon('arrow')}</span></button>

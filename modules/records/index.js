@@ -8,7 +8,7 @@ const pct = (c, n) => n ? Math.round(c / n * 100) : 0;
 const fmtTime = iso => new Date(iso).toLocaleString('zh-TW', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
 const fmtDate = iso => iso ? new Date(iso).toLocaleDateString('zh-TW', { year: 'numeric', month: 'numeric', day: 'numeric' }) : '—';
 const hasKo = s => /[가-힣]/.test(s || '');
-const NAMES = { daily: '今日測驗', pron: '發音規則', verbs: '動詞・形容詞', nouns: '名詞', numbers: '數字', grammar: '文法', topik: 'TOPIK', hangul: '韓文字母', course: '課程測驗' };
+const NAMES = { reading: '每日短文', daily: '今日測驗', pron: '發音規則', verbs: '動詞・形容詞', nouns: '名詞', numbers: '數字', grammar: '文法', topik: 'TOPIK', hangul: '韓文字母', course: '課程測驗' };
 const titleOf = (ctx, id) => id === 'records' ? '錯題重練' : (NAMES[id] || ctx.modules?.find(m => m.id === id)?.title || id || '其他');
 
 function banner() {
