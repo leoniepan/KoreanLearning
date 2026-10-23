@@ -656,3 +656,6 @@ tr.detail td{background:var(--bg)}
 .lq h3{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .lq{scroll-margin-top:72px}
 .bj-h{font-weight:700;color:var(--accent)}
+.ctab.bj tr>th:first-child{position:sticky;left:0;background:var(--surface);z-index:1}
+.ctab.bj .bj-g{font-size:12px;font-weight:600;color:var(--muted)}
+.ctab.bj .bj-cv{border-left:2px solid var(--line)}
