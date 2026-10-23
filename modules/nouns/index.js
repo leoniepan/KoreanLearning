@@ -136,15 +136,15 @@ function cardsPage(el) {
   el.innerHTML = `<div class="qwrap"><p class="intro">看韓文說出中文，或看中文說出韓文和發音，再翻開確認。</p><div class="qctl"><select class="nfc-mode" aria-label="方向"><option value="kz">韓文 → 中文</option><option value="zk">中文 → 韓文</option></select><select class="nfc-cat" aria-label="分類">${catOpts}</select></div><div class="qcard nfc"></div></div>`;
   const box = $('.nfc', el), mode = $('.nfc-mode', el), csel = $('.nfc-cat', el);
   let st = { n: null, rev: false };
-  const draw = () => {
+  const draw = (sound = false) => {
     if (!st.n) { const pool = allNouns().filter(n => csel.value === 'all' || n.c === csel.value); st = { n: pick(pool.length ? pool : allNouns()), rev: false }; }
     const { n, rev } = st, kz = mode.value === 'kz';
     const front = kz ? `<div class="fc-w hg" lang="ko">${esc(n.k)}</div><p>中文是？</p>` : `<div class="fc-w">${esc(n.zh)}</div><p>韓文怎麼說？</p>`;
     const back = kz ? `<div class="fc-a">${esc(n.zh)}${sayBtn(n.k)}${nvBtn(n.k)}</div>` : `<div class="fc-a"><span class="hg" lang="ko">${esc(n.k)}</span>${prHTML(n.k)}${sayBtn(n.k)}${nvBtn(n.k)}</div>`;
     box.innerHTML = `<div class="fc-card"><p class="fc-q">${CATS[n.c]}</p>${front}${rev ? back : '<div class="fc-a muted">想好了再翻開</div>'}</div><div class="fc-btns"><button type="button" class="btn" data-v="rev">${rev ? '再聽一次' : '翻開答案'}</button><button type="button" class="btn ghost" data-v="next">下一張</button></div>`;
-    if (kz && !rev) say(n.k);
+    if (sound && kz && !rev) say(n.k);
   };
-  box.onclick = e => { const b = e.target.closest('[data-v]'); if (!b) return; if (b.dataset.v === 'rev') { st.rev = true; draw(); say(st.n.k); } else { st.n = null; draw(); } };
+  box.onclick = e => { const b = e.target.closest('[data-v]'); if (!b) return; if (b.dataset.v === 'rev') { st.rev = true; draw(); say(st.n.k); } else { st.n = null; draw(true); } };
   mode.onchange = csel.onchange = () => { st.n = null; draw(); };
   draw();
 }

@@ -58,6 +58,14 @@ function setRate(r) {
 }
 
 // 在 app 啟動時呼叫一次：語速按鈕、語音狀態、所有 data-say 按鈕的點擊
+// 使用者剛按了「頁面內」的按鈕（作答、開始測驗、下一題…）。切換頁面、選單、分頁的點擊不算，
+// 這樣打開新頁面時不會自動出聲，但在測驗裡按下一題時聽力題仍會自動播放。
+let lastAct = 0;
+const NAV = '.side,.tabbar-b,.topbar,.subtabs,.grp-tabs,.steps,.rd-list,.rd-tiers,[data-go],[data-mod],[data-hgo],[data-link],a[href]';
+document.addEventListener('pointerdown', e => { if (!e.target.closest(NAV)) lastAct = Date.now(); }, true);
+document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && !e.target.closest(NAV)) lastAct = Date.now(); }, true);
+export const userJustActed = () => Date.now() - lastAct < 2000;
+
 export function initSpeech() {
   setRate(rate);
   $('#rate-n').onclick = () => setRate(1);
