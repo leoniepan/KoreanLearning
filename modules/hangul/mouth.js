@@ -8,10 +8,12 @@ const say = (s, cls = 'chip') => `<button type="button" class="${cls}" data-say=
 
 // ---------- 衛生紙測試 ----------
 const tissueSVG = `<svg viewBox="0 0 150 100" class="tis-svg" aria-hidden="true">
-  <path class="face" d="M30,2 C30,14 22,24 14,30 C10,34 16,38 24,40 C22,44 20,46 24,48 L32,48 C26,52 26,56 32,58 C24,62 26,70 34,78 C36,90 34,98 34,100"/>
-  <g class="puff"><path d="M40,53 h18"/><path d="M42,47 h12"/><path d="M42,59 h12"/></g>
-  <line class="clip" x1="78" y1="6" x2="98" y2="6"/>
-  <path class="tis" d="M80,8 L96,8 C98,30 94,50 97,92 L81,92 C78,60 83,30 80,8 Z"/>
+  <path class="face" d="M0,0 H50 C54,8 56,16 56,22 C58,26 60,30 66,38 C68,41 66,43 61,44 C62,46 63,48 63,50 C61,52 59,53 58,54 C60,55 62,56 62,58 C61,60 59,62 59,64 C60,70 56,76 50,78 C46,80 44,88 44,100 H0 Z"/>
+  <path class="mouth" d="M57,54 h5"/>
+  <circle class="eye" cx="44" cy="24" r="2"/>
+  <g class="puff"><path d="M66,54 h8"/><path d="M66,50 l7,-2"/><path d="M66,58 l7,2"/></g>
+  <path class="hand" d="M70,30 h22"/>
+  <path class="tis" d="M74,31 L90,31 C92,48 88,64 91,88 L75,88 C72,64 77,48 74,31 Z"/>
 </svg>`;
 const TISSUE = [
   ['weak', '平音', '輕輕吐氣，衛生紙微微晃一下', ['가', '다', '바', '자']],
@@ -19,7 +21,7 @@ const TISSUE = [
   ['still', '硬音', '喉嚨用力憋住，幾乎沒有氣，衛生紙不動', ['까', '따', '빠', '짜']]
 ];
 export const tissueHTML = () => `<section class="block"><h3>平音・激音・硬音：衛生紙測試<small>點字母聽發音，看看衛生紙的反應</small></h3>
-  <p>拿一張衛生紙（或薄紙）垂在嘴巴前面大約 5 公分，念念看下面三組字。<b>送出來的氣</b>有多少，就是三種子音最大的差別。</p>
+  <p>拿一張衛生紙（或薄紙）垂在嘴巴正前方，離嘴唇大約 3～5 公分，念念看下面三組字。<b>送出來的氣</b>有多少，就是三種子音最大的差別。</p>
   <div class="tis-row">${TISSUE.map(([k, t, d, xs]) => `<div class="tis-card" data-tis="${k}">
     <button type="button" class="tis-pic" data-say="${xs[0]}" aria-label="念 ${xs[0]}">${tissueSVG}</button>
     <div class="tis-t"><b>${t}</b><span class="muted">${d}</span></div>
@@ -72,7 +74,7 @@ export const placeHTML = () => `<section class="block"><h3>子音的發音位置
 </section>`;
 
 // ---------- 母音嘴型 ----------
-// 正面嘴型：[母音, 開口寬, 開口高, 是否圓唇, 看得到牙齒, 說明]
+// 嘴型說明：[母音, 開口寬, 開口高, 是否圓唇, 看得到牙齒, 說明]（數值目前沒用到）
 const LIPS = [
   ['ㅏ', 22, 20, 0, 0, '嘴巴張大，下巴往下'],
   ['ㅓ', 22, 13, 0, 0, '嘴巴半開，不要圓唇'],
@@ -83,19 +85,9 @@ const LIPS = [
   ['ㅔ', 22, 9, 0, 1, '嘴巴稍微打開，嘴角放鬆'],
   ['ㅐ', 23, 13, 0, 1, '比 ㅔ 再張大一點（現在多半念得一樣）']
 ];
-function lipSVG([, w, h, round, teeth]) {
-  const ow = w + (round ? 13 : 12), oh = h + (round ? 12 : 9);
-  return `<svg viewBox="0 0 90 60" class="lips" aria-hidden="true">
-    <ellipse class="lp-o" cx="45" cy="30" rx="${ow}" ry="${oh}"/>
-    <clipPath id="lc${w}${h}"><ellipse cx="45" cy="30" rx="${w}" ry="${h}"/></clipPath>
-    <ellipse class="lp-i" cx="45" cy="30" rx="${w}" ry="${h}"/>
-    ${teeth ? `<rect class="lp-t" x="${45 - w}" y="${30 - h - 1}" width="${w * 2}" height="${Math.max(3, h * 0.6)}" clip-path="url(#lc${w}${h})"/>` : ''}
-    ${round ? '' : `<path class="lp-c" d="M${45 - ow},30 l-4,0 M${45 + ow},30 l4,0"/>`}
-  </svg>`;
-}
 const vs = v => String.fromCharCode(0xAC00 + 11 * 588 + 'ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ'.indexOf(v) * 28);
-export const lipsHTML = () => `<section class="block"><h3>母音的嘴型與舌位<small>點嘴型或字母聽發音；對著鏡子比較最清楚</small></h3>
-  <div class="lip-grid">${LIPS.map(l => `<button type="button" class="lip" data-say="${vs(l[0])}">${lipSVG(l)}<span class="hj-l" lang="ko">${l[0]}</span><span class="muted">${l[5]}</span></button>`).join('')}</div>
+export const lipsHTML = () => `<section class="block"><h3>母音的嘴型與舌位<small>點字母聽發音；對著鏡子看自己的嘴型最清楚</small></h3>
+  <div class="lip-grid">${LIPS.map(l => `<button type="button" class="lip" data-say="${vs(l[0])}"><span class="hj-l" lang="ko">${l[0]}</span><span class="muted">${l[5]}</span></button>`).join('')}</div>
   <h4 class="voc-h">舌位表</h4>
   <p class="muted">直的方向是舌頭高低（嘴巴越開、舌頭越低），橫的方向是舌頭偏前還是偏後。</p>
   <div class="ctab-wrap"><table class="ctab vtab"><tr><th></th><th>舌前<br><small>不圓唇</small></th><th>舌後<br><small>不圓唇</small></th><th>舌後<br><small>圓唇</small></th></tr>

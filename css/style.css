@@ -669,8 +669,9 @@ tr.detail td{background:var(--bg)}
 .tis-card{border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px;background:var(--surface)}
 .tis-pic{border:0;background:var(--bg);border-radius:10px;padding:6px;cursor:pointer}
 .tis-svg{width:100%;height:110px;display:block}
-.tis-svg .face{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round}
-.tis-svg .clip{stroke:var(--muted);stroke-width:3;stroke-linecap:round}
+.tis-svg .face{fill:#f1c9a5;stroke:#b98a64;stroke-width:1.2}
+.tis-svg .mouth{stroke:#a94f52;stroke-width:2;stroke-linecap:round}.tis-svg .eye{fill:#3b2a20}
+.tis-svg .hand{stroke:var(--muted);stroke-width:3;stroke-linecap:round}
 .tis-svg .tis{fill:#fff;stroke:var(--muted);stroke-width:1;transform-box:fill-box;transform-origin:50% 0}
 .tis-svg .puff path{stroke:var(--accent);stroke-width:2;stroke-linecap:round;opacity:0}
 .tis-t b{display:block}.tis-t .muted{font-size:13px}
@@ -696,11 +697,8 @@ tr.detail td{background:var(--bg)}
 .head .hd-air{fill:none;stroke:var(--accent);stroke-width:2;stroke-dasharray:4 3}
 .head .hd-lbl{font-size:10px;fill:var(--muted)}
 .lip-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
-.lip{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 6px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);cursor:pointer;text-align:center}
+.lip{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);cursor:pointer;text-align:center}
 .lip:hover{border-color:var(--accent)}.lip .muted{font-size:12px}
-.lips{width:96px;height:64px}
-.lips .lp-o{fill:#d9787a;stroke:#a94f52;stroke-width:1}.lips .lp-i{fill:#4a1f22}.lips .lp-t{fill:#fff}
-.lips .lp-c{stroke:#a94f52;stroke-width:1.5;stroke-linecap:round}
 .vtab td{text-align:center;padding:2px}.vtab th{font-size:13px;font-weight:600}
 .glide{display:flex;flex-direction:column;gap:10px;margin:8px 0}
 .glide-g b{display:block;font-size:14px;margin-bottom:4px}
