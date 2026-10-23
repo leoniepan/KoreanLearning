@@ -69,11 +69,12 @@ function bookPage(book) {
       const links = LINKS[k] || [];
       body.innerHTML = `
         <header class="lh"><p class="eyebrow">${book} 第 ${cur} 課</p><h2 lang="ko">${esc(titleOf(book, cur))}</h2>
+          <div class="lq-top"><button type="button" class="btn" data-lq="start">本課測驗</button><span class="muted">文法和詞彙，最多 10 題</span></div>
           <div class="lchips"><span class="lchip">詞彙主題：<b lang="ko">${esc(th[0])}</b> ${esc(th[1])}</span>${g.map(l => `<a class="lchip gram" href="#g-${l.id}">${esc(l.name)}</a>`).join('')}</div></header>
+        <section class="block lq" hidden><h3>本課測驗<button type="button" class="btn ghost small" data-lq="close">收起</button></h3><div class="qcard qbox"></div></section>
         ${vocabHTML(book, cur)}
         ${g.concat(supp).map((l, i) => `<section class="gsec" id="g-${l.id}"><h3 class="gsec-h"><span class="gnum">文法 ${i + 1}</span>${esc(l.name)}</h3>${l.sum ? `<p class="lead">${l.sum}</p>` : ''}${lessonBlocks(l)}</section>`).join('')}
         ${links.length ? `<section class="block"><h3>延伸</h3><div class="chip-row">${links.map(([r, t, sub]) => `<button type="button" class="chip" data-link="${r}" data-sub="${sub || ''}">${esc(t)}</button>`).join('')}</div></section>` : ''}
-        <section class="block lq"><h3>本課測驗<small>文法和詞彙，最多 10 題</small></h3><div class="qcard qbox"><button type="button" class="btn" data-lq="start">開始本課測驗</button></div></section>
         <div class="lnav">
           <button type="button" class="btn ghost" data-l="prev" ${cur === 1 ? 'disabled' : ''}>上一課</button>
           <button type="button" class="btn" data-l="done">${done.has(k) ? '已完成，下一課' : '完成本課，下一課'}</button>
@@ -91,7 +92,8 @@ function bookPage(book) {
         return;
       }
       const q = e.target.closest('[data-lq]');
-      if (q) { const box = $('.lq .qbox', body); const start = () => { const qs = lessonQuiz(book, cur); if (!qs.length) { box.innerHTML = '<p class="muted">這一課還沒有測驗題。</p>'; return; } runQuiz(box, qs, 'best_course_' + key(book, cur), start); }; start(); return; }
+      if (q && q.dataset.lq === 'close') { $('.lq', body).hidden = true; return; }
+      if (q) { $('.lq', body).hidden = false; $('.lq', body).scrollIntoView({ behavior: 'smooth', block: 'start' }); const box = $('.lq .qbox', body); const start = () => { const qs = lessonQuiz(book, cur); if (!qs.length) { box.innerHTML = '<p class="muted">這一課還沒有測驗題。</p>'; return; } runQuiz(box, qs, 'best_course_' + key(book, cur), start); }; start(); return; }
       const k = e.target.closest('[data-link]');
       if (k) ctx.go(k.dataset.link, k.dataset.sub ? { sub: k.dataset.sub } : {});
     });

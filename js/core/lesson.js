@@ -49,13 +49,12 @@ export function lessonPage({ lessons, doneKey, curKey, quizRoute, intro }) {
       const hasQuiz = quizRoute && (l.quiz ? l.quiz.length : true);
       const items = shuffle(l.words || []).concat(shuffle((l.sents || []).map(s => s[0])).slice(0, l.words ? 3 : 6));
       body.innerHTML = `
-      <header class="lh"><p class="eyebrow">第 ${cur + 1} 步${l.ko ? ` · <span lang="ko">${esc(l.ko)}</span>` : ''}</p><h2>${esc(l.name)}</h2>${l.sum ? `<p class="lead">${l.sum}</p>` : ''}</header>
+      <header class="lh"><p class="eyebrow">第 ${cur + 1} 步${l.ko ? ` · <span lang="ko">${esc(l.ko)}</span>` : ''}</p><h2>${esc(l.name)}</h2>${hasQuiz ? `<div class="lq-top"><button type="button" class="btn" data-l="quiz">測驗這一課</button></div>` : ''}${l.sum ? `<p class="lead">${l.sum}</p>` : ''}</header>
       ${lessonBlocks(l)}
       ${items.length ? `<div class="block"><h3>跟讀練習</h3><div class="pfc"></div></div>` : ''}
       <div class="lnav">
         <button type="button" class="btn ghost" data-l="prev" ${cur === 0 ? 'disabled' : ''}>上一課</button>
         <button type="button" class="btn" data-l="done">${cur === lessons.length - 1 ? (done.has(l.id) ? '已完成全部課程' : '完成全部課程') : '我學會了，下一課'}</button>
-        ${hasQuiz ? `<button type="button" class="btn ghost" data-l="quiz">測驗這一課</button>` : ''}
       </div>`;
       if (items.length) flash($('.pfc', body), items);
     }

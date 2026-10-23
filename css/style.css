@@ -652,3 +652,6 @@ tr.detail td{background:var(--bg)}
 .hj-ex{align-items:flex-end;text-align:right}
 .hj-ex .hg{font-size:17px}
 @media (max-width:600px){.hj-list{grid-template-columns:1fr}.hj-ex{width:auto!important}}
+.lq-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 4px}
+.lq h3{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.lq{scroll-margin-top:72px}

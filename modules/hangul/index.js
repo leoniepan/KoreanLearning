@@ -69,6 +69,7 @@ export function chartPage(el, ctx) {
     : `<div class="hj-item"><button type="button" class="hj-mini" data-say="${soundOfV(x[0])}" lang="ko">${x[0]}</button><div class="hj-info"><span class="rom">${x[1]}</span><span class="muted">${esc(x[2])}</span></div><button type="button" class="fm hj-ex" data-say="${x[4]}"><span class="hg" lang="ko">${x[4]}</span><small class="muted">${x[5]}</small></button></div>`).join('')}</div>`;
   const grid = `<div class="ctab-wrap"><table class="ctab bj"><tr><th></th>${BASIC_V.map(v => `<th lang="ko">${v}</th>`).join('')}</tr>${BASIC_C.map(c => `<tr><th lang="ko">${c}</th>${BASIC_V.map(v => { const s = syl(c, v); return `<td><button type="button" class="bj-s" data-say="${s}" lang="ko">${s}</button></td>`; }).join('')}</tr>`).join('')}</table></div>`;
   el.innerHTML = `<div class="stack">
+    ${ctx && ctx.quizRoute ? `<div class="lq-top"><button type="button" class="btn" data-hgo="${ctx.quizRoute}">字母測驗</button><span class="muted">看字母選拼音、聽音分辨、拼字</span></div>` : ''}
     <p class="intro">韓文由<b>子音</b>和<b>母音</b>組成，一個字至少是「子音＋母音」。點任何一個字母都可以聽發音（子音用「子音＋ㅏ」念、母音用「ㅇ＋母音」念）。注音只是近似音，請以喇叭和 Naver 的發音為準。</p>
     <section class="block"><h3>子音 19 個<small>點字母聽「子音＋ㅏ」，下方小字是字母名稱</small></h3>
       ${grp('平音（輕輕發，不送氣）', byType('平音'))}
@@ -89,7 +90,6 @@ export function chartPage(el, ctx) {
     <section class="block"><h3>母音詳細對照<small>羅馬拼音、注音近似音和例詞</small></h3>${detailRows(VOWS, false)}</section>
     <section class="block"><h3>收尾音（받침）</h3><p>字的最下面那個子音叫收尾音。收尾雖然寫法很多，念起來只有 7 種：<b lang="ko">ㄱ ㄴ ㄷ ㄹ ㅁ ㅂ ㅇ</b>（例如 ㅋ、ㄲ 收尾都念 ㄱ）。詳細規則在「發音規則」。</p>
       <div class="hj-grid">${[['ㄱ', '각'], ['ㄴ', '간'], ['ㄷ', '갇'], ['ㄹ', '갈'], ['ㅁ', '감'], ['ㅂ', '갑'], ['ㅇ', '강']].map(([t, s]) => `<button type="button" class="hj" data-say="${s}"><span class="hj-l" lang="ko">${s}</span><span class="hj-r">收尾 ${t}</span></button>`).join('')}</div></section>
-    ${ctx && ctx.quizRoute ? `<div class="lnav"><button type="button" class="btn" data-hgo="${ctx.quizRoute}">字母測驗</button></div>` : ''}
   </div>`;
   el.onclick = e => { const b = e.target.closest('[data-hgo]'); if (b && ctx) ctx.go(b.dataset.hgo); };
 }
