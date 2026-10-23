@@ -129,10 +129,26 @@ function drawSync(s) {
     online: ['ok', n ? `已登入・${n} 筆紀錄等待上傳` : '已登入・紀錄會同步到雲端'],
     offline: ['', '離線模式・紀錄只存在這台裝置'],
     signedout: ['warn', '尚未登入・紀錄只存在這台裝置'],
+    pending: ['warn', n ? `等待管理者核准・${n} 筆紀錄核准後上傳` : '等待管理者核准・紀錄先存在這台裝置'],
+    disabled: ['warn', '帳號已停用・紀錄只存在這台裝置'],
     error: ['warn', '雲端紀錄暫時無法使用']
   }[s.mode] || ['', ''];
   el.className = 'sync ' + msg[0];
   el.textContent = s.error && s.mode === 'online' ? s.error : msg[1];
+  drawAccessNote(s);
+}
+
+// 等待核准／已停用時，在每一頁最上方提示
+function drawAccessNote(s) {
+  const host = $('.content-inner'); if (!host) return;
+  let note = $('#access-note');
+  const text = {
+    pending: `<b>帳號等待開通</b>　你已經用 ${esc(s.me?.email || '')} 登入，管理者核准後就會開始把紀錄存到雲端。在那之前可以照常練習，紀錄會先存在這台裝置，核准後自動補上傳。`,
+    disabled: `<b>這個帳號已被停用</b>　紀錄不會再存到雲端。如果覺得有誤，請聯絡網站管理者；或<a href="/logout">登出</a>換一個帳號。`
+  }[s.mode];
+  if (!text) { note?.remove(); return; }
+  if (!note) { note = document.createElement('div'); note.id = 'access-note'; note.className = 'banner warn'; note.setAttribute('role', 'status'); host.prepend(note); }
+  note.innerHTML = text;
 }
 
 async function main() {

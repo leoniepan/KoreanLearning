@@ -6,7 +6,8 @@
 // - 靜態檔案直接從專案資料夾提供
 // - /api/* 交給 api/src/lib/handlers.js 處理，資料存在 tools/.devdata.json（記憶體版資料庫）
 // - 模擬 Azure 的登入：預設以 me@example.com（管理者）登入
-//   切換使用者：http://localhost:4280/.dev/login?email=anna@example.com
+//   新使用者自行登入（等待核准）：http://localhost:4280/.dev/login?email=anna@example.com
+//   透過 Azure 邀請的使用者（learner 角色）：http://localhost:4280/.dev/login?email=anna@example.com&invite=1
 //   切換成管理者：http://localhost:4280/.dev/login?email=me@example.com&admin=1
 import { createServer } from 'node:http';
 import { readFile, writeFile } from 'node:fs/promises';
@@ -36,7 +37,9 @@ const routes = [
   ['GET', /^\/api\/stats$/, h.myStats],
   ['GET', /^\/api\/manage\/overview$/, h.manageOverview, true],
   ['GET', /^\/api\/manage\/users\/([^/]+)\/stats$/, h.manageUserStats, true],
-  ['GET', /^\/api\/manage\/export$/, h.manageExport, true]
+  ['GET', /^\/api\/manage\/export$/, h.manageExport, true],
+  ['GET', /^\/api\/manage\/accounts$/, h.manageAccounts, true],
+  ['POST', /^\/api\/manage\/accounts\/([^/]+)$/, h.manageSetAccess, true]
 ];
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.md': 'text/plain; charset=utf-8' };
 
@@ -45,7 +48,8 @@ function currentUser(req) {
   if (c.devuser === '') return null;
   const email = c.devuser || DEFAULT.email;
   const admin = c.devuser ? c.devadmin === '1' : DEFAULT.admin;
-  return { userId: 'dev-' + email.replace(/[^a-z0-9]/gi, '_'), email, roles: ['anonymous', 'authenticated', 'learner', ...(admin ? ['admin'] : [])] };
+  const invited = c.devuser ? c.devinvite === '1' : true;
+  return { userId: 'dev-' + email.replace(/[^a-z0-9]/gi, '_'), email, roles: ['anonymous', 'authenticated', ...(invited ? ['learner'] : []), ...(admin ? ['admin'] : [])] };
 }
 
 const send = (res, status, body, headers = {}) => { res.writeHead(status, headers); res.end(body); };
@@ -56,7 +60,7 @@ createServer(async (req, res) => {
   try {
     if (url.pathname === '/.dev/login') {
       const email = url.searchParams.get('email') || DEFAULT.email;
-      return send(res, 302, '', { 'Set-Cookie': [`devuser=${encodeURIComponent(email)}; Path=/`, `devadmin=${url.searchParams.get('admin') === '1' ? '1' : '0'}; Path=/`], Location: '/' });
+      return send(res, 302, '', { 'Set-Cookie': [`devuser=${encodeURIComponent(email)}; Path=/`, `devadmin=${url.searchParams.get('admin') === '1' ? '1' : '0'}; Path=/`, `devinvite=${url.searchParams.get('invite') === '1' ? '1' : '0'}; Path=/`], Location: '/' });
     }
     if (url.pathname === '/logout' || url.pathname === '/.dev/logout') return send(res, 302, '', { 'Set-Cookie': 'devuser=; Path=/', Location: '/' });
     if (url.pathname === '/.auth/me') {

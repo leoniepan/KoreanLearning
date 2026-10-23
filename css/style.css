@@ -772,3 +772,28 @@ body::before{background:transparent}
   .rd-item{flex:none;width:240px;background:var(--surface)}
 }
 .rd-art .btn svg{width:18px;height:18px;vertical-align:-3px;margin-right:4px}
+
+/* 帳號開通（管理者） */
+.kpis.k3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.st{display:inline-block;font-size:12px;font-weight:600;line-height:1.6;padding:0 8px;border-radius:999px;background:var(--chip);color:var(--ink);white-space:nowrap}
+.st-wait{background:var(--markbg);color:var(--mark)}
+.st-good{background:var(--okbg);color:var(--ok)}
+.st-off{background:var(--chip);color:var(--muted)}
+.st-admin{background:var(--accent);color:var(--accent-ink)}
+.acc-tab tr.acc-wait td{background:color-mix(in srgb,var(--markbg) 45%,transparent)}
+.acc-act{white-space:nowrap}
+.acc-act .btn+.btn{margin-left:6px}
+.banner .btn.small{margin-left:8px;vertical-align:baseline}
+/* 一般的 ghost 按鈕在深色模式對比不足，這裡改用會隨主題切換的 accent 色 */
+.acc-act .btn.ghost{color:var(--accent);border-color:var(--line)}
+.acc-intro{margin-bottom:16px}
+.acc-foot{margin-top:12px}
+@media (max-width:760px){
+  .kpis.k3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .acc-tab{min-width:0}
+  .acc-tab .acc-date{display:none}
+  .acc-mail{word-break:break-all}
+  .acc-act{white-space:normal}
+  .acc-act .btn+.btn{margin:6px 0 0}
+  .acc-act .btn{display:block;width:100%}
+}

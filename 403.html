@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>尚未開通 · 발음·동사 연습장</title>
+<title>沒有權限 · 발음·동사 연습장</title>
 <style>
 :root{--bg:#eef2f0;--surface:#fbfcfb;--ink:#17232a;--muted:#566a6c;--line:#d3ddd9;--accent:#1d6b58;--accent-ink:#fff}
 @media (prefers-color-scheme:dark){:root{--bg:#0f1719;--surface:#162123;--ink:#e3ece9;--muted:#9db0ad;--line:#26383a;--accent:#5fc3a6;--accent-ink:#0b1513;color-scheme:dark}}
@@ -16,10 +16,10 @@ a.btn{align-self:flex-start;background:var(--accent);color:var(--accent-ink);tex
 </head>
 <body>
 <main class="card">
-  <h1>這個帳號還沒有使用權限</h1>
-  <p>你已經用 Microsoft 帳號登入，但這個帳號還沒有被邀請使用這個網站。</p>
-  <p>請把你登入用的 email 告訴網站管理者，收到邀請連結後點開並登入即可使用。</p>
-  <p>如果登入錯帳號，請先登出再用正確的帳號登入。</p>
+  <h1>沒有權限</h1>
+  <p>這個頁面只有網站管理者可以使用。</p>
+  <p>如果你是管理者，請確認 Azure 的「角色管理」已經把你的帳號設為 <code>admin</code>，然後登出再登入一次。</p>
+  <a class="btn" href="/">回首頁</a>
   <a class="btn" href="/.auth/logout?post_logout_redirect_uri=/">登出，換一個帳號</a>
 </main>
 </body>

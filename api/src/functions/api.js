@@ -30,3 +30,5 @@ reg('myStats', ['GET'], 'stats', h.myStats);
 reg('manageOverview', ['GET'], 'manage/overview', h.manageOverview);
 reg('manageUserStats', ['GET'], 'manage/users/{userId}/stats', h.manageUserStats);
 reg('manageExport', ['GET'], 'manage/export', h.manageExport);
+reg('manageAccounts', ['GET'], 'manage/accounts', h.manageAccounts);
+reg('manageSetAccess', ['POST'], 'manage/accounts/{userId}', h.manageSetAccess);

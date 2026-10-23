@@ -1,8 +1,8 @@
-// 單元：我的紀錄（總覽、錯題本）與管理頁（只有管理者看得到）
+// 單元：我的紀錄（總覽、錯題本）與管理頁、帳號開通（只有管理者看得到）
 import { $, esc, shuffle } from '../../js/core/dom.js';
 import { SPK, sayBtn, nvBtn } from '../../js/core/speech.js';
 import { runQuiz } from '../../js/core/quiz.js';
-import { sync, myStats, apiGet, apiDownload } from '../../js/core/sync.js';
+import { sync, myStats, apiGet, apiPost, apiDownload } from '../../js/core/sync.js';
 
 const pct = (c, n) => n ? Math.round(c / n * 100) : 0;
 const fmtTime = iso => new Date(iso).toLocaleString('zh-TW', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
@@ -13,6 +13,8 @@ const titleOf = (ctx, id) => id === 'records' ? '錯題重練' : (NAMES[id] || c
 
 function banner() {
   if (sync.mode === 'online') return `<div class="banner ok"><b>已登入 ${esc(sync.me.email)}</b>　你的作答會同步到雲端，換裝置登入也看得到。管理者可以看到每位使用者的練習紀錄。</div>`;
+  if (sync.mode === 'pending') return `<div class="banner warn"><b>帳號等待開通</b>　管理者核准前，紀錄先存在這台裝置；核准後下次開啟網站會自動補上傳。</div>`;
+  if (sync.mode === 'disabled') return `<div class="banner warn"><b>這個帳號已被停用</b>　紀錄只存在這台裝置，不會上傳到雲端。</div>`;
   if (sync.mode === 'signedout') return `<div class="banner warn"><b>尚未登入</b>　目前的紀錄只存在這台裝置。登入後才會同步到雲端。</div>`;
   if (sync.mode === 'error') return `<div class="banner warn"><b>雲端紀錄暫時無法使用</b>　${esc(sync.error || '')} 目前先顯示這台裝置上的紀錄。</div>`;
   return `<div class="banner"><b>離線模式</b>　這個版本沒有連到雲端，紀錄只存在這台裝置的瀏覽器（最近 300 回）。網站搬到 Azure 並登入後，就會自動同步。</div>`;
@@ -116,7 +118,10 @@ async function adminPage(el, ctx) {
   el.innerHTML = `<p class="muted">讀取所有使用者的紀錄中…</p>`;
   let o;
   try { o = await apiGet('/api/manage/overview'); } catch (e) { el.innerHTML = `<p class="badm">讀取失敗：${esc(e.message)}</p>`; return; }
+  let waiting = 0;
+  try { waiting = (await apiGet('/api/manage/accounts')).pending; } catch { }
   el.innerHTML = `
+  ${waiting ? `<div class="banner warn"><b>有 ${waiting} 個帳號等待開通</b>　<button type="button" class="btn small" data-go="records-access">前往核准</button></div>` : ''}
   <div class="admin-head"><p class="intro">共 <b>${o.users.length}</b> 位使用者、<b>${o.totalAttempts}</b> 回測驗。只有管理者看得到這一頁。</p><button type="button" class="btn ghost" data-export>匯出所有作答（CSV）</button></div>
   <p class="muted" id="exp-msg" aria-live="polite"></p>
   <section class="block"><h3>使用者</h3>
@@ -131,6 +136,7 @@ async function adminPage(el, ctx) {
     </tbody></table></div>` : '<p class="muted">資料還不夠，等大家多做幾回測驗再來看。</p>'}
   </section>`;
   el.onclick = async e => {
+    const g = e.target.closest('[data-go]'); if (g) { ctx.go(g.dataset.go); return; }
     const u = e.target.closest('[data-user]');
     if (u) {
       const box = $('#u-detail', el); box.hidden = false; box.innerHTML = '<p class="muted">讀取中…</p>';
@@ -153,6 +159,63 @@ async function adminPage(el, ctx) {
   };
 }
 
+// ---------- 帳號開通 ----------
+const STATUS = {
+  pending: ['wait', '等待核准'],
+  approved: ['good', '已開通'],
+  disabled: ['off', '已停用'],
+  admin: ['admin', '管理者']
+};
+function actions(a) {
+  const b = (status, label, cls = 'ghost') => `<button type="button" class="btn small ${cls}" data-set="${status}" data-uid="${esc(a.userId)}" data-email="${esc(a.email)}">${label}</button>`;
+  if (a.userId === sync.me?.userId) return '<span class="muted">（你自己）</span>';
+  if (a.status === 'admin') return '<span class="muted">在 Azure 角色管理調整</span>';
+  if (a.status === 'pending') return b('approved', '核准', '') + b('disabled', '拒絕');
+  if (a.status === 'approved') return b('disabled', '停用');
+  return b('approved', '重新啟用');
+}
+async function accessPage(el) {
+  el.innerHTML = `<p class="muted">讀取帳號中…</p>`;
+  let d;
+  try { d = await apiGet('/api/manage/accounts'); } catch (e) { el.innerHTML = `<p class="badm">讀取失敗：${esc(e.message)}</p>`; return; }
+  const count = st => d.accounts.filter(a => a.status === st).length;
+  el.innerHTML = `
+  <p class="intro acc-intro">任何人用 Microsoft 帳號登入後，都會出現在這裡。<b>核准</b>後才會開始把他的紀錄存到雲端；<b>停用</b>後就不再接受他的紀錄，已存的紀錄會保留。</p>
+  <div class="kpis k3">
+    <div class="kpi"><span>等待核准</span><b>${count('pending')}</b><small>人</small></div>
+    <div class="kpi"><span>已開通</span><b>${count('approved') + count('admin')}</b><small>人</small></div>
+    <div class="kpi"><span>已停用</span><b>${count('disabled')}</b><small>人</small></div>
+  </div>
+  <p class="muted" id="acc-msg" aria-live="polite"></p>
+  <section class="block"><h3>帳號<small>等待核准的排在最前面</small></h3>
+    <div class="ctab-wrap"><table class="ctab atab acc-tab"><thead><tr><th>帳號</th><th>狀態</th><th class="acc-date">第一次登入</th><th class="acc-date">最近登入</th><th></th></tr></thead><tbody>
+    ${d.accounts.map(a => `<tr class="${a.status === 'pending' ? 'acc-wait' : ''}">
+      <td class="acc-mail">${esc(a.email || a.userId)}${a.viaInvite && a.status !== 'admin' ? '<br><small class="muted">Azure 邀請</small>' : ''}</td>
+      <td><span class="st st-${STATUS[a.status][0]}">${STATUS[a.status][1]}</span>${a.decidedBy && a.status !== 'admin' ? `<br><small class="muted">${fmtDate(a.decidedAt)}・${esc(a.decidedBy)}</small>` : ''}</td>
+      <td class="acc-date">${fmtDate(a.requestedAt)}</td>
+      <td class="acc-date">${fmtDate(a.lastSeen)}</td>
+      <td class="acc-act">${actions(a)}</td>
+    </tr>`).join('') || '<tr><td colspan="5" class="muted">還沒有人登入過。</td></tr>'}
+    </tbody></table></div>
+  </section>
+  <p class="muted acc-foot">對方的狀態改變後，請他重新整理網頁就會生效。管理者本身的權限由 Azure Static Web Apps 的「角色管理」設定。</p>`;
+  el.onclick = async e => {
+    const b = e.target.closest('[data-set]'); if (!b) return;
+    const st = b.dataset.set;
+    if (st === 'disabled' && !confirm(`確定要停用 ${b.dataset.email}？\n停用後他的新紀錄不會再存到雲端，已存的紀錄會保留。`)) return;
+    el.querySelectorAll('[data-set]').forEach(x => { x.disabled = true; });
+    const msg = $('#acc-msg', el);
+    try {
+      await apiPost(`/api/manage/accounts/${encodeURIComponent(b.dataset.uid)}`, { status: st });
+      await accessPage(el);
+      $('#acc-msg', el).textContent = `已${st === 'approved' ? '開通' : st === 'disabled' ? '停用' : '變更'} ${b.dataset.email}。`;
+    } catch (err) {
+      msg.textContent = '變更失敗：' + err.message;
+      el.querySelectorAll('[data-set]').forEach(x => { x.disabled = false; });
+    }
+  };
+}
+
 export default {
   id: 'records',
   title: '我的紀錄',
@@ -163,6 +226,7 @@ export default {
   pages: [
     { id: 'overview', title: '總覽', render: overviewPage, fresh: true },
     { id: 'mistakes', title: '錯題本', render: mistakesPage, fresh: true },
-    { id: 'admin', title: '管理', render: adminPage, fresh: true, visible: () => !!sync.me?.isAdmin }
+    { id: 'admin', title: '管理', render: adminPage, fresh: true, visible: () => !!sync.me?.isAdmin },
+    { id: 'access', title: '帳號開通', render: accessPage, fresh: true, visible: () => !!sync.me?.isAdmin }
   ]
 };

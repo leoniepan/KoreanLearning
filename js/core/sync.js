@@ -4,6 +4,8 @@
 //   - 每做完一回測驗，就把每一題的作答上傳到 /api/attempts
 //   - 學習進度、最佳分數、自訂單字等存在 /api/state，換裝置登入會自動合併回來
 //   - 網路斷線時先暫存在這台裝置，下次連線再補送
+// 登入了但帳號還沒被核准（pending）或被停用（disabled）：
+//   - 和離線模式一樣用這台裝置的紀錄；等待核准期間的作答會先排隊，核准後下次開網站自動補上傳
 // 沒有 API 時（GitHub Pages、本機預覽、Claude 上的版本）＝離線模式：
 //   - 紀錄只存在這台裝置的瀏覽器，「我的紀錄」用本機資料計算
 import { LS, onSet } from './storage.js';
@@ -34,6 +36,7 @@ async function api(path, { method = 'GET', body, timeout = 8000 } = {}) {
   } finally { clearTimeout(t); }
 }
 export const apiGet = path => api(path);
+export const apiPost = (path, body) => api(path, { method: 'POST', body });
 export async function apiDownload(path) {
   const res = await fetch(path, { credentials: 'same-origin' });
   if (!res.ok) throw new Error('下載失敗（HTTP ' + res.status + '）');
@@ -44,7 +47,8 @@ export async function apiDownload(path) {
 export async function initSync() {
   try {
     sync.me = await api('/api/me', { timeout: 4000 });
-    sync.mode = 'online';
+    // 舊版 API 沒有 access 欄位，視為已核准
+    sync.mode = !sync.me.access || sync.me.access === 'approved' ? 'online' : sync.me.access;
   } catch (e) {
     sync.mode = e.status === 401 || e.status === 403 ? 'signedout' : e.status === 503 ? 'error' : 'offline';
     sync.error = e.notApi ? null : e.message;
@@ -52,6 +56,7 @@ export async function initSync() {
     return sync;
   }
   emit();
+  if (sync.mode !== 'online') return sync;   // 等待核准或已停用：不同步
   try {
     const remote = await api('/api/state');
     const local = collectState();
@@ -98,8 +103,10 @@ export function recordAttempt(answers) {
   // 這台裝置的紀錄（離線模式的「我的紀錄」用這份）
   const local = { id: 'a-' + at.cid, ...at, total: answers.length, score: answers.filter(a => a.ok).length };
   LS.set('history', [local, ...LS.get('history', [])].slice(0, MAX_LOCAL), { silent: true });
-  if (sync.mode === 'online') {
-    LS.set('outbox', [...LS.get('outbox', []), at].slice(-MAX_LOCAL), { silent: true });
+  // 等待核准時也先排隊，核准後就會上傳；停用的帳號不排隊
+  // uid：記下是誰的紀錄，同一台裝置換帳號登入時，才不會上傳到別人的帳號
+  if (sync.mode === 'online' || sync.mode === 'pending') {
+    LS.set('outbox', [...LS.get('outbox', []), { ...at, uid: sync.me?.userId }].slice(-MAX_LOCAL), { silent: true });
     flush();
   }
   emit();
@@ -110,20 +117,25 @@ export async function flush() {
   if (flushing || sync.mode !== 'online') return;
   flushing = true;
   try {
+    // 只上傳目前登入者的紀錄（舊版沒有 uid 的視為目前登入者）；別人的留著等他登入
+    const uid = sync.me?.userId;
+    const mine = x => !x.uid || x.uid === uid;
     let box = LS.get('outbox', []);
-    while (box.length) {
-      try { await api('/api/attempts', { method: 'POST', body: box[0] }); }
+    let next;
+    while ((next = box.find(mine))) {
+      const { uid: _, ...body } = next;
+      try { await api('/api/attempts', { method: 'POST', body }); }
       catch (e) {
         if (e.status === 400 || e.status === 413) { /* 資料本身有問題，丟掉以免卡住 */ }
         else { sync.error = '有紀錄還沒上傳，稍後會自動重試。'; break; }
       }
-      box = box.slice(1);
+      box = LS.get('outbox', []).filter(x => x !== next && x.cid !== next.cid);
       LS.set('outbox', box, { silent: true });
     }
-    if (!box.length) sync.error = null;
+    if (!box.some(mine)) sync.error = null;
   } finally { flushing = false; emit(); }
 }
-export const pendingCount = () => LS.get('outbox', []).length;
+export const pendingCount = () => LS.get('outbox', []).filter(x => !x.uid || x.uid === sync.me?.userId).length;
 window.addEventListener('online', () => flush());
 setInterval(() => { if (pendingCount()) flush(); }, 60_000);
 
