@@ -4,7 +4,7 @@
 // 每一題的作答都會交給 sync.js 記錄（我的紀錄、錯題本、管理頁會用到）。
 import { qa } from './dom.js';
 import { LS } from './storage.js';
-import { say, nvBtn } from './speech.js';
+import { say, nvBtn, userJustActed } from './speech.js';
 import { recordAttempt } from './sync.js';
 
 // 把題目的 HTML 轉成純文字存檔（不存 HTML，避免在管理頁顯示時被注入程式碼）
@@ -28,7 +28,8 @@ export function runQuiz(root, qs, key, restart, onDone) {
     }
     const q = qs[st.i]; st.answered = false;
     root.innerHTML = `<div class="qhead"><span>第 ${st.i + 1} / ${qs.length} 題</span><span>答對 ${st.score}</span></div><div class="qbar"><i style="width:${st.i / qs.length * 100}%"></i></div><div class="qtype">${q.type}</div><div class="qprompt">${q.prompt}</div><div class="opts">${q.options.map((o, j) => `<button type="button" class="opt" data-o="${j}">${o.h}</button>`).join('')}</div><div class="fb" aria-live="polite"></div>`;
-    if (q.auto) setTimeout(() => say(q.auto), 200);
+    // 聽力題：使用者剛按了頁面裡的按鈕（開始、作答、下一題）才自動播放；剛打開頁面時不自動出聲
+    if (q.auto && userJustActed()) setTimeout(() => say(q.auto), 200);
   }
   root.onclick = e => {
     const b = e.target.closest('[data-o]');
