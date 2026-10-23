@@ -96,11 +96,12 @@ export function chartPage(el, ctx) {
     <section class="block"><h3>子音詳細對照<small>名稱、羅馬拼音、注音近似音和例詞；點例詞聽發音</small></h3>${detailRows(CONS, true)}</section>
     <section class="block"><h3>母音詳細對照<small>羅馬拼音、注音近似音和例詞</small></h3>${detailRows(VOWS, false)}</section>
     <section class="block"><h3>收尾音（받침）</h3><p>字的最下面那個子音叫收尾音。收尾雖然寫法很多，念起來只有 7 種：<b lang="ko">ㄱ ㄴ ㄷ ㄹ ㅁ ㅂ ㅇ</b>（例如 ㅋ、ㄲ 收尾都念 ㄱ）。詳細規則在「發音規則」。</p>
-      <div class="hj-grid">${[['ㄱ', '각'], ['ㄴ', '간'], ['ㄷ', '갇'], ['ㄹ', '갈'], ['ㅁ', '감'], ['ㅂ', '갑'], ['ㅇ', '강']].map(([t, s]) => `<button type="button" class="hj" data-say="${s}"><span class="hj-l" lang="ko">${s}</span><span class="hj-r">收尾 ${t}</span></button>`).join('')}</div></section>
+      <div class="hj-grid">${[['ㄱ', '각'], ['ㄴ', '간'], ['ㄷ', '갇'], ['ㄹ', '갈'], ['ㅁ', '감'], ['ㅂ', '갑'], ['ㅇ', '강']].map(([t, s]) => `<button type="button" class="hj" data-say="${s}"><span class="hj-l" lang="ko">${s}</span><span class="hj-r">收尾 ${t}</span></button>`).join('')}</div>
+      <div class="lq-top hj-more"><button type="button" class="btn ghost" data-hgo="ref-pron" data-lesson="batchim">看收尾音的發音規則 →</button><button type="button" class="btn ghost" data-hgo="ref-pron" data-lesson="link">連音規則 →</button></div></section>
   </div>`;
   bindTissue(el);
   el.onclick = e => {
-    const b = e.target.closest('[data-hgo]'); if (b && ctx) ctx.go(b.dataset.hgo);
+    const b = e.target.closest('[data-hgo]'); if (b && ctx) ctx.go(b.dataset.hgo, b.dataset.lesson ? { lesson: b.dataset.lesson } : {});
   };
 }
 
