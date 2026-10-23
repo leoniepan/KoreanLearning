@@ -3,6 +3,7 @@ import { $, esc, shuffle, pick, uniq } from '../../js/core/dom.js';
 import { LJ, VJ, TJ } from '../../js/core/hangul.js';
 import { say, sayBtn, SPK } from '../../js/core/speech.js';
 import { runQuiz } from '../../js/core/quiz.js';
+import { tissueHTML, placeHTML, lipsHTML, bindTissue } from './mouth.js';
 
 // 子音：[字母, 名稱, 羅馬拼音（字首/收尾）, 注音近似音, 類別, 例詞, 例詞中文]
 export const CONS = [
@@ -79,13 +80,16 @@ export function chartPage(el, ctx) {
       ${grp('激音（用力送氣）', byType('激音'))}
       ${grp('硬音（喉嚨緊，不送氣）', byType('硬音'))}
       ${grp('鼻音・流音・喉音', [...byType('鼻音'), ...byType('流音'), ...byType('喉音')])}
-      <p class="tip">最容易混淆的三組：가／카／까、다／타／따、바／파／빠、자／차／짜。平音輕、激音送氣、硬音緊。</p>
+      <p class="tip">最容易混淆的三組：가／카／까、다／타／따、바／파／빠、자／차／짜。平音輕、激音送氣、硬音緊。下面有衛生紙測試可以自己試試看。</p>
     </section>
+    ${tissueHTML()}
+    ${placeHTML()}
     <section class="block"><h3>母音 21 個<small>點字母聽「ㅇ＋母音」</small></h3>
       ${grp('基本母音 10 個', VOWS.filter(v => v[3] === '基本').map(vTile))}
       ${grp('複合母音 11 個', VOWS.filter(v => v[3] === '複合').map(vTile))}
       <p class="tip">ㅓ 和 ㅗ 都像「ㄛ」：ㅓ 嘴巴張大不圓唇，ㅗ 嘴唇圓起來。ㅐ 和 ㅔ 現在的首爾話幾乎念得一樣。</p>
     </section>
+    ${lipsHTML()}
     <section class="block"><h3>字母組合表（反切表）<small>19 個子音 × 21 個母音（前 10 個基本母音，後 11 個複合母音），點字聽發音；表格可以左右滑動</small></h3>${grid}
       <p class="note">寫法：ㅏㅑㅓㅕㅣㅐㅔ 這類直的母音寫在子音右邊（가、개）；ㅗㅛㅜㅠㅡ 這類橫的母音寫在子音下面（고）；ㅘㅝㅢ 這類複合母音同時寫在下面和右邊（과、궈、긔）。</p>
     </section>
@@ -94,6 +98,7 @@ export function chartPage(el, ctx) {
     <section class="block"><h3>收尾音（받침）</h3><p>字的最下面那個子音叫收尾音。收尾雖然寫法很多，念起來只有 7 種：<b lang="ko">ㄱ ㄴ ㄷ ㄹ ㅁ ㅂ ㅇ</b>（例如 ㅋ、ㄲ 收尾都念 ㄱ）。詳細規則在「發音規則」。</p>
       <div class="hj-grid">${[['ㄱ', '각'], ['ㄴ', '간'], ['ㄷ', '갇'], ['ㄹ', '갈'], ['ㅁ', '감'], ['ㅂ', '갑'], ['ㅇ', '강']].map(([t, s]) => `<button type="button" class="hj" data-say="${s}"><span class="hj-l" lang="ko">${s}</span><span class="hj-r">收尾 ${t}</span></button>`).join('')}</div></section>
   </div>`;
+  bindTissue(el);
   el.onclick = e => {
     const b = e.target.closest('[data-hgo]'); if (b && ctx) ctx.go(b.dataset.hgo);
   };
