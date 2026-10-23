@@ -45,6 +45,7 @@ export function build(list) {
 function intro(el, ctx) {
   const rows = Object.values(TYPES).map(T => [T.sec, T.no, T.name]);
   el.innerHTML = `<div class="stack">
+  <div class="lq-top"><button type="button" class="btn" data-go="practice-topik" data-sub="practice">開始題型練習</button><button type="button" class="btn ghost" data-go="practice-topik" data-sub="mock">迷你模擬考</button></div>
   <div class="block"><h3>TOPIK 是什麼</h3>
     <p>TOPIK（한국어능력시험）是韓國國立國際教育院（NIIED）主辦的韓語能力考試，分成 <b>TOPIK I</b>（初級，1～2級）和 <b>TOPIK II</b>（中高級，3～6級）。級數由總分決定，沒有單科最低分。</p>
     ${table({ head: ['', 'TOPIK I', 'TOPIK II'], rows: [
@@ -63,9 +64,8 @@ function intro(el, ctx) {
     <p class="note">15～16（看圖選對話）和 25～30（長對話）等題型需要圖片或較長的錄音，這裡先不收。</p>
   </div>
   <div class="block"><h3>各題型解題提示</h3><ul class="rules">${Object.values(TYPES).map(T => `<li><b>${T.no}　${esc(T.name)}</b>：${esc(T.tip)}</li>`).join('')}</ul></div>
-  <div class="lnav"><button type="button" class="btn" data-go="topik-practice">開始題型練習</button><button type="button" class="btn ghost" data-go="topik-mock">迷你模擬考</button></div>
   </div>`;
-  el.onclick = e => { const b = e.target.closest('[data-go]'); if (b) ctx.go(b.dataset.go); };
+  el.onclick = e => { const b = e.target.closest('[data-go]'); if (b) ctx.go(b.dataset.go, b.dataset.sub ? { sub: b.dataset.sub } : {}); };
 }
 
 // ---------- 題型練習 ----------

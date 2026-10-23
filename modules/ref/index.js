@@ -1,4 +1,4 @@
-// 速查：查資料用的表格與規則（字母、發音規則、動詞變化、名詞、數字、文法總覽、TOPIK 介紹）
+// 速查：查資料用的表格與規則（字母、發音規則、動詞變化、名詞、數字、文法總覽、TOPIK 測驗）
 import { esc } from '../../js/core/dom.js';
 import { group } from '../../js/core/group.js';
 import pron from '../pronunciation/index.js';
@@ -53,6 +53,6 @@ export default {
       { id: 'convert', title: '數字轉換', render: pg(numbers, 'convert').render }
     ]) },
     { id: 'grammar', title: '文法總覽', render: grammarIndex },
-    { id: 'topik', title: 'TOPIK 介紹', render: pg(topik, 'intro').render }
+    { id: 'topik', title: 'TOPIK 測驗', render: pg(topik, 'intro').render }
   ]
 };
