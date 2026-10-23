@@ -4,7 +4,14 @@ import { LS } from './storage.js';
 
 let rate = LS.get('rate', 1);
 
-function koVoice() { try { return speechSynthesis.getVoices().find(v => /^ko/i.test(v.lang)); } catch (e) { return null; } }
+// 裝置上所有韓文語音，音質好的（自然／線上語音）排前面
+const score = v => (/natural|neural|online/i.test(v.name) ? 0 : /premium|enhanced|plus/i.test(v.name) ? 1 : /google/i.test(v.name) ? 2 : 3);
+function koVoices() {
+  try { return speechSynthesis.getVoices().filter(v => /^ko/i.test(v.lang)).sort((a, b) => score(a) - score(b) || a.name.localeCompare(b.name)); } catch (e) { return []; }
+}
+// 使用者選的語音；沒選過或這台裝置沒有，就用排第一的
+function koVoice() { const vs = koVoices(), want = LS.get('voice', ''); return vs.find(v => v.name === want) || vs[0] || null; }
+const shortName = n => n.replace(/^Microsoft\s+/i, '').replace(/\s+Online/i, '').replace(/\s*-\s*Korean.*$/i, '').replace(/\s*\(.*?\)\s*/g, m => /natural/i.test(m) ? '（自然）' : '').trim();
 
 export function say(t) {
   try {
@@ -35,8 +42,12 @@ export function sayLines(lines) {
 function voiceStatus() {
   const el = $('#voice'); if (!el) return;
   if (!('speechSynthesis' in window)) { el.textContent = '這個瀏覽器不支援朗讀'; el.className = 'vs warn'; return; }
-  const v = koVoice();
-  if (v) { el.textContent = '韓文語音：' + v.name; el.className = 'vs'; }
+  const v = koVoice(), vs = koVoices(), box = $('#vpick'), sel = $('#voice-sel');
+  if (box && sel) {
+    box.hidden = !vs.length;
+    sel.innerHTML = vs.map(x => `<option value="${esc(x.name)}"${x === v ? ' selected' : ''}>${esc(shortName(x.name) || x.name)}${x.localService ? '' : '・線上'}</option>`).join('');
+  }
+  if (v) { el.textContent = vs.length > 1 ? `這台裝置有 ${vs.length} 種韓文語音` : '韓文語音：' + v.name; el.className = 'vs'; }
   else { el.textContent = '尚未偵測到韓文語音；若按喇叭沒有聲音，請在系統設定加入韓文語音，或按 Naver 聽真人發音'; el.className = 'vs warn'; }
 }
 
@@ -52,6 +63,9 @@ export function initSpeech() {
   $('#rate-n').onclick = () => setRate(1);
   $('#rate-s').onclick = () => setRate(0.7);
   voiceStatus(); setTimeout(voiceStatus, 1200);
+  const sel = $('#voice-sel'), tryB = $('#voice-try');
+  if (sel) sel.onchange = () => { LS.set('voice', sel.value); say('안녕하세요. 만나서 반가워요.'); };
+  if (tryB) tryB.onclick = () => say('안녕하세요. 만나서 반가워요.');
   try { speechSynthesis.onvoiceschanged = voiceStatus; } catch (e) { }
   document.addEventListener('click', e => { const s = e.target.closest('[data-say]'); if (s) say(s.dataset.say); });
 }
