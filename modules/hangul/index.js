@@ -67,7 +67,10 @@ export function chartPage(el, ctx) {
   const detailRows = (list, isC) => `<div class="hj-list">${list.map(x => isC
     ? `<div class="hj-item"><button type="button" class="hj-mini" data-say="${soundOfC(x[0])}" lang="ko">${x[0]}</button><div class="hj-info"><b lang="ko">${x[1]}</b><span class="rom">${x[2]}</span><span class="muted">${esc(x[3])}</span></div><button type="button" class="fm hj-ex" data-say="${x[5]}"><span class="hg" lang="ko">${x[5]}</span><small class="muted">${x[6]}</small></button></div>`
     : `<div class="hj-item"><button type="button" class="hj-mini" data-say="${soundOfV(x[0])}" lang="ko">${x[0]}</button><div class="hj-info"><span class="rom">${x[1]}</span><span class="muted">${esc(x[2])}</span></div><button type="button" class="fm hj-ex" data-say="${x[4]}"><span class="hg" lang="ko">${x[4]}</span><small class="muted">${x[5]}</small></button></div>`).join('')}</div>`;
-  const grid = `<div class="ctab-wrap"><table class="ctab bj"><tr><th></th>${BASIC_V.map(v => `<th lang="ko">${v}</th>`).join('')}</tr>${BASIC_C.map(c => `<tr><th lang="ko">${c}</th>${BASIC_V.map(v => { const s = syl(c, v); return `<td><button type="button" class="bj-s" data-say="${s}" lang="ko">${s}</button></td>`; }).join('')}</tr>`).join('')}</table></div>`;
+  const ALL_C = CONS.map(c => c[0]);
+  const gridOf = vs => `<div class="ctab-wrap"><table class="ctab bj"><tr><th></th>${vs.map(v => `<th><button type="button" class="bj-s bj-h" data-say="${soundOfV(v)}" lang="ko">${v}</button></th>`).join('')}</tr>${ALL_C.map(c => `<tr><th><button type="button" class="bj-s bj-h" data-say="${soundOfC(c)}" lang="ko">${c}</button></th>${vs.map(v => { const s = syl(c, v); return `<td><button type="button" class="bj-s" data-say="${s}" lang="ko">${s}</button></td>`; }).join('')}</tr>`).join('')}</table></div>`;
+  const COMP_V = VOWS.filter(v => v[3] === '複合').map(v => v[0]);
+  const grid = `<div class="grp-tabs bj-tabs" role="tablist"><button type="button" class="chip grp-t" data-bj="b" aria-selected="true">基本母音（10）</button><button type="button" class="chip grp-t" data-bj="c" aria-selected="false">複合母音（11）</button></div><div class="bj-b">${gridOf(BASIC_V)}</div><div class="bj-c" hidden>${gridOf(COMP_V)}</div>`;
   el.innerHTML = `<div class="stack">
     ${ctx && ctx.quizRoute ? `<div class="lq-top"><button type="button" class="btn" data-hgo="${ctx.quizRoute}">字母測驗</button><span class="muted">看字母選拼音、聽音分辨、拼字</span></div>` : ''}
     <p class="intro">韓文由<b>子音</b>和<b>母音</b>組成，一個字至少是「子音＋母音」。點任何一個字母都可以聽發音（子音用「子音＋ㅏ」念、母音用「ㅇ＋母音」念）。注音只是近似音，請以喇叭和 Naver 的發音為準。</p>
@@ -83,15 +86,19 @@ export function chartPage(el, ctx) {
       ${grp('複合母音 11 個', VOWS.filter(v => v[3] === '複合').map(vTile))}
       <p class="tip">ㅓ 和 ㅗ 都像「ㄛ」：ㅓ 嘴巴張大不圓唇，ㅗ 嘴唇圓起來。ㅐ 和 ㅔ 現在的首爾話幾乎念得一樣。</p>
     </section>
-    <section class="block"><h3>字母組合表（反切表）<small>基本子音 × 基本母音，點字聽發音</small></h3>${grid}
-      <p class="note">寫法：ㅏㅑㅓㅕㅣ 這類直的母音寫在子音右邊（가）；ㅗㅛㅜㅠㅡ 這類橫的母音寫在子音下面（고）。</p>
+    <section class="block"><h3>字母組合表（反切表）<small>19 個子音 × 基本母音／複合母音，點字聽發音；表格可以左右滑動</small></h3>${grid}
+      <p class="note">寫法：ㅏㅑㅓㅕㅣㅐㅔ 這類直的母音寫在子音右邊（가、개）；ㅗㅛㅜㅠㅡ 這類橫的母音寫在子音下面（고）；ㅘㅝㅢ 這類複合母音同時寫在下面和右邊（과、궈、긔）。</p>
     </section>
     <section class="block"><h3>子音詳細對照<small>名稱、羅馬拼音、注音近似音和例詞；點例詞聽發音</small></h3>${detailRows(CONS, true)}</section>
     <section class="block"><h3>母音詳細對照<small>羅馬拼音、注音近似音和例詞</small></h3>${detailRows(VOWS, false)}</section>
     <section class="block"><h3>收尾音（받침）</h3><p>字的最下面那個子音叫收尾音。收尾雖然寫法很多，念起來只有 7 種：<b lang="ko">ㄱ ㄴ ㄷ ㄹ ㅁ ㅂ ㅇ</b>（例如 ㅋ、ㄲ 收尾都念 ㄱ）。詳細規則在「發音規則」。</p>
       <div class="hj-grid">${[['ㄱ', '각'], ['ㄴ', '간'], ['ㄷ', '갇'], ['ㄹ', '갈'], ['ㅁ', '감'], ['ㅂ', '갑'], ['ㅇ', '강']].map(([t, s]) => `<button type="button" class="hj" data-say="${s}"><span class="hj-l" lang="ko">${s}</span><span class="hj-r">收尾 ${t}</span></button>`).join('')}</div></section>
   </div>`;
-  el.onclick = e => { const b = e.target.closest('[data-hgo]'); if (b && ctx) ctx.go(b.dataset.hgo); };
+  el.onclick = e => {
+    const t = e.target.closest('[data-bj]');
+    if (t) { el.querySelectorAll('[data-bj]').forEach(x => x.setAttribute('aria-selected', x === t)); el.querySelector('.bj-b').hidden = t.dataset.bj !== 'b'; el.querySelector('.bj-c').hidden = t.dataset.bj !== 'c'; return; }
+    const b = e.target.closest('[data-hgo]'); if (b && ctx) ctx.go(b.dataset.hgo);
+  };
 }
 
 // ---------- 測驗 ----------
