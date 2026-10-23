@@ -7,7 +7,9 @@ import { W } from '../verbs/words.js';
 import { N } from '../nouns/nouns.js';
 import { PL } from '../pronunciation/lessons.js';
 import { ALL as GRAMMAR } from '../grammar/index.js';
-import { BANK } from '../daily/bank.js';
+import { BOOKS, UNITS } from '../../js/core/progress.js';
+import { lessonTitle } from '../course/index.js';
+import { THEMES } from '../course/themes.js';
 
 const pad = n => String(n).padStart(2, '0');
 const ymd = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -19,40 +21,26 @@ function streak() {
   return n;
 }
 
-// 每個單元卡片底部顯示的進度
-function progressOf(id) {
-  switch (id) {
-    case 'daily': { const s = LS.get('daily_log', {})[today()]; return s != null ? `今天答對 ${s} 題` : "今天還沒做"; }
-    case 'pron': return `已完成 ${LS.get('done', []).length}/${PL.length} 課`;
-    case 'verbs': return `${W.length + LS.get('custom', []).length} 個單字`;
-    case 'nouns': return `${N.length + LS.get('custom_nouns', []).length} 個單字`;
-    case 'numbers': { const b = LS.get('best_numq', null); return b != null ? `最佳 ${b}/10` : '漢字語・固有語'; }
-    case 'grammar': {
-      const done = ['1A', '1B', '2A', '2B', '3A', '3B', '4A', '4B'].reduce((n, b) => n + LS.get('done_grammar_' + b, []).length, 0);
-      return `已完成 ${done}/${GRAMMAR.length} 個文法`;
-    }
-    case 'topik': { const l = LS.get('topik_mock_log', []); return l.length ? `模擬考最近 ${l[l.length - 1].s}/200` : 'TOPIK I 題型練習'; }
-    case 'records': { const n = LS.get('history', []).length; return n ? `已練習 ${n} 回` : '還沒有紀錄'; }
-    default: return '';
-  }
-}
-
-// 搜尋：單字、名詞、文法、發音規則
+// 搜尋：課程、單字、名詞、文法、發音規則
 function searchIndex() {
-  const verbs = W.concat(LS.get('custom', [])).map(w => ({ k: w.k, zh: w.zh, kind: w.t === 'a' ? '形容詞' : '動詞', go: ['verbs-table', { q: w.k }] }));
-  const nouns = N.concat(LS.get('custom_nouns', [])).map(n => ({ k: n.k, zh: n.zh, kind: '名詞', go: ['nouns-table', { q: n.k }] }));
-  const gram = GRAMMAR.map(l => ({ k: l.name, zh: `${l.book}・${l.ko || ''}`, kind: '文法', go: ['grammar-' + l.book.toLowerCase(), { lesson: l.id }] }));
-  const pron = PL.map(l => ({ k: l.name, zh: l.ko, kind: '發音', go: ['pron-learn', { lesson: l.id }] }));
-  return [...verbs, ...nouns, ...gram, ...pron];
+  const lessons = BOOKS.flatMap(b => Array.from({ length: UNITS[b] }, (_, i) => i + 1).map(u => ({ k: lessonTitle(b, u), zh: `${b} 第 ${u} 課・${(THEMES[`${b}-${u}`] || ['', ''])[1]}`, kind: '課程', go: ['course-' + b.toLowerCase(), { lesson: `${b}-${u}` }] })));
+  const verbs = W.concat(LS.get('custom', [])).map(w => ({ k: w.k, zh: w.zh, kind: w.t === 'a' ? '形容詞' : '動詞', go: ['ref-verbs', { sub: 'table', q: w.k }] }));
+  const nouns = N.concat(LS.get('custom_nouns', [])).map(n => ({ k: n.k, zh: n.zh, kind: '名詞', go: ['ref-nouns', { sub: 'table', q: n.k }] }));
+  const gram = GRAMMAR.map(l => ({ k: l.name, zh: `${l.book}・${l.ko || ''}`, kind: '文法', go: ['course-' + l.book.toLowerCase(), { lesson: l.id }] }));
+  const pron = PL.map(l => ({ k: l.name, zh: l.ko, kind: '發音', go: ['ref-pron', { lesson: l.id }] }));
+  return [...lessons, ...gram, ...verbs, ...nouns, ...pron];
 }
 
 function render(el, ctx) {
-  const mods = (ctx.modules || []).filter(m => m.id !== 'home');
-  const has = id => mods.some(m => m.id === id);
   const name = sync.me?.email ? sync.me.email.split('@')[0] : '同學';
   const st = streak();
-  const t = today(), todayEntry = BANK.find(b => b.date === t), todayScore = LS.get('daily_log', {})[t];
-  const shortcuts = [...mods.map(m => ({ label: m.title, ic: m.icon, go: m.id === 'records' ? 'records-overview' : null, mod: m.id })), ...(has('records') ? [{ label: '錯題本', ic: 'note', go: 'records-mistakes' }] : [])];
+  const t = today(), todayScore = LS.get('daily_log', {})[t];
+  const done = new Set(LS.get('done_course', []));
+  // 繼續學習：最後打開的冊別與那一冊目前的課
+  const lastBook = (LS.get('page_course', '') || '').toUpperCase();
+  const cb = BOOKS.includes(lastBook) ? lastBook : '1A', cu = LS.get('course_cur_' + cb, 1);
+  const th = THEMES[`${cb}-${cu}`] || ['', ''];
+  const started = BOOKS.includes(lastBook);
 
   el.innerHTML = `
   <section class="hello">
@@ -60,37 +48,41 @@ function render(el, ctx) {
     <div class="hello-t"><h2>안녕하세요，${esc(name)}</h2><p>今天也來學一點韓文吧</p></div>
     <div class="hello-r">
       <span class="streak" title="連續完成今日測驗的天數">${icon('fire')}<b>${st}</b> 天</span>
-      ${has('records') ? `<button type="button" class="round-btn" data-go="records-mistakes" aria-label="錯題本">${icon('bell')}</button>` : ''}
+      <button type="button" class="round-btn" data-go="records-mistakes" aria-label="錯題本">${icon('bell')}</button>
     </div>
   </section>
 
   <div class="search" role="search">
     ${icon('search')}
-    <input type="text" id="home-q" placeholder="搜尋單字、名詞、文法…（韓文或中文）" aria-label="搜尋單字、名詞與文法" autocomplete="off">
+    <input type="text" id="home-q" placeholder="搜尋課程、單字、文法…（韓文或中文）" aria-label="搜尋課程、單字與文法" autocomplete="off">
   </div>
   <div class="search-res" id="home-res" hidden></div>
 
-  <section class="cats" aria-label="單元">
-    ${shortcuts.map(s => `<button type="button" class="cat" ${s.go ? `data-go="${s.go}"` : `data-mod="${s.mod}"`}><span class="cat-ic">${icon(s.ic)}</span><span>${esc(s.label)}</span></button>`).join('')}
+  <section class="feature">
+    <div class="feature-glyph" aria-hidden="true" lang="ko">${started ? esc(cb) : '가'}</div>
+    <div class="feature-t">
+      <p class="eyebrow">${started ? '繼續學習' : '從這裡開始'}</p>
+      <h3 lang="ko">${started ? `${cb} 第 ${cu} 課　${esc(lessonTitle(cb, cu))}` : '韓文字母'}</h3>
+      <p>${started ? `詞彙主題：${esc(th[1])}` : '先認識子音和母音，點字母就能聽發音。'}</p>
+    </div>
+    <button type="button" class="btn light" data-go="${started ? 'course-' + cb.toLowerCase() : 'course-hangul'}">${started ? '繼續' : '開始'}</button>
   </section>
 
-  ${has('daily') ? `<section class="feature">
-    <div class="feature-glyph" aria-hidden="true">오늘</div>
-    <div class="feature-t">
-      <p class="eyebrow">今日測驗・${t}</p>
-      <h3>${todayEntry ? esc(todayEntry.topic) : '綜合複習'}</h3>
-      <p>${todayEntry ? `今天有 ${todayEntry.items.length} 題新題，加上各單元的複習題，共 10 題。` : '從各單元挑選 10 題複習。'}</p>
+  <section>
+    <div class="sec-h"><h3>課程</h3><span class="muted">已完成 ${done.size} 課</span></div>
+    <div class="books">
+      <button type="button" class="book" data-go="course-hangul"><span class="tile" lang="ko">가</span><b>韓文字母</b><small>子音・母音・發音</small></button>
+      ${BOOKS.map(b => { const n = Array.from({ length: UNITS[b] }, (_, i) => i + 1).filter(u => done.has(`${b}-${u}`)).length; return `<button type="button" class="book" data-go="course-${b.toLowerCase()}"><span class="tile">${b}</span><b>${b}</b><small>${n} / ${UNITS[b]} 課</small><span class="bbar"><i style="width:${n / UNITS[b] * 100}%"></i></span></button>`; }).join('')}
     </div>
-    <button type="button" class="btn light" data-go="daily-quiz">${todayScore != null ? `再做一次（${todayScore}/10）` : '開始測驗'}</button>
-  </section>` : ''}
+  </section>
 
   <section>
-    <div class="sec-h"><h3>學習單元</h3></div>
+    <div class="sec-h"><h3>練習與速查</h3></div>
     <div class="courses">
-      ${mods.map(m => `<button type="button" class="course" data-mod="${m.id}">
-        <span class="course-top"><span class="tile" lang="ko">${esc(m.glyph || '가')}</span><span class="course-t"><b>${esc(m.title)}</b><small lang="ko">${esc(m.ko)}</small><span class="course-d">${esc(m.desc || '')}</span></span></span>
-        <span class="course-foot">${esc(progressOf(m.id))}${icon('arrow')}</span>
-      </button>`).join('')}
+      <button type="button" class="course" data-go="practice-daily"><span class="course-top"><span class="tile" lang="ko">오</span><span class="course-t"><b>今日測驗</b><small>${todayScore != null ? `今天答對 ${todayScore} 題` : '今天還沒做'}</small><span class="course-d">每天一組，可以自己設定範圍</span></span></span><span class="course-foot">開始${icon('arrow')}</span></button>
+      <button type="button" class="course" data-mod="practice"><span class="course-top"><span class="tile" lang="ko">연</span><span class="course-t"><b>練習</b><small>연습</small><span class="course-d">文法、字母、發音、單字、數字、TOPIK 測驗</span></span></span><span class="course-foot">前往${icon('arrow')}</span></button>
+      <button type="button" class="course" data-mod="ref"><span class="course-top"><span class="tile" lang="ko">찾</span><span class="course-t"><b>速查</b><small>찾아보기</small><span class="course-d">字母表、發音規則、動詞變化、名詞、數字、文法總覽</span></span></span><span class="course-foot">前往${icon('arrow')}</span></button>
+      <button type="button" class="course" data-go="records-mistakes"><span class="course-top"><span class="tile" lang="ko">틀</span><span class="course-t"><b>錯題本</b><small>오답 노트</small><span class="course-d">答錯的題目都在這裡，可以重練</span></span></span><span class="course-foot">前往${icon('arrow')}</span></button>
     </div>
   </section>`;
 
@@ -103,7 +95,7 @@ function render(el, ctx) {
     res.hidden = false;
     res.innerHTML = hits.length
       ? `<ul>${hits.map((x, i) => `<li><button type="button" data-hit="${i}"><span class="kind">${esc(x.kind)}</span><b lang="ko">${esc(x.k)}</b><span class="muted">${esc(x.zh || '')}</span></button></li>`).join('')}</ul>`
-      : `<p class="muted">找不到「${esc(s)}」。可以換個說法，或到單字表新增。</p>`;
+      : `<p class="muted">找不到「${esc(s)}」。可以換個說法試試。</p>`;
     res._hits = hits;
   };
   el.onclick = e => {

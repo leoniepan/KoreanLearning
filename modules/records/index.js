@@ -8,7 +8,8 @@ const pct = (c, n) => n ? Math.round(c / n * 100) : 0;
 const fmtTime = iso => new Date(iso).toLocaleString('zh-TW', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
 const fmtDate = iso => iso ? new Date(iso).toLocaleDateString('zh-TW', { year: 'numeric', month: 'numeric', day: 'numeric' }) : '—';
 const hasKo = s => /[가-힣]/.test(s || '');
-const titleOf = (ctx, id) => id === 'records' ? '錯題重練' : (ctx.modules?.find(m => m.id === id)?.title || id || '其他');
+const NAMES = { daily: '今日測驗', pron: '發音規則', verbs: '動詞・形容詞', nouns: '名詞', numbers: '數字', grammar: '文法', topik: 'TOPIK', hangul: '韓文字母', course: '課程測驗' };
+const titleOf = (ctx, id) => id === 'records' ? '錯題重練' : (NAMES[id] || ctx.modules?.find(m => m.id === id)?.title || id || '其他');
 
 function banner() {
   if (sync.mode === 'online') return `<div class="banner ok"><b>已登入 ${esc(sync.me.email)}</b>　你的作答會同步到雲端，換裝置登入也看得到。管理者可以看到每位使用者的練習紀錄。</div>`;

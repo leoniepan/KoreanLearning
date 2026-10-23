@@ -16,6 +16,18 @@ import { LS } from './storage.js';
 import { say, sayBtn, nvBtn } from './speech.js';
 import { prHTML, wordCard, sentRow, table } from './render.js';
 
+// 一課的內容區塊（規則、例詞、例句、自訂區塊），課程頁也共用
+export function lessonBlocks(l) {
+  let rule = '';
+  if (l.reps) rule += `<div class="reptable">${l.reps.map(([r, s]) => `<div class="rep"><span class="big">${r}</span><span class="src">← ${s}</span></div>`).join('')}</div>`;
+  if (l.table) rule += table(l.table);
+  if (l.rules) rule += `<ul class="rules">${l.rules.map(r => `<li>${esc(r)}</li>`).join('')}</ul>`;
+  return `${rule || l.tip ? `<div class="block"><h3>規則</h3>${rule}${l.tip ? `<p class="tip">${l.tip}</p>` : ''}</div>` : ''}
+      ${l.words ? `<div class="block"><h3>例詞<small>紅色格子是發音和拼寫不同的地方；按 Naver 可在新分頁聽真人發音</small></h3><div class="wcs">${l.words.map(wordCard).join('')}</div></div>` : ''}
+      ${l.sents ? `<div class="block"><h3>實用例句<small>先看拼寫自己念，再按喇叭比對</small></h3><ol class="sents">${l.sents.map(s => sentRow(s)).join('')}</ol><p class="note">[ ] 裡是以單字為單位的標準發音；整句連著說時，相鄰單字之間還會再連音。</p></div>` : ''}
+      ${(l.blocks || []).map(b => `<div class="block"><h3>${esc(b.title)}</h3>${b.html}</div>`).join('')}`;
+}
+
 export function lessonPage({ lessons, doneKey, curKey, quizRoute, intro }) {
   return function render(el, ctx) {
     let done = new Set(LS.get(doneKey, []));
@@ -34,23 +46,15 @@ export function lessonPage({ lessons, doneKey, curKey, quizRoute, intro }) {
 
     function renderLesson() {
       const l = lessons[cur];
-      let rule = '';
-      if (l.reps) rule += `<div class="reptable">${l.reps.map(([r, s]) => `<div class="rep"><span class="big">${r}</span><span class="src">← ${s}</span></div>`).join('')}</div>`;
-      if (l.table) rule += table(l.table);
-      if (l.rules) rule += `<ul class="rules">${l.rules.map(r => `<li>${esc(r)}</li>`).join('')}</ul>`;
       const hasQuiz = quizRoute && (l.quiz ? l.quiz.length : true);
       const items = shuffle(l.words || []).concat(shuffle((l.sents || []).map(s => s[0])).slice(0, l.words ? 3 : 6));
       body.innerHTML = `
-      <header class="lh"><p class="eyebrow">第 ${cur + 1} 步${l.ko ? ` · <span lang="ko">${esc(l.ko)}</span>` : ''}</p><h2>${esc(l.name)}</h2>${l.sum ? `<p class="lead">${l.sum}</p>` : ''}</header>
-      ${rule || l.tip ? `<div class="block"><h3>規則</h3>${rule}${l.tip ? `<p class="tip">${l.tip}</p>` : ''}</div>` : ''}
-      ${l.words ? `<div class="block"><h3>例詞<small>紅色格子是發音和拼寫不同的地方；按 Naver 可在新分頁聽真人發音</small></h3><div class="wcs">${l.words.map(wordCard).join('')}</div></div>` : ''}
-      ${l.sents ? `<div class="block"><h3>實用例句<small>先看拼寫自己念，再按喇叭比對</small></h3><ol class="sents">${l.sents.map(s => sentRow(s)).join('')}</ol><p class="note">[ ] 裡是以單字為單位的標準發音；整句連著說時，相鄰單字之間還會再連音。</p></div>` : ''}
-      ${(l.blocks || []).map(b => `<div class="block"><h3>${esc(b.title)}</h3>${b.html}</div>`).join('')}
+      <header class="lh"><p class="eyebrow">第 ${cur + 1} 步${l.ko ? ` · <span lang="ko">${esc(l.ko)}</span>` : ''}</p><h2>${esc(l.name)}</h2>${hasQuiz ? `<div class="lq-top"><button type="button" class="btn" data-l="quiz">測驗這一課</button></div>` : ''}${l.sum ? `<p class="lead">${l.sum}</p>` : ''}</header>
+      ${lessonBlocks(l)}
       ${items.length ? `<div class="block"><h3>跟讀練習</h3><div class="pfc"></div></div>` : ''}
       <div class="lnav">
         <button type="button" class="btn ghost" data-l="prev" ${cur === 0 ? 'disabled' : ''}>上一課</button>
         <button type="button" class="btn" data-l="done">${cur === lessons.length - 1 ? (done.has(l.id) ? '已完成全部課程' : '完成全部課程') : '我學會了，下一課'}</button>
-        ${hasQuiz ? `<button type="button" class="btn ghost" data-l="quiz">測驗這一課</button>` : ''}
       </div>`;
       if (items.length) flash($('.pfc', body), items);
     }
