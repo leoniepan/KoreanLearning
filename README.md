@@ -2,7 +2,7 @@
 
 配合世宗韓國語 1A～4B 的私人自學網站，架設在 Azure Static Web Apps，需以受邀的 Microsoft 帳號登入。設定步驟見 [AZURE-SETUP.md](AZURE-SETUP.md)。
 
-網站分成五個部分（左側選單）：
+網站分成五個部分（畫面上方、問候語下面的選單）：
 
 | 選單 | 內容 |
 |---|---|
@@ -30,9 +30,11 @@ api/                    學習紀錄 API（Azure Functions，Node.js 22）
   test/                 API 測試（cd api && npm test）
 tools/dev-server.mjs    本機模擬伺服器（含登入、API、資料庫）
 index.html              網站外框（標題、單元選單），內容由 JavaScript 產生
-css/style.css           所有樣式（含手機、平板的 RWD 設定）
+css/style.css           所有樣式（含手機、平板的 RWD 設定、上方選單版面）
+css/skins/kr.css        韓國元素配色：韓紙底、丹青石綠色帶、窗格紋、色動條紋、每冊的物件色與插圖位置
+img/illust/             原創 SVG 插圖（韓國物件、韓屋、醬缸台），可自由商用
 js/
-  app.js                入口：讀取單元註冊表、產生選單、依網址 # 切換頁面
+  app.js                入口：讀取單元註冊表、產生上方選單與問候語、語音設定小視窗、依網址 # 切換頁面
   core/                 所有單元共用的工具
     hangul.js           韓文字拆解與標準發音推算（連音、硬音化、鼻音化…）
     conjugate.js        動詞／形容詞變化（現在、過去、未來、冠形詞形）

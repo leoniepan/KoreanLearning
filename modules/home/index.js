@@ -45,18 +45,15 @@ function render(el, ctx) {
   const started = BOOKS.includes(lastBook);
 
   el.innerHTML = `
-  <section class="hello">
-    <div class="avatar" aria-hidden="true">${esc(name.slice(0, 1).toUpperCase())}</div>
-    <div class="hello-t"><h2>안녕하세요，${esc(name)}</h2><p>今天也來學一點韓文吧</p></div>
+  <div class="home-top">
+    <div class="search" role="search">
+      ${icon('search')}
+      <input type="text" id="home-q" placeholder="搜尋課程、單字、文法…（韓文或中文）" aria-label="搜尋課程、單字與文法" autocomplete="off">
+    </div>
     <div class="hello-r">
       <span class="streak" title="連續完成今日測驗的天數">${icon('fire')}<b>${st}</b> 天</span>
       <button type="button" class="round-btn" data-go="records-mistakes" aria-label="錯題本">${icon('bell')}</button>
     </div>
-  </section>
-
-  <div class="search" role="search">
-    ${icon('search')}
-    <input type="text" id="home-q" placeholder="搜尋課程、單字、文法…（韓文或中文）" aria-label="搜尋課程、單字與文法" autocomplete="off">
   </div>
   <div class="search-res" id="home-res" hidden></div>
 

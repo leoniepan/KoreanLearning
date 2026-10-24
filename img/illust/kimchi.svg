@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><title>김치 泡菜</title>
+<path d="M14 30c4-9 13-13 18-13s14 4 18 13z" fill="#c8553d"/>
+<path d="M18 30c2-6 8-10 12-10 1 4-1 8-4 10zM34 30c0-5 4-9 9-9 2 3 2 6 0 9z" fill="#a7442f"/>
+<path d="M24 22c2-3 6-5 9-4-2 2-5 4-9 4zM38 19c3-2 7-1 9 1-3 1-6 1-9-1z" fill="#6f9a54"/>
+<path d="M27 25c3-1 6-1 9 1M20 27c2-1 4-1 6 0M38 26c2-1 5-1 7 1" stroke="#f3e2c7" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+<path d="M8 30h48c0 12-10 20-24 20S8 42 8 30z" fill="#fdfcf8" stroke="#d9d2c4" stroke-width="1.5"/>
+<path d="M12 34c5 7 12 10 20 10" stroke="#e7e1d4" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M24 50h16l-2 5H26z" fill="#e7e1d4"/>
+<path d="M10 34h44" stroke="#3d5f8f" stroke-width="1.6" stroke-dasharray="3 3" opacity=".55"/>
+</svg>

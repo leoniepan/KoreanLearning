@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><title>옹기 甕器</title>
+<path d="M22 12h20l2 5c8 3 12 11 12 20 0 11-7 17-13 20H21C15 54 8 48 8 37c0-9 4-17 12-20z" fill="#7d5a44"/>
+<path d="M44 17c8 3 12 11 12 20 0 11-7 17-13 20h-6c8-6 13-24 7-40z" fill="#5f4333" opacity=".6"/>
+<path d="M20 9h24v4H20z" fill="#5f4333"/>
+<path d="M18 6c4-2 24-2 28 0v3H18z" fill="#8f6b52"/>
+<path d="M10 32c8 4 36 4 44 0" stroke="#9c7a60" stroke-width="2" fill="none"/>
+<path d="M18 38c3-4 6 2 9-2s6 2 9-2 6 2 9-2" stroke="#a88a70" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+<ellipse cx="18" cy="26" rx="3" ry="6" fill="#9c7a60" opacity=".7" transform="rotate(20 18 26)"/>
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><title>단청 丹青</title>
+<g transform="translate(32 32)">
+<circle r="28" fill="#4f7f5c"/>
+<g fill="#c8553d"><path id="p" d="M0-26c6 4 8 10 0 16-8-6-6-12 0-16z"/><use href="#p" transform="rotate(45)"/><use href="#p" transform="rotate(90)"/><use href="#p" transform="rotate(135)"/><use href="#p" transform="rotate(180)"/><use href="#p" transform="rotate(225)"/><use href="#p" transform="rotate(270)"/><use href="#p" transform="rotate(315)"/></g>
+<g fill="#e8c463"><path id="q" d="M0-24c2 3 3 6 0 9-3-3-2-6 0-9z"/><use href="#q" transform="rotate(45)"/><use href="#q" transform="rotate(90)"/><use href="#q" transform="rotate(135)"/><use href="#q" transform="rotate(180)"/><use href="#q" transform="rotate(225)"/><use href="#q" transform="rotate(270)"/><use href="#q" transform="rotate(315)"/></g>
+<circle r="10" fill="#fdfcf8"/><circle r="7" fill="#3d5f8f"/><circle r="3.5" fill="#e8c463"/>
+<circle r="27" fill="none" stroke="#fdfcf8" stroke-width="1.2" stroke-dasharray="2 3"/>
+</g></svg>

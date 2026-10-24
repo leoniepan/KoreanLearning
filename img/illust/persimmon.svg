@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><title>감 柿子</title>
+<path d="M32 16c13 0 22 8 22 20s-10 20-22 20S10 48 10 36s9-20 22-20z" fill="#d9783a"/>
+<path d="M44 21c6 4 10 9 10 15 0 12-10 20-22 20 9-3 17-11 12-35z" fill="#c4632a" opacity=".55"/>
+<ellipse cx="22" cy="30" rx="4" ry="6" fill="#f0a36f" transform="rotate(-25 22 30)"/>
+<path d="M32 22c-6 0-11-3-13-6 5-1 9 0 13 2 4-2 8-3 13-2-2 3-7 6-13 6z" fill="#4f7f5c"/>
+<path d="M32 21c-2 2-6 6-10 6 2-3 5-6 10-6zm0 0c2 2 6 6 10 6-2-3-5-6-10-6z" fill="#446e50"/>
+<path d="M32 17c0-4 1-7 4-9" stroke="#7d5a44" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+</svg>

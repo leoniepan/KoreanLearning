@@ -1,0 +1,171 @@
+/* ===== 外觀：韓國 =====
+   以韓國代表性的物件取色：
+   - 底色是韓紙（한지），卡片是白瓷（백자），文字是墨（먹）
+   - 頂部色帶是丹青的石綠（단청 석록），帶淡淡的韓屋窗格紋（창살）
+   - 選單下緣是韓服袖子的色動條紋（색동）
+   - 主要按鈕是丹青的朱紅（단청 주홍），連結是藍染（쪽빛）
+   - 每一冊、每個單元各對應一種韓國物件的顏色（見下方「物件對應」）
+   只在 <html data-skin="kr"> 時生效。 */
+
+:root[data-skin="kr"]{
+  --bg:#f6f1e7;--surface:#fdfcf8;--ink:#26241f;--muted:#6a645a;--line:#e6dfd2;--grid:#d4cbbb;--hover:#efe9dd;
+  --sun:#a8402c;--sun-line:#a8402c;--sun-ink:#ffffff;                 /* 단청 주홍 */
+  --accent:#2f527f;--accent-ink:#ffffff;--tint:#e4e9f1;--chip:#e4e9f1;  /* 쪽빛 */
+  --mark:#a8402c;--markbg:#f6e3dd;--bad:#a8402c;--badbg:#f6e3dd;--ok:#446e50;--okbg:#e4eee7;
+  --deep:#26241f;--deep-2:#4f7f5c;--deep-ink:#fdfcf8;--deep-soft:#c9c0b0;--deep-muted:#6a645a;
+  --r:12px;
+  --mast-top:#173f3d;--mast-band:#1f514e;--mast-muted:#d3e3df;   /* 단청 석록 */
+  --pattern:rgb(255 255 255 / .08);
+
+  /* 物件色：c＝本色、t＝淡底、k＝放在淡底上的字 */
+  --mugung-c:#c86b9b;--mugung-t:#f2e3eb;--mugung-k:#9c3a6d;      /* 무궁화 木槿花 */
+  --kimchi-c:#c8553d;--kimchi-t:#f4e5e2;--kimchi-k:#a7442f;      /* 김치 泡菜 */
+  --ginkgo-c:#d9a836;--ginkgo-t:#f4eee2;--ginkgo-k:#7e6220;      /* 은행잎 銀杏葉 */
+  --celadon-c:#6fa596;--celadon-t:#e7eeec;--celadon-k:#456e62;   /* 청자 青瓷 */
+  --jjok-c:#3d5f8f;--jjok-t:#e4e9f1;--jjok-k:#406496;            /* 쪽빛 藍染 */
+  --noerok-c:#4f7f5c;--noerok-t:#e7eee9;--noerok-k:#446e50;      /* 단청 뇌록 丹青綠 */
+  --jaju-c:#7a4e86;--jaju-t:#ede6ef;--jaju-k:#7b4f87;            /* 한복 자주 韓服紫 */
+  --gam-c:#d9783a;--gam-t:#f4e9e2;--gam-k:#975226;               /* 감 柿子 */
+  --onggi-c:#7d5a44;--onggi-t:#efeae6;--onggi-k:#815d46;         /* 옹기 甕器 */
+}
+@media (prefers-color-scheme: dark){:root[data-skin="kr"]:not([data-theme="light"]){
+  --bg:#1b1a17;--surface:#23211d;--ink:#ede7dc;--muted:#aca597;--line:#38352e;--grid:#4b463d;--hover:#2b2924;
+  --sun:#b04a35;--sun-line:#b04a35;--sun-ink:#ffffff;
+  --accent:#a3bde0;--accent-ink:#1b1a17;--tint:#252e3c;--chip:#252e3c;
+  --mark:#df9e90;--markbg:#3c2925;--bad:#df9e90;--badbg:#3c2925;--ok:#9ac0a5;--okbg:#22302a;
+  --deep:#ede7dc;--deep-2:#9ac0a5;--deep-ink:#1b1a17;--deep-soft:#4b463d;--deep-muted:#aca597;
+  --mast-top:#0f201f;--mast-band:#163331;--mast-muted:#c3d6d1;
+  --pattern:rgb(255 255 255 / .06);
+  --mugung-t:#3c2531;--mugung-k:#d897b9;--kimchi-t:#3c2925;--kimchi-k:#df9e90;--ginkgo-t:#3c3525;--ginkgo-k:#dabf81;
+  --celadon-t:#2a3733;--celadon-k:#9bc0b6;--jjok-t:#252e3c;--jjok-k:#97b0d3;--noerok-t:#2a372d;--noerok-k:#9ac0a5;
+  --jaju-t:#352938;--jaju-k:#c0a2c9;--gam-t:#3c2e25;--gam-k:#dba684;--onggi-t:#392e28;--onggi-k:#c7ab99;
+  color-scheme:dark}}
+:root[data-skin="kr"][data-theme="dark"]{
+  --bg:#1b1a17;--surface:#23211d;--ink:#ede7dc;--muted:#aca597;--line:#38352e;--grid:#4b463d;--hover:#2b2924;
+  --sun:#b04a35;--sun-line:#b04a35;--sun-ink:#ffffff;
+  --accent:#a3bde0;--accent-ink:#1b1a17;--tint:#252e3c;--chip:#252e3c;
+  --mark:#df9e90;--markbg:#3c2925;--bad:#df9e90;--badbg:#3c2925;--ok:#9ac0a5;--okbg:#22302a;
+  --deep:#ede7dc;--deep-2:#9ac0a5;--deep-ink:#1b1a17;--deep-soft:#4b463d;--deep-muted:#aca597;
+  --mast-top:#0f201f;--mast-band:#163331;--mast-muted:#c3d6d1;
+  --pattern:rgb(255 255 255 / .06);
+  --mugung-t:#3c2531;--mugung-k:#d897b9;--kimchi-t:#3c2925;--kimchi-k:#df9e90;--ginkgo-t:#3c3525;--ginkgo-k:#dabf81;
+  --celadon-t:#2a3733;--celadon-k:#9bc0b6;--jjok-t:#252e3c;--jjok-k:#97b0d3;--noerok-t:#2a372d;--noerok-k:#9ac0a5;
+  --jaju-t:#352938;--jaju-k:#c0a2c9;--gam-t:#3c2e25;--gam-k:#dba684;--onggi-t:#392e28;--onggi-k:#c7ab99;
+  color-scheme:dark}
+
+/* ---------- 物件對應 ----------
+   韓文字母＝木槿花、1A 泡菜、1B 銀杏葉、2A 青瓷、2B 藍染、3A 丹青綠、3B 韓服紫、4A 柿子、4B 甕器
+   單元：首頁＝青瓷、課程＝藍染、練習＝柿子、速查＝木槿花、我的紀錄＝泡菜 */
+[data-skin="kr"] [data-go="course-hangul"],[data-skin="kr"] [data-page="course-hangul"]{--c:var(--mugung-c);--t:var(--mugung-t);--k:var(--mugung-k)}
+[data-skin="kr"] [data-go="course-1a"],[data-skin="kr"] [data-page="course-1a"]{--c:var(--kimchi-c);--t:var(--kimchi-t);--k:var(--kimchi-k)}
+[data-skin="kr"] [data-go="course-1b"],[data-skin="kr"] [data-page="course-1b"]{--c:var(--ginkgo-c);--t:var(--ginkgo-t);--k:var(--ginkgo-k)}
+[data-skin="kr"] [data-go="course-2a"],[data-skin="kr"] [data-page="course-2a"]{--c:var(--celadon-c);--t:var(--celadon-t);--k:var(--celadon-k)}
+[data-skin="kr"] [data-go="course-2b"],[data-skin="kr"] [data-page="course-2b"]{--c:var(--jjok-c);--t:var(--jjok-t);--k:var(--jjok-k)}
+[data-skin="kr"] [data-go="course-3a"],[data-skin="kr"] [data-page="course-3a"]{--c:var(--noerok-c);--t:var(--noerok-t);--k:var(--noerok-k)}
+[data-skin="kr"] [data-go="course-3b"],[data-skin="kr"] [data-page="course-3b"]{--c:var(--jaju-c);--t:var(--jaju-t);--k:var(--jaju-k)}
+[data-skin="kr"] [data-go="course-4a"],[data-skin="kr"] [data-page="course-4a"]{--c:var(--gam-c);--t:var(--gam-t);--k:var(--gam-k)}
+[data-skin="kr"] [data-go="course-4b"],[data-skin="kr"] [data-page="course-4b"]{--c:var(--onggi-c);--t:var(--onggi-t);--k:var(--onggi-k)}
+[data-skin="kr"] .course[data-go="practice-daily"]{--c:var(--gam-c);--t:var(--gam-t);--k:var(--gam-k)}
+[data-skin="kr"] .course[data-go="practice-reading"]{--c:var(--jjok-c);--t:var(--jjok-t);--k:var(--jjok-k)}
+[data-skin="kr"] .course[data-mod="practice"]{--c:var(--noerok-c);--t:var(--noerok-t);--k:var(--noerok-k)}
+[data-skin="kr"] .course[data-mod="ref"]{--c:var(--mugung-c);--t:var(--mugung-t);--k:var(--mugung-k)}
+[data-skin="kr"] .course[data-go="records-mistakes"]{--c:var(--kimchi-c);--t:var(--kimchi-t);--k:var(--kimchi-k)}
+[data-skin="kr"] .mbtn[data-mod="home"],[data-skin="kr"] body[data-mod="home"]{--c:var(--celadon-c);--t:var(--celadon-t);--k:var(--celadon-k)}
+[data-skin="kr"] .mbtn[data-mod="course"],[data-skin="kr"] body[data-mod="course"]{--c:var(--jjok-c);--t:var(--jjok-t);--k:var(--jjok-k)}
+[data-skin="kr"] .mbtn[data-mod="practice"],[data-skin="kr"] body[data-mod="practice"]{--c:var(--gam-c);--t:var(--gam-t);--k:var(--gam-k)}
+[data-skin="kr"] .mbtn[data-mod="ref"],[data-skin="kr"] body[data-mod="ref"]{--c:var(--mugung-c);--t:var(--mugung-t);--k:var(--mugung-k)}
+[data-skin="kr"] .mbtn[data-mod="records"],[data-skin="kr"] body[data-mod="records"]{--c:var(--kimchi-c);--t:var(--kimchi-t);--k:var(--kimchi-k)}
+
+/* ---------- 頂部色帶：丹青石綠＋韓屋窗格紋 ---------- */
+[data-skin="kr"] .mast{background:none;position:relative;isolation:isolate;z-index:40}
+[data-skin="kr"] .mast::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(180deg,var(--mast-top),var(--mast-band))}
+[data-skin="kr"] .mast::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:var(--pattern);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath fill='none' stroke='black' stroke-width='1.2' d='M0 .6H28M.6 0V28M7 7H21V21H7Z M14 0V7M14 21V28M0 14H7M21 14H28'/%3E%3C/svg%3E") 0 0/28px 28px;
+          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath fill='none' stroke='black' stroke-width='1.2' d='M0 .6H28M.6 0V28M7 7H21V21H7Z M14 0V7M14 21V28M0 14H7M21 14H28'/%3E%3C/svg%3E") 0 0/28px 28px}
+[data-skin="kr"] .mast .brand-tile{background:#fdfcf8;color:#2f527f;border-radius:10px}
+
+/* 選單：同一條石綠色帶，下緣是色動條紋（紅、黃、藍、綠、粉） */
+[data-skin="kr"] .topnav{padding-bottom:10px}
+[data-skin="kr"] .topnav::before{background:var(--mast-band);animation:none;-webkit-mask:none;mask:none;bottom:10px}
+[data-skin="kr"] .topnav::after{display:block;top:auto;bottom:0;height:10px;opacity:1;animation:none;-webkit-mask:none;mask:none;
+  background:linear-gradient(180deg,
+    var(--kimchi-c) 0 2px,var(--ginkgo-c) 2px 4px,var(--jjok-c) 4px 6px,var(--noerok-c) 6px 8px,var(--mugung-c) 8px 10px)}
+[data-skin="kr"] .topnav-in{padding-bottom:10px}
+[data-skin="kr"] .topnav .mbtn{border-radius:10px;background:rgb(255 255 255 / .08)}
+[data-skin="kr"] .topnav .mbtn[aria-current="page"]{background:var(--surface);box-shadow:none}
+[data-skin="kr"] .mast .acct-out,[data-skin="kr"] .pop-btn{border-radius:10px}
+
+/* ---------- 單元橫幅、首頁主打卡片：白瓷卡＋上緣物件色線＋右側淡淡的窗格紋 ---------- */
+[data-skin="kr"] .mhero,[data-skin="kr"] .feature{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--c,var(--accent));position:relative;overflow:hidden}
+[data-skin="kr"] .feature{--c:var(--celadon-c);--t:var(--celadon-t);--k:var(--celadon-k)}
+[data-skin="kr"] .mhero::after,[data-skin="kr"] .feature::after{content:"";display:block;position:absolute;top:0;right:0;bottom:0;left:auto;width:min(320px,45%);
+  background:var(--c,var(--accent));opacity:.16;pointer-events:none;border-radius:0;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath fill='none' stroke='black' stroke-width='1.2' d='M0 .6H28M.6 0V28M7 7H21V21H7Z M14 0V7M14 21V28M0 14H7M21 14H28'/%3E%3C/svg%3E") 0 0/28px 28px,linear-gradient(90deg,transparent,#000 60%);
+  -webkit-mask-composite:source-in;
+          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath fill='none' stroke='black' stroke-width='1.2' d='M0 .6H28M.6 0V28M7 7H21V21H7Z M14 0V7M14 21V28M0 14H7M21 14H28'/%3E%3C/svg%3E") 0 0/28px 28px,linear-gradient(90deg,transparent,#000 60%);
+          mask-composite:intersect}
+[data-skin="kr"] .mhero > *,[data-skin="kr"] .feature > *{position:relative;z-index:1}
+[data-skin="kr"] .tile.big,[data-skin="kr"] .feature-glyph{background:var(--t,var(--tint));color:var(--k,var(--accent));border:0;border-radius:10px}
+
+/* ---------- 課本、練習卡片：各自的物件色 ---------- */
+[data-skin="kr"] .book .tile,[data-skin="kr"] .course .tile{background:var(--t,var(--tint));color:var(--k,var(--accent));border-radius:10px}
+[data-skin="kr"] .book .bbar i{background:var(--c,var(--accent))}
+[data-skin="kr"] .book{border-top:3px solid var(--c,var(--line))}
+[data-skin="kr"] .book:hover,[data-skin="kr"] .course:hover{border-color:var(--c,var(--accent));box-shadow:none}
+[data-skin="kr"] .course-foot{background:var(--t,var(--hover));color:var(--k,var(--accent))}
+
+/* 分頁 */
+[data-skin="kr"] .subtab{border-radius:10px}
+[data-skin="kr"] .subtab[aria-selected="true"]{background:var(--t,var(--ink));color:var(--k,var(--surface));border:1px solid var(--c,var(--ink));font-weight:700}
+[data-skin="kr"] .subtab[data-page^="course-"]:not([aria-selected="true"]){border-bottom:3px solid var(--c,var(--line))}
+[data-skin="kr"] .subtab:not([data-page^="course-"])[aria-selected="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+
+/* 小元件 */
+[data-skin="kr"] .btn,[data-skin="kr"] .btn.light{border-radius:10px}
+[data-skin="kr"] .avatar{background:var(--celadon-t);color:var(--celadon-k)}
+[data-skin="kr"] .qbar i,[data-skin="kr"] .prog .bar i{background:var(--accent)}
+[data-skin="kr"] .streak .ic{color:var(--gam-c)}
+[data-skin="kr"] .search:focus-within{border-color:var(--accent)}
+
+/* ---------- 插圖（原創 SVG，放在 img/illust/） ----------
+   課本卡片右上角：該冊的物件；單元橫幅右側：該單元的物件；
+   首頁主打卡片：韓屋與柿子樹；沒有資料時：醬缸台 */
+[data-skin="kr"] [data-go="course-hangul"]{--ill:url("/img/illust/mugunghwa.svg")}
+[data-skin="kr"] [data-go="course-1a"]{--ill:url("/img/illust/kimchi.svg")}
+[data-skin="kr"] [data-go="course-1b"]{--ill:url("/img/illust/ginkgo.svg")}
+[data-skin="kr"] [data-go="course-2a"]{--ill:url("/img/illust/celadon.svg")}
+[data-skin="kr"] [data-go="course-2b"]{--ill:url("/img/illust/bojagi.svg")}
+[data-skin="kr"] [data-go="course-3a"]{--ill:url("/img/illust/dancheong.svg")}
+[data-skin="kr"] [data-go="course-3b"]{--ill:url("/img/illust/jeogori.svg")}
+[data-skin="kr"] [data-go="course-4a"]{--ill:url("/img/illust/persimmon.svg")}
+[data-skin="kr"] [data-go="course-4b"]{--ill:url("/img/illust/onggi.svg")}
+[data-skin="kr"] .book{position:relative}
+[data-skin="kr"] .book::after{content:"";position:absolute;top:16px;right:12px;width:44px;height:44px;
+  background:var(--ill) center/contain no-repeat;pointer-events:none}
+
+[data-skin="kr"] body[data-mod="home"]{--ill-hero:url("/img/illust/celadon.svg")}
+[data-skin="kr"] body[data-mod="course"]{--ill-hero:url("/img/illust/bojagi.svg")}
+[data-skin="kr"] body[data-mod="practice"]{--ill-hero:url("/img/illust/persimmon.svg")}
+[data-skin="kr"] body[data-mod="ref"]{--ill-hero:url("/img/illust/mugunghwa.svg")}
+[data-skin="kr"] body[data-mod="records"]{--ill-hero:url("/img/illust/kimchi.svg")}
+[data-skin="kr"] .mhero{padding-right:120px}
+[data-skin="kr"] .mhero::before{content:"";position:absolute;right:28px;top:50%;width:76px;height:76px;transform:translateY(-50%);
+  background:var(--ill-hero) center/contain no-repeat;z-index:1;pointer-events:none}
+
+[data-skin="kr"] .feature::before{content:"";position:absolute;right:130px;bottom:6px;width:230px;height:118px;
+  background:url("/img/illust/hanok.svg") right bottom/contain no-repeat;z-index:1;pointer-events:none}
+[data-skin="kr"] .feature .btn{z-index:2}
+
+[data-skin="kr"] .empty{position:relative;padding-right:230px;min-height:150px}
+[data-skin="kr"] .empty::after{content:"";position:absolute;right:20px;top:50%;width:190px;height:106px;transform:translateY(-50%);
+  background:url("/img/illust/jangdokdae.svg") center/contain no-repeat;pointer-events:none}
+
+@media (max-width:1100px){[data-skin="kr"] .feature::before{display:none}}
+@media (max-width:700px){
+  [data-skin="kr"] .book::after{top:12px;right:8px;width:30px;height:30px}
+  [data-skin="kr"] .mhero{padding-right:84px}
+  [data-skin="kr"] .mhero::before{right:14px;width:56px;height:56px}
+  [data-skin="kr"] .empty{padding-right:16px;padding-top:122px}
+  [data-skin="kr"] .empty::after{top:14px;left:50%;right:auto;transform:translateX(-50%);width:170px;height:96px}
+}
