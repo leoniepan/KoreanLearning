@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 112"><title>장독대 醬缸台</title>
+<defs>
+<g id="jar">
+<path d="M22 12h20l2 5c8 3 12 11 12 20 0 11-7 17-13 20H21C15 54 8 48 8 37c0-9 4-17 12-20z" fill="#7d5a44"/>
+<path d="M44 17c8 3 12 11 12 20 0 11-7 17-13 20h-6c8-6 13-24 7-40z" fill="#5f4333" opacity=".6"/>
+<path d="M18 6c4-2 24-2 28 0v6H18z" fill="#8f6b52"/>
+<path d="M10 32c8 4 36 4 44 0" stroke="#9c7a60" stroke-width="2" fill="none"/>
+<ellipse cx="18" cy="26" rx="3" ry="6" fill="#9c7a60" opacity=".7" transform="rotate(20 18 26)"/>
+</g>
+</defs>
+<path d="M10 96h180l-8 12H18z" fill="#bfb4a1"/>
+<path d="M18 88h164v8H18z" fill="#d4cbbb"/>
+<g fill="#c9bfae"><circle cx="40" cy="92" r="1.5"/><circle cx="96" cy="93" r="1.5"/><circle cx="150" cy="91" r="1.5"/></g>
+<use href="#jar" transform="translate(30 8) scale(1.4)"/>
+<use href="#jar" transform="translate(108 30) scale(1.05)"/>
+<use href="#jar" transform="translate(150 50) scale(.7)"/>
+<path d="M186 40c-6 6-6 14 0 20M186 40c4 6 4 14 0 20" stroke="#6f9a54" stroke-width="2" fill="none"/>
+<circle cx="186" cy="38" r="4" fill="#e9a8c7"/><circle cx="186" cy="38" r="1.5" fill="#b8325a"/>
+</svg>

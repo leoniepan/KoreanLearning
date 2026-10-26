@@ -1,7 +1,8 @@
 // 資料存取。正式環境用 Azure Cosmos DB；測試與本機模擬用記憶體（memory-store.js）。
 //
 // Cosmos DB 結構：資料庫 korean／容器 records，分割區索引鍵 /userId
-//   使用者    { id:'user',  userId, type:'user',  email, firstSeen, lastSeen }
+//   使用者    { id:'user',  userId, type:'user',  email, roles, firstSeen, lastSeen }
+//   開通狀態  { id:'access', userId, type:'access', status, email, requestedAt, decidedAt, decidedBy }
 //   學習狀態  { id:'state', userId, type:'state', data:{...}, updatedAt }
 //   測驗紀錄  { id:<uuid>,  userId, type:'attempt', email, route, module, title, score, total, finishedAt, answers:[...] }
 import { CosmosClient } from '@azure/cosmos';
@@ -48,6 +49,14 @@ export class CosmosStore {
   async listUsers() {
     const c = await this.container();
     const { resources } = await c.items.query('SELECT * FROM c WHERE c.type = "user"').fetchAll();
+    return resources.map(strip);
+  }
+  async listByType(type) {
+    const c = await this.container();
+    const { resources } = await c.items.query({
+      query: 'SELECT * FROM c WHERE c.type = @t',
+      parameters: [{ name: '@t', value: type }]
+    }).fetchAll();
     return resources.map(strip);
   }
   async listAllAttempts(limit = 5000) {

@@ -1,56 +1,68 @@
 <!doctype html>
-<html lang="zh-Hant">
+<html lang="zh-Hant" data-skin="kr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#173f35">
+<meta name="theme-color" content="#173f3d" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f201f" media="(prefers-color-scheme: dark)">
 <title>발음·동사 연습장</title>
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/skins/kr.css">
+
 </head>
 <body>
 <div class="app">
-  <aside class="side" id="side" aria-label="選單">
-    <div class="brand">
-      <span class="brand-tile" lang="ko" aria-hidden="true">가</span>
-      <div><h1 lang="ko">발음·동사 연습장</h1><p class="sub">韓文學習帳　世宗韓國語</p></div>
-    </div>
-    <nav class="mnav" id="mods" aria-label="單元"></nav>
-    <div class="side-tools">
-      <div class="tools">
-        <div class="seg" role="group" aria-label="朗讀速度">
-          <button type="button" id="rate-n" aria-pressed="true">正常語速</button>
-          <button type="button" id="rate-s" aria-pressed="false">慢速</button>
+  <header class="mast" id="mast">
+    <div class="mast-in">
+      <div class="mast-row">
+        <div class="hello">
+          <a class="brand-tile" href="#home-main" lang="ko" aria-label="回首頁">가</a>
+          <div class="hello-t">
+            <h1 id="hello-h" lang="ko">안녕하세요</h1>
+            <p><span lang="ko">발음·동사 연습장</span><span class="dot" aria-hidden="true">・</span>今天也來學一點韓文吧</p>
+          </div>
         </div>
-        <div class="vpick" id="vpick" hidden>
-          <label for="voice-sel">韓文語音</label>
-          <div class="vpick-row"><select id="voice-sel"></select><button type="button" id="voice-try" class="vtry">試聽</button></div>
+        <div class="mast-tools">
+          <div class="pop">
+            <button type="button" class="pop-btn" id="voice-btn" aria-expanded="false" aria-controls="voice-panel"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6"/><path d="M18 6.5a7.5 7.5 0 0 1 0 11"/></svg><span>語音設定</span></button>
+            <div class="pop-panel" id="voice-panel" hidden>
+              <div class="tools">
+                <div class="pop-sec">
+                  <span class="pop-label">朗讀速度</span>
+                  <div class="seg" role="group" aria-label="朗讀速度">
+                    <button type="button" id="rate-n" aria-pressed="true">正常語速</button>
+                    <button type="button" id="rate-s" aria-pressed="false">慢速</button>
+                  </div>
+                </div>
+                <div class="vpick" id="vpick" hidden>
+                  <label for="voice-sel">韓文語音</label>
+                  <div class="vpick-row"><select id="voice-sel"></select><button type="button" id="voice-try" class="vtry">試聽</button></div>
+                </div>
+                <span class="vs" id="voice">檢查語音中…</span>
+              </div>
+            </div>
+          </div>
+          <span class="acct" id="acct" hidden></span>
         </div>
-        <span class="vs" id="voice">檢查語音中…</span>
       </div>
       <span class="sync" id="sync" aria-live="polite"></span>
-      <span class="acct" id="acct" hidden></span>
     </div>
-  </aside>
-  <div class="scrim" id="scrim" hidden></div>
+  </header>
+  <nav class="topnav" id="mods" aria-label="單元"></nav>
 
-  <div class="main-col">
-    <header class="topbar">
-      <button type="button" class="round-btn" id="tb-back" aria-label="回首頁" hidden><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14.5 5.5-6.5 6.5 6.5 6.5"/></svg></button>
-      <span class="tb-title" id="tb-title"></span>
-      <button type="button" class="round-btn" id="menu-btn" aria-label="開啟選單" aria-controls="side" aria-expanded="false"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-    </header>
-    <main class="content">
-      <div class="content-inner">
-        <div class="page-head" id="page-head">
-          <section class="mhero" id="mhero"></section>
-          <div class="subtabs" id="pages" role="tablist" aria-label="頁面"></div>
-        </div>
-        <div id="view"></div>
-        <noscript><p>這個網站需要開啟 JavaScript 才能使用。</p></noscript>
+  <main class="content">
+    <div class="content-inner">
+      <div class="page-head" id="page-head">
+        <section class="mhero" id="mhero"></section>
+        <div class="subtabs" id="pages" role="tablist" aria-label="頁面"></div>
       </div>
-    </main>
-  </div>
+      <div id="view"></div>
+      <noscript><p>這個網站需要開啟 JavaScript 才能使用。</p></noscript>
+    </div>
+  </main>
 
   <nav class="tabbar-b" id="tabbar" aria-label="主要功能">
     <button type="button" data-tab="home"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 10.5 12 4l8.5 6.5"/><path d="M5.5 9v10.5h13V9"/><path d="M10 19.5v-5h4v5"/></svg><span>首頁</span></button>

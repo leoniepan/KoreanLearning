@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><title>무궁화 木槿花</title>
+<g transform="translate(32 33)">
+<g fill="#e9a8c7"><ellipse cx="0" cy="-14" rx="11" ry="15"/><ellipse cx="0" cy="-14" rx="11" ry="15" transform="rotate(72)"/><ellipse cx="0" cy="-14" rx="11" ry="15" transform="rotate(144)"/><ellipse cx="0" cy="-14" rx="11" ry="15" transform="rotate(216)"/><ellipse cx="0" cy="-14" rx="11" ry="15" transform="rotate(288)"/></g>
+<g fill="none" stroke="#d68bb0" stroke-width="1.2" stroke-linecap="round"><path d="M0-6v-16"/><path d="M0-6v-16" transform="rotate(72)"/><path d="M0-6v-16" transform="rotate(144)"/><path d="M0-6v-16" transform="rotate(216)"/><path d="M0-6v-16" transform="rotate(288)"/></g>
+<g fill="#b8325a"><path d="M0-9 2.6-2.8 9-2.8 3.8 1.2 5.6 7.4 0 3.6-5.6 7.4-3.8 1.2-9-2.8-2.6-2.8z"/></g>
+<path d="M0 0 4-9" stroke="#f2e6c9" stroke-width="2.2" stroke-linecap="round"/><circle cx="4.4" cy="-10" r="2.2" fill="#f2c94c"/>
+</g></svg>

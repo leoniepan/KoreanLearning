@@ -11,6 +11,7 @@ export class MemoryStore {
       .sort((a, b) => b.finishedAt.localeCompare(a.finishedAt)).slice(0, limit).map(d => structuredClone(d));
   }
   async listUsers() { return [...this.docs.values()].filter(d => d.type === 'user').map(d => structuredClone(d)); }
+  async listByType(type) { return [...this.docs.values()].filter(d => d.type === type).map(d => structuredClone(d)); }
   async listAllAttempts(limit = 5000) {
     return [...this.docs.values()].filter(d => d.type === 'attempt')
       .sort((a, b) => b.finishedAt.localeCompare(a.finishedAt)).slice(0, limit).map(d => structuredClone(d));

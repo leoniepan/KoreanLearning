@@ -11,7 +11,7 @@
     { "route": "/403.html", "allowedRoles": ["anonymous"] },
     { "route": "/api/manage/*", "allowedRoles": ["admin"] },
     { "route": "/tools/*", "statusCode": 404 },
-    { "route": "/*", "allowedRoles": ["learner", "admin"] }
+    { "route": "/*", "allowedRoles": ["authenticated"] }
   ],
   "responseOverrides": {
     "401": { "redirect": "/.auth/login/aad?post_login_redirect_uri=.referrer", "statusCode": 302 },

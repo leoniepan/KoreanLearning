@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><title>쪽빛 보자기 藍染包袱</title>
+<path d="M10 30c0-6 4-10 10-10h24c6 0 10 4 10 10v14c0 7-5 12-12 12H22c-7 0-12-5-12-12z" fill="#3d5f8f"/>
+<path d="M10 37h44M23 20v36M41 20v36" stroke="#5d7fb0" stroke-width="2"/>
+<path d="M23 37h18v19H23z" fill="#4d70a3"/>
+<path d="M10 30c0-6 4-10 10-10h3v17H10z" fill="#33507a"/>
+<path d="M32 21c-6-1-12-6-12-12 6 0 10 4 12 9 2-5 6-9 12-9 0 6-6 11-12 12z" fill="#2f527f"/>
+<path d="M28 21c0-3 2-5 4-5s4 2 4 5z" fill="#c8553d"/>
+<path d="M22 11c3 2 6 5 8 8M42 11c-3 2-6 5-8 8" stroke="#5d7fb0" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+</svg>

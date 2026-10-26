@@ -15,10 +15,12 @@ const STRANGER = hdr({ userId: 'u-x', email: 'x@example.com', roles: ['anonymous
 const ans = (key, ok, extra = {}) => ({ key, label: '選出正確變化', prompt: '먹다 吃 請選出 過去式', chosen: ok ? '먹었어요' : '먹았어요', correct: '먹었어요', ok, opts: ['먹었어요', '먹았어요'], ...extra });
 const attempt = (answers, extra = {}) => ({ route: 'verbs-quiz', module: 'verbs', title: '動詞・形容詞 測驗', finishedAt: new Date().toISOString(), answers, ...extra });
 
-test('沒有登入資訊 → 401；沒有 learner 角色 → 403；資料庫未設定 → 503', async () => {
+test('沒有登入資訊 → 401；未核准的帳號不能存紀錄 → 403；資料庫未設定 → 503', async () => {
   const s = new MemoryStore();
   assert.equal((await h.me({ headers: {} }, s)).status, 401);
-  assert.equal((await h.me({ headers: STRANGER }, s)).status, 403);
+  assert.equal((await h.me({ headers: STRANGER }, s)).status, 200);
+  assert.equal((await h.getState({ headers: STRANGER }, s)).status, 403);
+  assert.equal((await h.postAttempt({ headers: STRANGER, body: attempt([ans('k1', true)]) }, s)).status, 403);
   assert.equal((await h.me({ headers: ANNA }, null)).status, 503);
 });
 
@@ -31,7 +33,7 @@ test('/me 會建立使用者並保留第一次登入時間', async () => {
   const s = new MemoryStore();
   const r1 = await h.me({ headers: ANNA }, s);
   assert.equal(r1.status, 200);
-  assert.deepEqual(r1.jsonBody, { userId: 'u-anna', email: 'anna@example.com', isAdmin: false });
+  assert.deepEqual(r1.jsonBody, { userId: 'u-anna', email: 'anna@example.com', isAdmin: false, access: 'approved' });
   const first = (await s.get('u-anna', 'user')).firstSeen;
   await new Promise(r => setTimeout(r, 5));
   await h.me({ headers: ANNA }, s);
@@ -147,4 +149,95 @@ test('前端與 API 共用的程式必須完全相同', () => {
     const web = readFileSync(new URL('../../js/core/' + f, import.meta.url), 'utf8');
     assert.equal(web, api, `js/core/${f} 和 api/src/lib/${f} 不一致`);
   }
+});
+
+// ---------- 帳號開通 ----------
+const NEWBIE = hdr({ userId: 'u-new', email: 'new@example.com', roles: ['anonymous', 'authenticated'] });
+const setAccess = (s, userId, status, headers = ADMIN) => h.manageSetAccess({ headers, params: { userId }, body: { status } }, s);
+
+test('第一次登入：沒有 Azure 邀請的人自動建立「等待核准」申請', async () => {
+  const s = new MemoryStore();
+  const r = await h.me({ headers: NEWBIE }, s);
+  assert.equal(r.status, 200);
+  assert.equal(r.jsonBody.access, 'pending');
+  const a = await s.get('u-new', 'access');
+  assert.equal(a.status, 'pending');
+  assert.equal(a.email, 'new@example.com');
+  // 再登入一次不會重設申請時間
+  await new Promise(r => setTimeout(r, 5));
+  await h.me({ headers: NEWBIE }, s);
+  assert.equal((await s.get('u-new', 'access')).requestedAt, a.requestedAt);
+  // 透過 Azure 邀請（learner）的人不需要申請
+  await h.me({ headers: ANNA }, s);
+  assert.equal(await s.get('u-anna', 'access'), null);
+});
+
+test('管理者核准後可以存紀錄；停用後不行；重新啟用又可以', async () => {
+  const s = new MemoryStore();
+  await h.me({ headers: NEWBIE }, s);
+  await h.me({ headers: ADMIN }, s);
+  const body = attempt([ans('k1', true)]);
+  assert.equal((await h.postAttempt({ headers: NEWBIE, body }, s)).status, 403);
+
+  const ok = await setAccess(s, 'u-new', 'approved');
+  assert.equal(ok.status, 200);
+  assert.equal(ok.jsonBody.status, 'approved');
+  const doc = await s.get('u-new', 'access');
+  assert.equal(doc.decidedBy, 'me@example.com');
+  assert.equal((await h.me({ headers: NEWBIE }, s)).jsonBody.access, 'approved');
+  assert.equal((await h.postAttempt({ headers: NEWBIE, body }, s)).status, 201);
+
+  await setAccess(s, 'u-new', 'disabled');
+  const denied = await h.postAttempt({ headers: NEWBIE, body }, s);
+  assert.equal(denied.status, 403);
+  assert.match(denied.jsonBody.error, /停用/);
+  assert.equal((await h.me({ headers: NEWBIE }, s)).jsonBody.access, 'disabled');
+
+  await setAccess(s, 'u-new', 'approved');
+  assert.equal((await h.getState({ headers: NEWBIE }, s)).status, 200);
+});
+
+test('停用也能擋住透過 Azure 邀請（learner）的帳號，但不能停用管理者或自己', async () => {
+  const s = new MemoryStore();
+  await h.me({ headers: ANNA }, s);
+  await h.me({ headers: ADMIN }, s);
+  assert.equal((await setAccess(s, 'u-anna', 'disabled')).status, 200);
+  assert.equal((await h.getState({ headers: ANNA }, s)).status, 403);
+  assert.equal((await setAccess(s, 'u-admin', 'disabled')).status, 400);
+
+  const admin2 = hdr({ userId: 'u-admin2', email: 'boss@example.com', roles: ['anonymous', 'authenticated', 'admin'] });
+  await h.me({ headers: admin2 }, s);
+  const r = await setAccess(s, 'u-admin2', 'disabled');
+  assert.equal(r.status, 400);
+  assert.match(r.jsonBody.error, /角色管理/);
+});
+
+test('帳號管理：只有管理者能用；格式錯誤或沒登入過的帳號會被拒絕', async () => {
+  const s = new MemoryStore();
+  await h.me({ headers: NEWBIE }, s);
+  await h.me({ headers: ANNA }, s);
+  assert.equal((await setAccess(s, 'u-new', 'approved', ANNA)).status, 403);
+  assert.equal((await h.manageAccounts({ headers: ANNA }, s)).status, 403);
+  assert.equal((await setAccess(s, 'u-new', 'owner')).status, 400);
+  assert.equal((await setAccess(s, 'u-ghost', 'approved')).status, 404);
+});
+
+test('帳號列表：等待核准的排最前面，並標示狀態與來源', async () => {
+  const s = new MemoryStore();
+  await h.me({ headers: ADMIN }, s);
+  await h.me({ headers: ANNA }, s);
+  await h.me({ headers: NEWBIE }, s);
+  await h.me({ headers: STRANGER }, s);
+  await setAccess(s, 'u-x', 'disabled');
+  const r = await h.manageAccounts({ headers: ADMIN }, s);
+  assert.equal(r.status, 200);
+  assert.equal(r.jsonBody.pending, 1);
+  const list = r.jsonBody.accounts;
+  assert.equal(list[0].userId, 'u-new');
+  const by = Object.fromEntries(list.map(a => [a.userId, a]));
+  assert.equal(by['u-new'].status, 'pending');
+  assert.equal(by['u-anna'].status, 'approved');
+  assert.equal(by['u-anna'].viaInvite, true);
+  assert.equal(by['u-x'].status, 'disabled');
+  assert.equal(by['u-admin'].status, 'admin');
 });

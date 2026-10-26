@@ -2,7 +2,7 @@
 
 配合世宗韓國語 1A～4B 的私人自學網站，架設在 Azure Static Web Apps，需以受邀的 Microsoft 帳號登入。設定步驟見 [AZURE-SETUP.md](AZURE-SETUP.md)。
 
-網站分成五個部分（左側選單）：
+網站分成五個部分（畫面上方、問候語下面的選單）：
 
 | 選單 | 內容 |
 |---|---|
@@ -10,7 +10,7 @@
 | 課程 | **主要的學習路線**。「韓文字母」入門（子音、母音對照表，點字母聽發音），以及 1A～4B 每一課：該課的詞彙、文法（規則與例句）和本課測驗 |
 | 練習 | 所有測驗：今日測驗（可設定範圍、內容、題數）、每日短文（依網路文章改寫的 1A～4B 程度短文＋閱讀測驗）、文法、字母、發音、單字（動詞、名詞、閃卡）、數字、TOPIK 題型與模擬考 |
 | 速查 | 查資料用：字母表、發音規則、動詞變化表與規則、名詞表與助詞規則、數字（數字表、量詞、日期時間、金錢、轉換）、文法總覽、TOPIK 測驗 |
-| 我的紀錄 | 練習次數、正確率、近 30 天紀錄、各單元正確率、錯題本（可重練）；管理者另有「管理」頁 |
+| 我的紀錄 | 練習次數、正確率、近 30 天紀錄、各單元正確率、錯題本（可重練）；管理者另有「管理」與「帳號開通」頁 |
 
 `modules/` 裡的 pronunciation、verbs、nouns、numbers、grammar、topik、daily、hangul 是內容單元，由 course（課程）、practice（練習）、ref（速查）組合使用；舊網址（例如 `#verbs-table`）會自動轉到新位置。
 
@@ -30,9 +30,11 @@ api/                    學習紀錄 API（Azure Functions，Node.js 22）
   test/                 API 測試（cd api && npm test）
 tools/dev-server.mjs    本機模擬伺服器（含登入、API、資料庫）
 index.html              網站外框（標題、單元選單），內容由 JavaScript 產生
-css/style.css           所有樣式（含手機、平板的 RWD 設定）
+css/style.css           所有樣式（含手機、平板的 RWD 設定、上方選單版面）
+css/skins/kr.css        韓國元素配色：韓紙底、丹青石綠色帶、窗格紋、色動條紋、每冊的物件色與插圖位置
+img/illust/             原創 SVG 插圖（韓國物件、韓屋、醬缸台），可自由商用
 js/
-  app.js                入口：讀取單元註冊表、產生選單、依網址 # 切換頁面
+  app.js                入口：讀取單元註冊表、產生上方選單與問候語、語音設定小視窗、依網址 # 切換頁面
   core/                 所有單元共用的工具
     hangul.js           韓文字拆解與標準發音推算（連音、硬音化、鼻音化…）
     conjugate.js        動詞／形容詞變化（現在、過去、未來、冠形詞形）
@@ -101,7 +103,13 @@ cd ..
 node tools/dev-server.mjs
 ```
 
-打開 http://localhost:4280 ，預設以 `me@example.com`（管理者）登入。要模擬其他使用者，打開 `http://localhost:4280/.dev/login?email=anna@example.com`。模擬的資料存在 `tools/.devdata.json`，刪掉就會清空。
+打開 http://localhost:4280 ，預設以 `me@example.com`（管理者）登入。要模擬其他使用者：
+
+- 新使用者自行登入（等待核准）：`http://localhost:4280/.dev/login?email=anna@example.com`
+- 以前透過 Azure 邀請的使用者：`http://localhost:4280/.dev/login?email=anna@example.com&invite=1`
+- 切回管理者：`http://localhost:4280/.dev/login?email=me@example.com&admin=1&invite=1`
+
+模擬的資料存在 `tools/.devdata.json`，刪掉就會清空。
 
 **只看畫面（離線模式）**：VS Code 的「Live Server」，或在這個資料夾執行 `python -m http.server` 再打開 http://localhost:8000 。
 
@@ -109,6 +117,7 @@ node tools/dev-server.mjs
 
 - 網站架設在 Azure Static Web Apps（免費方案），推送到 `main` 分支後會自動部署網站與 `api/`。
 - 學習紀錄存在 Azure Cosmos DB（免費層），連接字串設定在 Static Web App 的環境變數 `COSMOS_CONNECTION`。
-- `staticwebapp.config.json`：整個網站需要 `learner` 角色，`/api/manage/*` 只有 `admin` 能用，未登入時導向 Microsoft 登入。
-- `403.html`：已登入但尚未被邀請時顯示的頁面。
-- 第一次設定與邀請使用者的步驟：[AZURE-SETUP.md](AZURE-SETUP.md)。
+- `staticwebapp.config.json`：整個網站需要登入，`/api/manage/*` 只有 `admin` 能用，未登入時導向 Microsoft 登入。
+- **帳號開通**：任何 Microsoft 帳號都能登入，第一次登入時自動建立「等待核准」申請；管理者在「我的紀錄 → 帳號開通」核准、停用或重新啟用。開通狀態存在 Cosmos DB（`type: 'access'`），由 API 檢查。只有管理者需要在 Azure「角色管理」指派 `admin` 角色。
+- `403.html`：非管理者打開管理功能時顯示的頁面。
+- 第一次設定的步驟：[AZURE-SETUP.md](AZURE-SETUP.md)。
