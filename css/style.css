@@ -359,8 +359,8 @@ tr.detail td{background:var(--bg)}
   .qctl .btn{grid-column:1/-1}
   .qctl label{display:none}
   .qctl .qf{grid-column:1/-1}
-  .subtabs{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(64px,1fr);gap:6px;overflow-x:auto;width:100%}
-  .subtab{padding:6px 4px;font-size:13px}
+  .subtabs{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(max-content,1fr);gap:6px;overflow-x:auto;width:100%;-webkit-overflow-scrolling:touch}
+  .subtab{padding:6px 12px;font-size:13px;min-width:64px;white-space:nowrap}
   .filters{display:grid;grid-template-columns:1fr 1fr;gap:8px}
   .filters input[type=text]{grid-column:1/-1}
   .filters .count{grid-column:1/-1}
@@ -669,6 +669,7 @@ tr.detail td{background:var(--bg)}
 .lq-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 4px}
 .lq h3{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .lq{scroll-margin-top:72px}
+.lesson{scroll-margin-top:80px}
 .bj-h{font-weight:700;color:var(--accent)}
 .ctab.bj tr>th:first-child{position:sticky;left:0;background:var(--surface);z-index:1}
 .ctab.bj .bj-g{font-size:12px;font-weight:600;color:var(--muted)}
@@ -707,7 +708,7 @@ tr.detail td{background:var(--bg)}
 .vtab td{text-align:center;padding:2px}.vtab th{font-size:13px;font-weight:600}
 .glide{display:flex;flex-direction:column;gap:10px;margin:8px 0}
 .glide-g b{display:block;font-size:14px;margin-bottom:4px}
-@media (prefers-reduced-motion:reduce){.tis-card.go .tis,.tis-card.go .puff path{animation:none!important}}
+/* 衛生紙測試是使用者自己點了才播一次的教學示範，手機開了「減少動態效果」／省電模式也照常播放 */
 @media (max-width:600px){.lip-grid{grid-template-columns:repeat(2,1fr)}}
 
 /* ===== 簡潔主題：平面、單一強調色（取代原本的漸層＋霧面玻璃） ===== */
@@ -934,6 +935,9 @@ body{letter-spacing:-.005em}
   .mast-tools{flex-wrap:nowrap;gap:6px}
   .pop-btn span,.mast .acct-name{display:none}
   .pop-btn{padding:6px 10px}
+  /* 手機：語音設定面板對齊畫面右邊（不是對齊喇叭按鈕），才不會超出左邊 */
+  .mast-row{position:relative}
+  .pop{position:static}
   .mast .acct-out{padding:6px 12px}
   .mast .sync{align-self:flex-start}
   .topnav .mbtn{padding:4px 14px 4px 4px;gap:8px;font-size:14px}
