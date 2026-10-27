@@ -945,3 +945,7 @@ body{letter-spacing:-.005em}
   .topnav .mbtn small{display:none}
   .home-top .hello-r .streak{display:none}
 }
+
+/* 頁尾：插圖來源標示 */
+.credit{margin-top:40px;padding:14px 0 4px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);text-align:center}
+.credit a{color:inherit}

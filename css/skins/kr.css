@@ -1,14 +1,14 @@
 /* ===== 外觀：韓國 =====
    以韓國代表性的物件取色：
    - 底色是韓紙（한지），卡片是白瓷（백자），文字是墨（먹）
-   - 頂部色帶是丹青的石綠（단청 석록），帶淡淡的韓屋窗格紋（창살）
+   - 頂部橫幅是漸層的天空、遠山和一角韓屋屋簷（처마），選單是丹青的石綠（단청 석록）
    - 選單下緣是韓服袖子的色動條紋（색동）
    - 主要按鈕是丹青的朱紅（단청 주홍），連結是藍染（쪽빛）
    - 每一冊、每個單元各對應一種韓國物件的顏色（見下方「物件對應」）
    只在 <html data-skin="kr"> 時生效。 */
 
 :root[data-skin="kr"]{
-  --bg:#f6f1e7;--surface:#fdfcf8;--ink:#26241f;--muted:#6a645a;--line:#e6dfd2;--grid:#d4cbbb;--hover:#efe9dd;
+  --bg:#faf1e5;--surface:#fffaf3;--ink:#26241f;--muted:#6a645a;--line:#eddcc7;--grid:#d4cbbb;--hover:#efe9dd;
   --sun:#a8402c;--sun-line:#a8402c;--sun-ink:#ffffff;                 /* 단청 주홍 */
   --accent:#2f527f;--accent-ink:#ffffff;--tint:#e4e9f1;--chip:#e4e9f1;  /* 쪽빛 */
   --mark:#a8402c;--markbg:#f6e3dd;--bad:#a8402c;--badbg:#f6e3dd;--ok:#446e50;--okbg:#e4eee7;
@@ -53,6 +53,9 @@
   --jaju-t:#352938;--jaju-k:#c0a2c9;--gam-t:#3c2e25;--gam-k:#dba684;--onggi-t:#392e28;--onggi-k:#c7ab99;
   color-scheme:dark}
 
+/* 頁面背景：韓紙米色上淡淡的條狀雲紋 */
+[data-skin="kr"] body{background:var(--deco-bg) 0 0/600px 520px,var(--bg)}
+
 /* ---------- 物件對應 ----------
    韓文字母＝木槿花、1A 泡菜、1B 銀杏葉、2A 青瓷、2B 藍染、3A 丹青綠、3B 韓服紫、4A 柿子、4B 甕器
    單元：首頁＝青瓷、課程＝藍染、練習＝柿子、速查＝木槿花、我的紀錄＝泡菜 */
@@ -76,37 +79,69 @@
 [data-skin="kr"] .mbtn[data-mod="ref"],[data-skin="kr"] body[data-mod="ref"]{--c:var(--mugung-c);--t:var(--mugung-t);--k:var(--mugung-k)}
 [data-skin="kr"] .mbtn[data-mod="records"],[data-skin="kr"] body[data-mod="records"]{--c:var(--kimchi-c);--t:var(--kimchi-t);--k:var(--kimchi-k)}
 
-/* ---------- 頂部色帶：丹青石綠＋韓屋窗格紋 ---------- */
-[data-skin="kr"] .mast{background:none;position:relative;isolation:isolate;z-index:40}
-[data-skin="kr"] .mast::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background:linear-gradient(180deg,var(--mast-top),var(--mast-band))}
-[data-skin="kr"] .mast::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:var(--pattern);
-  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath fill='none' stroke='black' stroke-width='1.2' d='M0 .6H28M.6 0V28M7 7H21V21H7Z M14 0V7M14 21V28M0 14H7M21 14H28'/%3E%3C/svg%3E") 0 0/28px 28px;
-          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath fill='none' stroke='black' stroke-width='1.2' d='M0 .6H28M.6 0V28M7 7H21V21H7Z M14 0V7M14 21V28M0 14H7M21 14H28'/%3E%3C/svg%3E") 0 0/28px 28px}
-[data-skin="kr"] .mast .brand-tile{background:#fdfcf8;color:#2f527f;border-radius:10px}
+/* ---------- 頂部橫幅：韓國新年風景插畫（松樹、遠山、亭子、雲紋） ----------
+   插圖：Magnific（magnific.com）免費素材「Flat background korean seollal holiday」，已去掉原圖的文字（授權需標註來源，見頁尾）。
+   上方加一層米色漸層，讓問候語和按鈕看得清楚。 */
+:root[data-skin="kr"]{
+  --sky-ink:#3b2a1e;--sky-muted:#6b4f3a;--banner-veil:linear-gradient(180deg,rgb(254 228 191 / .92) 0%,rgb(254 228 191 / .55) 38%,rgb(254 228 191 / 0) 62%);
+  --deco-bg:url("../../img/deco/bg-pattern.svg");--deco-hero:url("../../img/deco/hero-deco.svg");--deco-hero-hills:url("../../img/deco/hero-hills.svg");--deco-norigae:url("../../img/deco/norigae.svg");
+}
+@media (prefers-color-scheme: dark){:root[data-skin="kr"]:not([data-theme="light"]){
+  --sky-ink:#fff7ec;--sky-muted:#e9d9c4;--banner-veil:linear-gradient(180deg,rgb(20 22 30 / .82) 0%,rgb(20 22 30 / .55) 45%,rgb(20 22 30 / .35) 100%);
+  --deco-bg:url("../../img/deco/bg-pattern-dk.svg");--deco-hero:url("../../img/deco/hero-deco-dk.svg");--deco-hero-hills:url("../../img/deco/hero-hills-dk.svg");--deco-norigae:url("../../img/deco/norigae-dk.svg");
+}}
+:root[data-skin="kr"][data-theme="dark"]{
+  --sky-ink:#fff7ec;--sky-muted:#e9d9c4;--banner-veil:linear-gradient(180deg,rgb(20 22 30 / .82) 0%,rgb(20 22 30 / .55) 45%,rgb(20 22 30 / .35) 100%);
+  --deco-bg:url("../../img/deco/bg-pattern-dk.svg");--deco-hero:url("../../img/deco/hero-deco-dk.svg");--deco-hero-hills:url("../../img/deco/hero-hills-dk.svg");--deco-norigae:url("../../img/deco/norigae-dk.svg");
+}
+
+[data-skin="kr"] .mast{position:relative;isolation:isolate;z-index:40;color:var(--sky-ink);
+  background:var(--banner-veil),url("../../img/deco/seollal.svg") center 54%/cover no-repeat,#fee4bf}
+[data-skin="kr"] .mast::before,[data-skin="kr"] .mast::after{content:none}
+[data-skin="kr"] .mast-in{padding-bottom:120px}
+[data-skin="kr"] .mast .sync{align-self:flex-start;background:rgb(255 255 255 / .55);padding:2px 10px;border-radius:10px}
+@media (prefers-color-scheme: dark){:root[data-skin="kr"]:not([data-theme="light"]) .mast .sync{background:rgb(20 22 30 / .55)}}
+:root[data-skin="kr"][data-theme="dark"] .mast .sync{background:rgb(20 22 30 / .55)}
+[data-skin="kr"] .mast .acct-name{background:rgb(255 255 255 / .6);color:var(--sky-ink);padding:5px 10px;border-radius:10px}
+@media (max-width:700px){[data-skin="kr"] .mast{background-position:0 0,center 60%,0 0}[data-skin="kr"] .mast-in{padding-bottom:84px}}
+[data-skin="kr"] .mast .brand-tile{background:#fdfcf8;color:#2f527f;border-radius:10px;box-shadow:0 2px 8px rgb(18 49 74 / .18)}
+[data-skin="kr"] .mast .hello-t h1{color:var(--sky-ink)}
+[data-skin="kr"] .mast .hello-t p,[data-skin="kr"] .mast .acct,[data-skin="kr"] .mast .sync{color:var(--sky-muted)}
+[data-skin="kr"] .mast .acct-out,[data-skin="kr"] .pop-btn{color:var(--sky-ink);background:rgb(255 255 255 / .55);border-color:rgb(18 49 74 / .22)}
+[data-skin="kr"] .mast .acct-out:hover,[data-skin="kr"] .pop-btn:hover,[data-skin="kr"] .pop-btn[aria-expanded="true"]{background:rgb(255 255 255 / .85)}
+[data-skin="kr"] .mast :focus-visible{outline-color:var(--sky-ink)}
+[data-skin="kr"] .mast .sync.ok::before{background:#2f8a5b}
+[data-skin="kr"] .mast .sync.warn{color:#9a2e1b}
+@media (prefers-color-scheme: dark){:root[data-skin="kr"]:not([data-theme="light"]) .mast .acct-out,:root[data-skin="kr"]:not([data-theme="light"]) .pop-btn{background:rgb(255 255 255 / .12);border-color:rgb(255 255 255 / .3)}
+  :root[data-skin="kr"]:not([data-theme="light"]) .mast .sync.ok::before{background:#7fe0c0}
+  :root[data-skin="kr"]:not([data-theme="light"]) .mast .sync.warn{color:#ffd2c7}}
+:root[data-skin="kr"][data-theme="dark"] .mast .acct-out,:root[data-skin="kr"][data-theme="dark"] .pop-btn{background:rgb(255 255 255 / .12);border-color:rgb(255 255 255 / .3)}
 
 /* 選單：同一條石綠色帶，下緣是色動條紋（紅、黃、藍、綠、粉） */
 [data-skin="kr"] .topnav{padding-bottom:10px}
 [data-skin="kr"] .topnav::before{background:var(--mast-band);animation:none;-webkit-mask:none;mask:none;bottom:10px}
 [data-skin="kr"] .topnav::after{display:block;top:auto;bottom:0;height:10px;opacity:1;animation:none;-webkit-mask:none;mask:none;
   background:linear-gradient(180deg,
-    var(--kimchi-c) 0 2px,var(--ginkgo-c) 2px 4px,var(--jjok-c) 4px 6px,var(--noerok-c) 6px 8px,var(--mugung-c) 8px 10px)}
+    #e9a28f 0 2px,#f0d39a 2px 4px,#9ccfe2 4px 6px,#b5cfa6 6px 8px,#b9a5d0 8px 10px)}
 [data-skin="kr"] .topnav-in{padding-bottom:10px}
 [data-skin="kr"] .topnav .mbtn{border-radius:10px;background:rgb(255 255 255 / .08)}
 [data-skin="kr"] .topnav .mbtn[aria-current="page"]{background:var(--surface);box-shadow:none}
 [data-skin="kr"] .mast .acct-out,[data-skin="kr"] .pop-btn{border-radius:10px}
 
-/* ---------- 單元橫幅、首頁主打卡片：白瓷卡＋上緣物件色線＋右側淡淡的窗格紋 ---------- */
-[data-skin="kr"] .mhero,[data-skin="kr"] .feature{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--c,var(--accent));position:relative;overflow:hidden}
-[data-skin="kr"] .feature{--c:var(--celadon-c);--t:var(--celadon-t);--k:var(--celadon-k)}
-[data-skin="kr"] .mhero::after,[data-skin="kr"] .feature::after{content:"";display:block;position:absolute;top:0;right:0;bottom:0;left:auto;width:min(320px,45%);
-  background:var(--c,var(--accent));opacity:.16;pointer-events:none;border-radius:0;
-  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath fill='none' stroke='black' stroke-width='1.2' d='M0 .6H28M.6 0V28M7 7H21V21H7Z M14 0V7M14 21V28M0 14H7M21 14H28'/%3E%3C/svg%3E") 0 0/28px 28px,linear-gradient(90deg,transparent,#000 60%);
-  -webkit-mask-composite:source-in;
-          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath fill='none' stroke='black' stroke-width='1.2' d='M0 .6H28M.6 0V28M7 7H21V21H7Z M14 0V7M14 21V28M0 14H7M21 14H28'/%3E%3C/svg%3E") 0 0/28px 28px,linear-gradient(90deg,transparent,#000 60%);
-          mask-composite:intersect}
-[data-skin="kr"] .mhero > *,[data-skin="kr"] .feature > *{position:relative;z-index:1}
+/* ---------- 單元橫幅：桃色底、右邊拱門窗裡放單元的物件、花紋圓章、노리개，底部是層層山丘 ---------- */
+:root[data-skin="kr"]{--hero-bg:#f8e7dd}
+@media (prefers-color-scheme: dark){:root[data-skin="kr"]:not([data-theme="light"]){--hero-bg:#2a2320}}
+:root[data-skin="kr"][data-theme="dark"]{--hero-bg:#2a2320}
+[data-skin="kr"] .mhero,[data-skin="kr"] .feature{border:1px solid var(--line);border-top:3px solid var(--c,var(--accent));position:relative;overflow:hidden}
+[data-skin="kr"] .mhero{background:var(--hero-bg);padding-bottom:34px;min-height:142px}
+[data-skin="kr"] .feature{background:var(--surface);--c:var(--celadon-c);--t:var(--celadon-t);--k:var(--celadon-k)}
+[data-skin="kr"] .mhero > *,[data-skin="kr"] .feature > *{position:relative;z-index:3}
 [data-skin="kr"] .tile.big,[data-skin="kr"] .feature-glyph{background:var(--t,var(--tint));color:var(--k,var(--accent));border:0;border-radius:10px}
+[data-skin="kr"] .mhero::after{content:"";display:block;position:absolute;inset:0;width:auto;height:auto;opacity:1;border-radius:0;-webkit-mask:none;mask:none;z-index:2;pointer-events:none;
+  background:var(--deco-norigae) right 168px top 0/24px 92px no-repeat,var(--deco-hero) right 196px center/180px 108px no-repeat,
+    var(--deco-hero-hills) left bottom/100% 30px no-repeat}
+[data-skin="kr"] .feature::after{content:"";display:block;position:absolute;left:auto;bottom:auto;right:330px;top:8px;width:120px;height:92px;opacity:1;border-radius:0;-webkit-mask:none;mask:none;z-index:0;pointer-events:none;
+  background:url("../../img/deco/moon-persimmon.svg") center/contain no-repeat}
 
 /* ---------- 課本、練習卡片：各自的物件色 ---------- */
 [data-skin="kr"] .book .tile,[data-skin="kr"] .course .tile{background:var(--t,var(--tint));color:var(--k,var(--accent));border-radius:10px}
@@ -131,41 +166,51 @@
 /* ---------- 插圖（原創 SVG，放在 img/illust/） ----------
    課本卡片右上角：該冊的物件；單元橫幅右側：該單元的物件；
    首頁主打卡片：韓屋與柿子樹；沒有資料時：醬缸台 */
-[data-skin="kr"] [data-go="course-hangul"]{--ill:url("/img/illust/mugunghwa.svg")}
-[data-skin="kr"] [data-go="course-1a"]{--ill:url("/img/illust/kimchi.svg")}
-[data-skin="kr"] [data-go="course-1b"]{--ill:url("/img/illust/ginkgo.svg")}
-[data-skin="kr"] [data-go="course-2a"]{--ill:url("/img/illust/celadon.svg")}
-[data-skin="kr"] [data-go="course-2b"]{--ill:url("/img/illust/bojagi.svg")}
-[data-skin="kr"] [data-go="course-3a"]{--ill:url("/img/illust/dancheong.svg")}
-[data-skin="kr"] [data-go="course-3b"]{--ill:url("/img/illust/jeogori.svg")}
-[data-skin="kr"] [data-go="course-4a"]{--ill:url("/img/illust/persimmon.svg")}
-[data-skin="kr"] [data-go="course-4b"]{--ill:url("/img/illust/onggi.svg")}
+[data-skin="kr"] [data-go="course-hangul"]{--ill:url("../../img/illust/mugunghwa.svg")}
+[data-skin="kr"] [data-go="course-1a"]{--ill:url("../../img/illust/kimchi.svg")}
+[data-skin="kr"] [data-go="course-1b"]{--ill:url("../../img/illust/ginkgo.svg")}
+[data-skin="kr"] [data-go="course-2a"]{--ill:url("../../img/illust/celadon.svg")}
+[data-skin="kr"] [data-go="course-2b"]{--ill:url("../../img/illust/bojagi.svg")}
+[data-skin="kr"] [data-go="course-3a"]{--ill:url("../../img/illust/dancheong.svg")}
+[data-skin="kr"] [data-go="course-3b"]{--ill:url("../../img/illust/jeogori.svg")}
+[data-skin="kr"] [data-go="course-4a"]{--ill:url("../../img/illust/persimmon.svg")}
+[data-skin="kr"] [data-go="course-4b"]{--ill:url("../../img/illust/onggi.svg")}
 [data-skin="kr"] .book{position:relative}
 [data-skin="kr"] .book::after{content:"";position:absolute;top:16px;right:12px;width:44px;height:44px;
   background:var(--ill) center/contain no-repeat;pointer-events:none}
 
-[data-skin="kr"] body[data-mod="home"]{--ill-hero:url("/img/illust/celadon.svg")}
-[data-skin="kr"] body[data-mod="course"]{--ill-hero:url("/img/illust/bojagi.svg")}
-[data-skin="kr"] body[data-mod="practice"]{--ill-hero:url("/img/illust/persimmon.svg")}
-[data-skin="kr"] body[data-mod="ref"]{--ill-hero:url("/img/illust/mugunghwa.svg")}
-[data-skin="kr"] body[data-mod="records"]{--ill-hero:url("/img/illust/kimchi.svg")}
-[data-skin="kr"] .mhero{padding-right:120px}
-[data-skin="kr"] .mhero::before{content:"";position:absolute;right:28px;top:50%;width:76px;height:76px;transform:translateY(-50%);
-  background:var(--ill-hero) center/contain no-repeat;z-index:1;pointer-events:none}
+[data-skin="kr"] body[data-mod="home"]{--ill-hero:url("../../img/illust/celadon.svg")}
+[data-skin="kr"] body[data-mod="course"]{--ill-hero:url("../../img/illust/bojagi.svg")}
+[data-skin="kr"] body[data-mod="practice"]{--ill-hero:url("../../img/illust/persimmon.svg")}
+[data-skin="kr"] body[data-mod="ref"]{--ill-hero:url("../../img/illust/mugunghwa.svg")}
+[data-skin="kr"] body[data-mod="records"]{--ill-hero:url("../../img/illust/kimchi.svg")}
+[data-skin="kr"] .mhero{padding-right:150px}
+[data-skin="kr"] .mhero::before{content:"";position:absolute;right:36px;bottom:0;top:16px;width:118px;border-radius:59px 59px 0 0;
+  background:var(--ill-hero) center 46%/68px 68px no-repeat,var(--surface);border:1px solid var(--line);border-bottom:0;z-index:1;pointer-events:none}
 
-[data-skin="kr"] .feature::before{content:"";position:absolute;right:130px;bottom:6px;width:230px;height:118px;
-  background:url("/img/illust/hanok.svg") right bottom/contain no-repeat;z-index:1;pointer-events:none}
+[data-skin="kr"] .feature::before{content:"";position:absolute;right:170px;bottom:6px;width:230px;height:118px;
+  background:url("../../img/illust/hanok.svg") right bottom/contain no-repeat;z-index:1;pointer-events:none}
 [data-skin="kr"] .feature .btn{z-index:2}
 
 [data-skin="kr"] .empty{position:relative;padding-right:230px;min-height:150px}
 [data-skin="kr"] .empty::after{content:"";position:absolute;right:20px;top:50%;width:190px;height:106px;transform:translateY(-50%);
-  background:url("/img/illust/jangdokdae.svg") center/contain no-repeat;pointer-events:none}
+  background:url("../../img/illust/jangdokdae.svg") center/contain no-repeat;pointer-events:none}
 
-@media (max-width:1100px){[data-skin="kr"] .feature::before{display:none}}
+@media (max-width:1100px){[data-skin="kr"] .feature::before{display:none}
+  [data-skin="kr"] .feature::after{right:120px}
+  [data-skin="kr"] .mhero::after{background:var(--deco-hero-hills) left bottom/100% 30px no-repeat}}
 @media (max-width:700px){
   [data-skin="kr"] .book::after{top:12px;right:8px;width:30px;height:30px}
-  [data-skin="kr"] .mhero{padding-right:84px}
-  [data-skin="kr"] .mhero::before{right:14px;width:56px;height:56px}
+  [data-skin="kr"] .mhero{padding-right:96px;padding-bottom:28px;min-height:0}
+  [data-skin="kr"] .mhero::before{right:12px;top:auto;height:88px;width:64px;border-radius:32px 32px 0 0;background-size:40px 40px,auto;background-position:center 56%,0 0}
+  [data-skin="kr"] .mhero::after{background:var(--deco-hero-hills) left bottom/100% 22px no-repeat}
+  [data-skin="kr"] .feature::after{width:70px;height:54px;right:8px;top:8px;opacity:.9}
   [data-skin="kr"] .empty{padding-right:16px;padding-top:122px}
   [data-skin="kr"] .empty::after{top:14px;left:50%;right:auto;transform:translateX(-50%);width:170px;height:96px}
 }
+
+/* ---------- 卡片四角：階梯狀的框角（참고：傳統窗框） ---------- */
+[data-skin="kr"] .block,[data-skin="kr"] .qcard{background:url("../../img/deco/frame-tl.svg") left 6px top 6px/18px 18px no-repeat,url("../../img/deco/frame-tr.svg") right 6px top 6px/18px 18px no-repeat,
+  url("../../img/deco/frame-bl.svg") left 6px bottom 6px/18px 18px no-repeat,url("../../img/deco/frame-br.svg") right 6px bottom 6px/18px 18px no-repeat,var(--surface)}
+@media (prefers-color-scheme: dark){:root[data-skin="kr"]:not([data-theme="light"]) .block,:root[data-skin="kr"]:not([data-theme="light"]) .qcard{background:var(--surface)}}
+:root[data-skin="kr"][data-theme="dark"] .block,:root[data-skin="kr"][data-theme="dark"] .qcard{background:var(--surface)}
