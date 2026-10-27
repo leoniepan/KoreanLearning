@@ -1,4 +1,4 @@
-// 其他：查資料用的表格與規則（字母、發音規則、動詞變化、名詞、數字、文法總覽）
+// 基本：查資料用的表格與規則（字母、發音規則、動詞變化、名詞、數字、文法總覽）
 import { esc } from '../../js/core/dom.js';
 import { group } from '../../js/core/group.js';
 import pron from '../pronunciation/index.js';
@@ -28,8 +28,8 @@ function grammarIndex(el, ctx) {
 
 export default {
   id: 'ref',
-  title: '其他',
-  ko: '기타',
+  title: '基本',
+  ko: '기본',
   icon: 'layers',
   glyph: '기',
   desc: '查資料用：字母、發音規則、動詞變化、名詞、數字、文法總覽',

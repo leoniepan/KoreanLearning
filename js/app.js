@@ -20,7 +20,7 @@ function buildRoutes() {
 }
 
 // 舊版網址相容
-// 舊版網址相容：舊的單元頁面現在分到「課程」「練習」「TOPIK」「其他」裡
+// 舊版網址相容：舊的單元頁面現在分到「課程」「練習」「TOPIK」「基本」裡
 const LEGACY = {
   pron: 'ref-pron', pquiz: 'practice-pron', verbs: 'ref-verbs', vquiz: 'practice-words', 'questions-learn': 'course-1a', 'questions-quiz': 'practice-grammar',
   'daily-quiz': 'practice-daily', 'pron-learn': 'ref-pron', 'pron-quiz': 'practice-pron',

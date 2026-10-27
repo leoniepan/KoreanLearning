@@ -58,7 +58,7 @@
 
 /* ---------- 物件對應 ----------
    韓文字母＝木槿花、1A 泡菜、1B 銀杏葉、2A 青瓷、2B 藍染、3A 丹青綠、3B 韓服紫、4A 柿子、4B 甕器
-   單元：首頁＝青瓷、課程＝藍染、練習＝柿子、TOPIK＝韓服紫、其他＝木槿花、我的紀錄＝泡菜 */
+   單元：首頁＝青瓷、課程＝藍染、練習＝柿子、TOPIK＝韓服紫、基本＝木槿花、我的紀錄＝泡菜 */
 [data-skin="kr"] [data-go="course-hangul"],[data-skin="kr"] [data-page="course-hangul"]{--c:var(--mugung-c);--t:var(--mugung-t);--k:var(--mugung-k)}
 [data-skin="kr"] [data-go="course-1a"],[data-skin="kr"] [data-page="course-1a"]{--c:var(--kimchi-c);--t:var(--kimchi-t);--k:var(--kimchi-k)}
 [data-skin="kr"] [data-go="course-1b"],[data-skin="kr"] [data-page="course-1b"]{--c:var(--ginkgo-c);--t:var(--ginkgo-t);--k:var(--ginkgo-k)}

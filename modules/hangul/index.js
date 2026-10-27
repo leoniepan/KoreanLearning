@@ -59,7 +59,7 @@ export const syl = (c, v, t = '') => String.fromCharCode(0xAC00 + (LJ.indexOf(c)
 const soundOfC = c => syl(c, 'ㅏ');
 const soundOfV = v => syl('ㅇ', v);
 
-// ---------- 對照表（課程、其他共用） ----------
+// ---------- 對照表（課程、基本共用） ----------
 export function chartPage(el, ctx) {
   const cTile = c => `<button type="button" class="hj" data-say="${soundOfC(c[0])}" title="念 ${soundOfC(c[0])}"><span class="hj-l" lang="ko">${c[0]}</span><span class="hj-r">${c[2]}</span><span class="hj-n" lang="ko">${c[1]}</span></button>`;
   const vTile = v => `<button type="button" class="hj" data-say="${soundOfV(v[0])}" title="念 ${soundOfV(v[0])}"><span class="hj-l" lang="ko">${v[0]}</span><span class="hj-r">${v[1]}</span><span class="hj-n" lang="ko">${soundOfV(v[0])}</span></button>`;
