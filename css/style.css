@@ -779,7 +779,7 @@ body{letter-spacing:-.005em}
   .tabbar-b :focus-visible{outline-color:var(--accent)}
 }
 
-/* 首頁「課程」和「練習與其他」之間留白 */
+/* 首頁「課程」和「練習與基本」之間留白 */
 .books{margin-bottom:28px}
 
 /* 需要不透明底色的地方 */
@@ -916,6 +916,7 @@ body{letter-spacing:-.005em}
 /* 首頁：搜尋列與連續天數、錯題本按鈕同一排 */
 .home-top{display:flex;align-items:center;gap:12px;margin-bottom:16px}
 .home-top .search{flex:1;min-width:0;max-width:none;margin-bottom:0}
+.home-top .hello-r{margin-left:auto}
 
 /* 手機與平板 */
 @media (max-width:900px){
@@ -943,7 +944,6 @@ body{letter-spacing:-.005em}
   .topnav .mbtn{padding:4px 14px 4px 4px;gap:8px;font-size:14px}
   .topnav .mbtn .mi{width:30px;height:30px}
   .topnav .mbtn small{display:none}
-  .home-top .hello-r .streak{display:none}
 }
 
 /* 頁尾：插圖來源標示 */

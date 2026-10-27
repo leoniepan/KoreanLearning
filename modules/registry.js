@@ -8,7 +8,7 @@ import ref from './ref/index.js';
 import records from './records/index.js';
 
 // 其他單元（發音、動詞、名詞、數字、文法、TOPIK、今日測驗、字母）的頁面
-// 由「課程」「練習」「其他」組合使用，不直接出現在選單上。
+// 由「課程」「練習」「基本」組合使用，不直接出現在選單上。
 export default [
   home,
   course,
