@@ -76,12 +76,13 @@ function render(el, ctx) {
   </section>
 
   <section>
-    <div class="sec-h"><h3>練習與速查</h3></div>
+    <div class="sec-h"><h3>練習與其他</h3></div>
     <div class="courses">
       <button type="button" class="course" data-go="practice-daily"><span class="course-top"><span class="tile" lang="ko">오</span><span class="course-t"><b>今日測驗</b><small>${todayScore != null ? `今天答對 ${todayScore} 題` : '今天還沒做'}</small><span class="course-d">每天一組，可以自己設定範圍</span></span></span><span class="course-foot">開始${icon('arrow')}</span></button>
       <button type="button" class="course" data-go="practice-reading"><span class="course-top"><span class="tile" lang="ko">읽</span><span class="course-t"><b>每日短文</b><small>${rd.date ? `${rd.date.slice(5).replace('-', '/')} 更新 ${rd.n} 篇` : '읽기'}</small><span class="course-d">有趣的韓文短文，讀完做閱讀測驗</span></span></span><span class="course-foot">閱讀${icon('arrow')}</span></button>
-      <button type="button" class="course" data-mod="practice"><span class="course-top"><span class="tile" lang="ko">연</span><span class="course-t"><b>練習</b><small>연습</small><span class="course-d">文法、字母、發音、單字、數字、TOPIK 測驗</span></span></span><span class="course-foot">前往${icon('arrow')}</span></button>
-      <button type="button" class="course" data-mod="ref"><span class="course-top"><span class="tile" lang="ko">찾</span><span class="course-t"><b>速查</b><small>찾아보기</small><span class="course-d">字母表、發音規則、動詞變化、名詞、數字、文法總覽</span></span></span><span class="course-foot">前往${icon('arrow')}</span></button>
+      <button type="button" class="course" data-mod="practice"><span class="course-top"><span class="tile" lang="ko">연</span><span class="course-t"><b>練習</b><small>연습</small><span class="course-d">文法、字母、發音、單字、數字測驗</span></span></span><span class="course-foot">前往${icon('arrow')}</span></button>
+      <button type="button" class="course" data-mod="topik"><span class="course-top"><span class="tile" lang="ko">토</span><span class="course-t"><b>TOPIK</b><small>한국어능력시험</small><span class="course-d">考試介紹、題型練習、模擬考</span></span></span><span class="course-foot">前往${icon('arrow')}</span></button>
+      <button type="button" class="course" data-mod="ref"><span class="course-top"><span class="tile" lang="ko">기</span><span class="course-t"><b>其他</b><small>기타</small><span class="course-d">字母表、發音規則、動詞變化、名詞、數字、文法總覽</span></span></span><span class="course-foot">前往${icon('arrow')}</span></button>
       <button type="button" class="course" data-go="records-mistakes"><span class="course-top"><span class="tile" lang="ko">틀</span><span class="course-t"><b>錯題本</b><small>오답 노트</small><span class="course-d">答錯的題目都在這裡，可以重練</span></span></span><span class="course-foot">前往${icon('arrow')}</span></button>
     </div>
   </section>`;

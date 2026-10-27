@@ -1,11 +1,10 @@
-// 速查：查資料用的表格與規則（字母、發音規則、動詞變化、名詞、數字、文法總覽、TOPIK 測驗）
+// 其他：查資料用的表格與規則（字母、發音規則、動詞變化、名詞、數字、文法總覽）
 import { esc } from '../../js/core/dom.js';
 import { group } from '../../js/core/group.js';
 import pron from '../pronunciation/index.js';
 import verbs from '../verbs/index.js';
 import nouns from '../nouns/index.js';
 import numbers from '../numbers/index.js';
-import topik from '../topik/index.js';
 import { chartPage } from '../hangul/index.js';
 import { ALL as GRAMMAR } from '../grammar/index.js';
 import { BOOKS, UNITS } from '../../js/core/progress.js';
@@ -29,10 +28,10 @@ function grammarIndex(el, ctx) {
 
 export default {
   id: 'ref',
-  title: '速查',
-  ko: '찾아보기',
+  title: '其他',
+  ko: '기타',
   icon: 'layers',
-  glyph: '찾',
+  glyph: '기',
   desc: '查資料用：字母、發音規則、動詞變化、名詞、數字、文法總覽',
   pages: [
     { id: 'hangul', title: '字母', render: (el, ctx) => chartPage(el, { go: ctx.go, quizRoute: 'practice-hangul' }) },
@@ -52,7 +51,6 @@ export default {
       { id: 'money', title: '金錢', render: pg(numbers, 'money').render },
       { id: 'convert', title: '數字轉換', render: pg(numbers, 'convert').render }
     ]) },
-    { id: 'grammar', title: '文法總覽', render: grammarIndex },
-    { id: 'topik', title: 'TOPIK 測驗', render: pg(topik, 'intro').render }
+    { id: 'grammar', title: '文法總覽', render: grammarIndex }
   ]
 };

@@ -1,4 +1,4 @@
-// 練習：所有測驗集中在這裡（今日測驗、文法、字母、發音、單字、數字、TOPIK）
+// 練習：測驗集中在這裡（今日測驗、文法、字母、發音、單字、數字）；TOPIK 是獨立的單元
 import { group } from '../../js/core/group.js';
 import daily from '../daily/index.js';
 import grammar from '../grammar/index.js';
@@ -6,7 +6,6 @@ import pron from '../pronunciation/index.js';
 import verbs from '../verbs/index.js';
 import nouns from '../nouns/index.js';
 import numbers from '../numbers/index.js';
-import topik from '../topik/index.js';
 import { quizPage as hangulQuiz } from '../hangul/index.js';
 import { readingPage } from '../reading/index.js';
 
@@ -18,7 +17,7 @@ export default {
   ko: '연습',
   icon: 'quiz',
   glyph: '연',
-  desc: '所有測驗都在這裡：今日測驗、每日短文、文法、字母、發音、單字、數字、TOPIK',
+  desc: '測驗都在這裡：今日測驗、每日短文、文法、字母、發音、單字、數字',
   pages: [
     { id: 'daily', title: '今日測驗', render: pg(daily, 'quiz').render, fresh: true, mod: 'daily' },
     { id: 'reading', title: '每日短文', render: readingPage, mod: 'reading' },
@@ -31,10 +30,6 @@ export default {
       { id: 'vcards', title: '動詞閃卡', render: pg(verbs, 'cards').render, mod: 'verbs' },
       { id: 'ncards', title: '名詞閃卡', render: pg(nouns, 'cards').render, mod: 'nouns' }
     ], { label: '單字練習' }) },
-    { id: 'numbers', title: '數字', render: pg(numbers, 'quiz').render, mod: 'numbers' },
-    { id: 'topik', title: 'TOPIK', mod: 'topik', render: group('topik', [
-      { id: 'practice', title: '題型練習', render: pg(topik, 'practice').render, mod: 'topik' },
-      { id: 'mock', title: '模擬考', render: pg(topik, 'mock').render, mod: 'topik' }
-    ], { label: 'TOPIK' }) }
+    { id: 'numbers', title: '數字', render: pg(numbers, 'quiz').render, mod: 'numbers' }
   ]
 };

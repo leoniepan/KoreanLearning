@@ -1,4 +1,4 @@
-// 單元：TOPIK（韓國語能力考試）
+// 單元：TOPIK（韓國語能力考試）——上方選單的獨立項目
 // 考試介紹、TOPIK I 題型練習（原創題）、可選題型的模擬考
 import { $, esc, shuffle } from '../../js/core/dom.js';
 import { LS } from '../../js/core/storage.js';
@@ -45,7 +45,7 @@ export function build(list) {
 function intro(el, ctx) {
   const rows = Object.values(TYPES).map(T => [T.sec, T.no, T.name]);
   el.innerHTML = `<div class="stack">
-  <div class="lq-top"><button type="button" class="btn" data-go="practice-topik" data-sub="practice">開始題型練習</button><button type="button" class="btn ghost" data-go="practice-topik" data-sub="mock">迷你模擬考</button></div>
+  <div class="lq-top"><button type="button" class="btn" data-go="topik-practice">開始題型練習</button><button type="button" class="btn ghost" data-go="topik-mock">迷你模擬考</button></div>
   <div class="block"><h3>TOPIK 是什麼</h3>
     <p>TOPIK（한국어능력시험）是韓國國立國際教育院（NIIED）主辦的韓語能力考試，分成 <b>TOPIK I</b>（初級，1～2級）和 <b>TOPIK II</b>（中高級，3～6級）。級數由總分決定，沒有單科最低分。</p>
     ${table({ head: ['', 'TOPIK I', 'TOPIK II'], rows: [

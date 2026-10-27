@@ -20,14 +20,14 @@ function buildRoutes() {
 }
 
 // 舊版網址相容
-// 舊版網址相容：舊的單元頁面現在分到「課程」「練習」「速查」裡
+// 舊版網址相容：舊的單元頁面現在分到「課程」「練習」「TOPIK」「其他」裡
 const LEGACY = {
   pron: 'ref-pron', pquiz: 'practice-pron', verbs: 'ref-verbs', vquiz: 'practice-words', 'questions-learn': 'course-1a', 'questions-quiz': 'practice-grammar',
   'daily-quiz': 'practice-daily', 'pron-learn': 'ref-pron', 'pron-quiz': 'practice-pron',
   'verbs-table': 'ref-verbs', 'verbs-rules': 'ref-verbs', 'verbs-cards': 'practice-words', 'verbs-quiz': 'practice-words',
   'nouns-table': 'ref-nouns', 'nouns-rules': 'ref-nouns', 'nouns-cards': 'practice-words', 'nouns-quiz': 'practice-words',
   'numbers-table': 'ref-numbers', 'numbers-usage': 'ref-numbers', 'numbers-dates': 'ref-numbers', 'numbers-money': 'ref-numbers', 'numbers-convert': 'ref-numbers', 'numbers-quiz': 'practice-numbers',
-  'grammar-quiz': 'practice-grammar', 'topik-intro': 'ref-topik', 'topik-practice': 'practice-topik', 'topik-mock': 'practice-topik',
+  'grammar-quiz': 'practice-grammar', 'ref-topik': 'topik-intro', 'practice-topik': 'topik-practice',
   ...Object.fromEntries(['1a', '1b', '2a', '2b', '3a', '3b', '4a', '4b'].map(b => ['grammar-' + b, 'course-' + b]))
 };
 
