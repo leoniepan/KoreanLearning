@@ -779,7 +779,7 @@ body{letter-spacing:-.005em}
   .tabbar-b :focus-visible{outline-color:var(--accent)}
 }
 
-/* 首頁「課程」和「練習與速查」之間留白 */
+/* 首頁「課程」和「練習與其他」之間留白 */
 .books{margin-bottom:28px}
 
 /* 需要不透明底色的地方 */
