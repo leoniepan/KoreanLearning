@@ -949,3 +949,25 @@ body{letter-spacing:-.005em}
 /* 頁尾：插圖來源標示 */
 .credit{margin-top:40px;padding:14px 0 4px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);text-align:center}
 .credit a{color:inherit}
+/* 連接詞 */
+.conn .lq-top{flex-wrap:wrap;align-items:center}
+.conn .cq-lv{font-size:14px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface-solid);color:var(--ink)}
+.conn-nav .chip{text-decoration:none}
+.conn-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.conn-item{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface);display:flex;flex-direction:column;gap:6px;min-width:0}
+.conn-h{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.conn-k{font-family:var(--f-hg);font-size:20px;font-weight:700;padding:0;border:0;background:none;color:var(--ink);cursor:pointer}
+.conn-k:hover{color:var(--accent)}
+.conn-zh{flex:1;min-width:0;font-size:14px}
+.conn-lv{font-size:11px;font-weight:700;border-radius:999px;padding:2px 8px;color:#fff}
+.conn-lv.b{background:#4f9a7f}.conn-lv.m{background:#6b78b0}
+.conn-note{font-size:13px;margin:0}
+.conn-ex{display:flex;gap:8px;align-items:flex-start;font-size:15px;line-height:1.6}
+.conn-ex .say{flex:none}
+.conn-ends{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.conn-end{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface);display:flex;flex-direction:column;gap:4px}
+.conn-end-h{display:flex;gap:8px;align-items:center;font-size:16px}
+.conn-end-e{color:var(--accent)}
+.conn-end p{margin:0;font-size:14px}
+.conn-one{display:flex;gap:6px;align-items:flex-start;font-size:15px}
+#cg-end,#cg-tips,[id^="cg-"]{scroll-margin-top:72px}
