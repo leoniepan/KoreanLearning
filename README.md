@@ -122,3 +122,7 @@ node tools/dev-server.mjs
 - **帳號開通**：任何 Microsoft 帳號都能登入，第一次登入時自動建立「等待核准」申請；管理者在「我的紀錄 → 帳號開通」核准、停用或重新啟用。開通狀態存在 Cosmos DB（`type: 'access'`），由 API 檢查。只有管理者需要在 Azure「角色管理」指派 `admin` 角色。
 - `403.html`：非管理者打開管理功能時顯示的頁面。
 - 第一次設定的步驟：[AZURE-SETUP.md](AZURE-SETUP.md)。
+
+## 字型
+
+韓文字型 Pretendard（v1.3.9，SIL Open Font License 1.1）放在 `fonts/pretendard/`，由本站直接提供，不再向外部 CDN（jsDelivr）下載。授權全文見 `fonts/pretendard/LICENSE.txt`。
