@@ -1,4 +1,4 @@
-// 基本：查資料用的表格與規則（字母、發音規則、動詞變化、名詞、數字、文法總覽）
+// 基本：查資料用的表格與規則（字母、發音規則、動詞變化、名詞、數字、連接詞、文法總覽）
 import { esc } from '../../js/core/dom.js';
 import { group } from '../../js/core/group.js';
 import pron from '../pronunciation/index.js';
@@ -6,6 +6,7 @@ import verbs from '../verbs/index.js';
 import nouns from '../nouns/index.js';
 import numbers from '../numbers/index.js';
 import { chartPage } from '../hangul/index.js';
+import { connPage } from '../connectives/index.js';
 import { ALL as GRAMMAR } from '../grammar/index.js';
 import { BOOKS, UNITS } from '../../js/core/progress.js';
 import { lessonTitle } from '../course/index.js';
@@ -32,7 +33,7 @@ export default {
   ko: '기본',
   icon: 'layers',
   glyph: '기',
-  desc: '查資料用：字母、發音規則、動詞變化、名詞、數字、文法總覽',
+  desc: '查資料用：字母、發音規則、動詞變化、名詞、數字、連接詞、文法總覽',
   pages: [
     { id: 'hangul', title: '字母', render: (el, ctx) => chartPage(el, { go: ctx.go, quizRoute: 'practice-hangul' }) },
     { id: 'pron', title: '發音規則', render: pg(pron, 'learn').render },
@@ -51,6 +52,7 @@ export default {
       { id: 'money', title: '金錢', render: pg(numbers, 'money').render },
       { id: 'convert', title: '數字轉換', render: pg(numbers, 'convert').render }
     ]) },
+    { id: 'conn', title: '連接詞', render: connPage, mod: 'conn' },
     { id: 'grammar', title: '文法總覽', render: grammarIndex }
   ]
 };
